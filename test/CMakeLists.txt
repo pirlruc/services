@@ -26,6 +26,7 @@ add_executable(
   ${PROJECT_SOURCE_DIR}/test/test_container.cpp
   ${PROJECT_SOURCE_DIR}/test/test_duplicated_service.cpp
   ${PROJECT_SOURCE_DIR}/test/test_several_outputs.cpp
+  ${PROJECT_SOURCE_DIR}/test/test_services_main.cpp
 )
 set_target_properties(${PROJECT_NAME}_test PROPERTIES CXX_STANDARD           17)
 set_target_properties(${PROJECT_NAME}_test PROPERTIES CXX_STANDARD_REQUIRED  TRUE)
