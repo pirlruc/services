@@ -81,7 +81,7 @@ class MultiplyTestSO : public improc::StringKeyBaseService
 };
 
 TEST(SequenceService,TestSequenceServiceRunWithSeveralOutputs) {
-    improc::JsonFile json_file {"../../test/test_ex2.json"};
+    improc::JsonFile json_file {"../../test/data/test_ex2.json"};
     Json::Value json_content = json_file.Read();
 
     improc::StringKeyServicesFactory factory {};
