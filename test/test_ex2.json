@@ -1,0 +1,37 @@
+{
+	"data": 
+	[
+		{
+			"name": "ori",
+			"type": "number"
+		}
+	],
+	"services":
+	[
+		{
+			"type": "increment",
+			"args": 
+			{
+				"inputs": "ori",
+				"outputs": "ori-1"
+			}
+		},
+		{
+			"type": "multiply",
+			"args": 
+			{
+				"number": 3,
+				"inputs": "ori",
+				"outputs": "ori-2"
+			}
+		},
+		{
+			"type": "subtract",
+			"args": 
+			{
+				"inputs": ["ori-2","ori-1"],
+				"outputs": "ori"
+			}
+		}
+	]
+}
