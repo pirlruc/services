@@ -15,23 +15,23 @@ namespace improc
      * containers with different types of keys. The container does not allow
      * duplicate keys.
      * 
-     * @tparam key_type 
-     * @tparam container_type 
+     * @tparam KeyType 
+     * @tparam ContainerType 
      */
-    template <typename key_type,typename container_type>
+    template <typename KeyType,typename ContainerType>
     class Container
     {
         private:
-            std::unordered_map<key_type,container_type> hash_table_;
+            std::unordered_map<KeyType,ContainerType> hash_table_;
 
         public:
             Container();
 
-            void            Add         (const key_type& key, const container_type& item);
-            container_type  Get         (const key_type& key) const;
-            container_type& operator[]  (const key_type& key);
+            void            Add         (const KeyType& key, const ContainerType& item);
+            ContainerType   Get         (const KeyType& key) const;
+            ContainerType&  operator[]  (const KeyType& key);
 
-            void            Erase       (const key_type& key);
+            void            Erase       (const KeyType& key);
             void            Clear();
 
             size_t          Size() const;

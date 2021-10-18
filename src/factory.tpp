@@ -1,47 +1,49 @@
 /**
- * @brief Construct a new improc::ServicesFactory<key type> object
+ * @brief Construct a new improc::ServicesFactory<KeyType> object
  * 
- * @tparam key_type 
+ * @tparam KeyType 
+ * @tparam ContextType 
  */
-template <typename key_type>
-improc::ServicesFactory<key_type>::ServicesFactory() : improc::Container<key_type,std::function<std::shared_ptr<improc::BaseService<key_type>>(const Json::Value&)>>() {}
+template <typename KeyType,typename ContextType>
+improc::ServicesFactory<KeyType,ContextType>::ServicesFactory() : improc::Container<KeyType,std::function<std::shared_ptr<improc::BaseService<KeyType,ContextType>>(const Json::Value&)>>() {}
 
 /**
  * @brief Load service from json structure
  * 
- * @tparam key_type 
- * @tparam service_type 
+ * @tparam KeyType 
+ * @tparam ContextType 
+ * @tparam ServiceType 
  * @param service_json 
- * @return std::shared_ptr<improc::BaseService<key_type>> 
+ * @return std::shared_ptr<improc::BaseService<KeyType,ContextType>> 
  */
-template<typename key_type,typename service_type>
-std::shared_ptr<improc::BaseService<key_type>> improc::LoadServiceFromJson(const Json::Value& service_json)
+template<typename KeyType,typename ContextType,typename ServiceType>
+std::shared_ptr<improc::BaseService<KeyType,ContextType>> improc::LoadServiceFromJson(const Json::Value& service_json)
 {
     SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
                       , spdlog::level::trace
                       , "Creating shared pointer for key {} service {}..."
-                      , typeid(key_type).name(), typeid(service_type).name() );
-    std::shared_ptr<improc::BaseService<key_type>> service {std::make_shared<service_type>(service_type())};
+                      , typeid(KeyType).name(), typeid(ServiceType).name() );
+    std::shared_ptr<improc::BaseService<KeyType,ContextType>> service {std::make_shared<ServiceType>(ServiceType())};
     service->Load(std::move(service_json));
     return service;
 }
 
 /**
  * @brief Load service from json structure
- * This service assumes that the key_type is an std::string
+ * This service assumes that the KeyType is an std::string
  * 
- * @tparam service_type 
+ * @tparam ServiceType 
  * @param service_json 
- * @return std::shared_ptr<improc::StringKeyBaseService> 
+ * @return std::shared_ptr<improc::StringKeyHeterogeneousBaseService> 
  */
-template<typename service_type>
-std::shared_ptr<improc::StringKeyBaseService> improc::LoadServiceFromJson(const Json::Value& service_json)
+template<typename ServiceType>
+std::shared_ptr<improc::StringKeyHeterogeneousBaseService> improc::LoadServiceFromJson(const Json::Value& service_json)
 {
     SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
                       , spdlog::level::trace
                       , "Creating shared pointer for key string service {}..."
-                      , typeid(service_type).name() );
-    std::shared_ptr<improc::StringKeyBaseService> service {std::make_shared<service_type>(service_type())};
+                      , typeid(ServiceType).name() );
+    std::shared_ptr<improc::StringKeyHeterogeneousBaseService> service {std::make_shared<ServiceType>(ServiceType())};
     service->Load(std::move(service_json));
     return service;
 }

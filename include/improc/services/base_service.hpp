@@ -14,25 +14,28 @@
 namespace improc 
 {
     /**
-     * @brief Skeleton for base service with key_type inputs and output names.
+     * @brief Skeleton for base service with KeyType inputs and output names.
+     * The ContextType defines the type of content that can be exchagend between
+     * services.
      * 
-     * @tparam key_type 
+     * @tparam KeyType 
+     * @tparam ContextType 
      */
-    template <typename key_type>
+    template <typename KeyType,typename ContextType>
     class IMPROC_EXPORTS BaseService
     {
         protected:
-            std::vector<key_type>   inputs_;
-            std::vector<key_type>   outputs_;
+            std::vector<KeyType>    inputs_;
+            std::vector<KeyType>    outputs_;
 
         public:
             BaseService();
 
-            virtual void        Load            (const Json::Value& service_json);
-            virtual void        Run             (Context<key_type>& context) const = 0;
+            virtual void            Load            (const Json::Value& service_json);
+            virtual void            Run             (Context<KeyType,ContextType>& context) const = 0;
     };
 
-    typedef BaseService<std::string>    StringKeyBaseService;
+    typedef BaseService<std::string,std::any>   StringKeyHeterogeneousBaseService;
 }
 
 #include <base_service.tpp>

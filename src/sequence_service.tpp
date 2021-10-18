@@ -1,21 +1,23 @@
 /**
- * @brief Construct a new improc::SequenceService<key type> object
+ * @brief Construct a new improc::SequenceService<KeyType,ContextType> object
  * 
- * @tparam key_type 
+ * @tparam KeyType 
+ * @tparam ContextType 
  */
-template <typename key_type>
-improc::SequenceService<key_type>::SequenceService() {}
+template <typename KeyType,typename ContextType>
+improc::SequenceService<KeyType,ContextType>::SequenceService() {}
 
 /**
  * @brief Load services sequence from json structure and corresponding service factory
  * 
- * @tparam key_type 
+ * @tparam KeyType 
+ * @tparam ContextType 
  * @param factory 
  * @param sequence_service_json 
  */
-template <typename key_type>
-void improc::SequenceService<key_type>::Load( const improc::ServicesFactory<key_type>& factory
-                                            , const Json::Value& sequence_service_json )
+template <typename KeyType,typename ContextType>
+void improc::SequenceService<KeyType,ContextType>::Load ( const improc::ServicesFactory<KeyType,ContextType>& factory
+                                                        , const Json::Value& sequence_service_json )
 {
     SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
                       , spdlog::level::trace
@@ -38,37 +40,25 @@ void improc::SequenceService<key_type>::Load( const improc::ServicesFactory<key_
         const std::string kServiceType = "type";
         const std::string kServiceArgs = "args";
 
-        Json::Value service_args {};
-        key_type    service_type {};
-        for (Json::Value::const_iterator srvce_elem_field_iter = srvce_elem_iter->begin(); srvce_elem_field_iter != srvce_elem_iter->end(); ++srvce_elem_field_iter)
-        {
-            SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
-                              , spdlog::level::debug
-                              , "Analyzing field {} for service element..."
-                              , srvce_elem_field_iter.name() );
-            if      (srvce_elem_field_iter.name() == kServiceType)   service_type = improc::jsonfile::ReadElement<key_type>(*srvce_elem_field_iter);
-            else if (srvce_elem_field_iter.name() == kServiceArgs)   service_args = *srvce_elem_field_iter;
-            else 
-            {
-                SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
-                                  , spdlog::level::warn
-                                  , "WARN_02: Member {} not recognized for service element."
-                                  , srvce_elem_field_iter.name() );
-            }
-        }
-        
-        if (service_type.empty() == true)
+        if (srvce_elem_iter->isMember(kServiceType) == false) 
         {
             SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
                               , spdlog::level::err
-                              , "ERROR_03: Service type missing for service element." );
+                              , "ERROR_02: Service type missing for service element." );
             throw improc::file_processing_error();
         }
+        KeyType     service_type {improc::jsonfile::ReadElement<KeyType>((*srvce_elem_iter)[kServiceType])};
 
+        Json::Value service_args {};
+        if (srvce_elem_iter->isMember(kServiceArgs) == true) 
+        {
+            service_args = (*srvce_elem_iter)[kServiceArgs];
+        }
+        
         SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
                           , spdlog::level::info
                           , "Adding service element {}...",service_type );
-        improc::SequenceService<key_type>::Service service {};
+        improc::SequenceService<KeyType,ContextType>::Service service {};
         service.type = service_type;
         service.data = factory.Get(std::move(service_type))(std::move(service_args));
         this->data_.push_back(std::move(service));
@@ -83,11 +73,12 @@ void improc::SequenceService<key_type>::Load( const improc::ServicesFactory<key_
  * The inputs and outputs for the service sequence should be provided in the 
  * context.
  * 
- * @tparam key_type 
+ * @tparam KeyType 
+ * @tparam ContextType 
  * @param context 
  */
-template <typename key_type>
-void improc::SequenceService<key_type>::Run(improc::Context<key_type>& context) const
+template <typename KeyType,typename ContextType>
+void improc::SequenceService<KeyType,ContextType>::Run(improc::Context<KeyType,ContextType>& context) const
 {
     SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
                       , spdlog::level::trace
@@ -113,11 +104,12 @@ void improc::SequenceService<key_type>::Run(improc::Context<key_type>& context) 
 /**
  * @brief Number of services in the service sequence.
  * 
- * @tparam key_type 
+ * @tparam KeyType 
+ * @tparam ContextType 
  * @return size_t 
  */
-template <typename key_type>
-size_t improc::SequenceService<key_type>::Size() const
+template <typename KeyType,typename ContextType>
+size_t improc::SequenceService<KeyType,ContextType>::Size() const
 {
     SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
                       , spdlog::level::trace

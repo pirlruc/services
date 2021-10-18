@@ -9,18 +9,19 @@
 namespace improc
 {
     /**
-     * @brief Heterogeneous context with elements identified by key_type  
+     * @brief Context with elements identified by KeyType
      * 
-     * @tparam key_type 
+     * @tparam KeyType 
+     * @tparam ContainerType 
      */
-    template <typename key_type>
-    class IMPROC_EXPORTS Context : public Container<key_type,std::any>
+    template <typename KeyType,typename ContainerType>
+    class IMPROC_EXPORTS Context : public Container<KeyType,ContainerType>
     {
         public:
             Context();
     };
 
-    typedef Context<std::string>    StringKeyContext;
+    typedef Context<std::string,std::any>    StringKeyHeterogeneousContext;
 }
 
 #include <context.tpp>

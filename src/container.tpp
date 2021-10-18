@@ -1,31 +1,31 @@
 /**
- * @brief Construct a new improc::Container<key type,container type> object
+ * @brief Construct a new improc::Container<KeyType,ContainerType> object
  * 
- * @tparam key_type 
- * @tparam container_type 
+ * @tparam KeyType 
+ * @tparam ContainerType 
  */
-template <typename key_type,typename container_type>
-improc::Container<key_type,container_type>::Container() 
+template <typename KeyType,typename ContainerType>
+improc::Container<KeyType,ContainerType>::Container() 
 {
     SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
                       , spdlog::level::trace
                       , "Creating container with {} key and {} container..."
-                      , typeid(key_type).name()
-                      , typeid(container_type).name() );
+                      , typeid(KeyType).name()
+                      , typeid(ContainerType).name() );
 }
 
 /**
- * @brief Add an item of container_type with key of key_type in container
+ * @brief Add an item of ContainerType with key of KeyType in container
  * This is a method that allows a safe insert without allowing an item to be 
  * overwritten.
  * 
- * @tparam key_type 
- * @tparam container_type 
+ * @tparam KeyType 
+ * @tparam ContainerType 
  * @param key 
  * @param item 
  */
-template <typename key_type,typename container_type>
-void improc::Container<key_type,container_type>::Add(const key_type& key, const container_type& item)
+template <typename KeyType,typename ContainerType>
+void improc::Container<KeyType,ContainerType>::Add(const KeyType& key, const ContainerType& item)
 {
     SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
                       , spdlog::level::trace
@@ -44,18 +44,18 @@ void improc::Container<key_type,container_type>::Add(const key_type& key, const 
 }
 
 /**
- * @brief Get an item with key of key_type from container
+ * @brief Get an item with key of KeyType from container
  * This is a method that ensures that the item exists on the container. If the item
  * does not exist, the method will throw an exception. The retrieved item
  * cannot be edited.
  *  
- * @tparam key_type 
- * @tparam container_type 
+ * @tparam KeyType 
+ * @tparam ContainerType 
  * @param key 
- * @return container_type 
+ * @return ContainerType 
  */
-template <typename key_type,typename container_type>
-container_type improc::Container<key_type,container_type>::Get(const key_type& key) const
+template <typename KeyType,typename ContainerType>
+ContainerType improc::Container<KeyType,ContainerType>::Get(const KeyType& key) const
 {
     SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
                       , spdlog::level::trace
@@ -74,17 +74,17 @@ container_type improc::Container<key_type,container_type>::Get(const key_type& k
 }
 
 /**
- * @brief Get an item with key of key_type from container  
+ * @brief Get an item with key of KeyType from container  
  * This method will retrieve an item if it exists otherwise it will create a new 
  * entry on the container which can be edited. 
  * 
- * @tparam key_type 
- * @tparam container_type 
+ * @tparam KeyType 
+ * @tparam ContainerType 
  * @param key 
- * @return container_type& 
+ * @return ContainerType& 
  */
-template <typename key_type,typename container_type>
-container_type& improc::Container<key_type,container_type>::operator[](const key_type& key)
+template <typename KeyType,typename ContainerType>
+ContainerType& improc::Container<KeyType,ContainerType>::operator[](const KeyType& key)
 {
     SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
                       , spdlog::level::trace
@@ -93,15 +93,15 @@ container_type& improc::Container<key_type,container_type>::operator[](const key
 }
 
 /**
- * @brief Erase item with key of key_type from container
+ * @brief Erase item with key of KeyType from container
  * The method does not throw an error if key does not exist.
  * 
- * @tparam key_type 
- * @tparam container_type 
+ * @tparam KeyType 
+ * @tparam ContainerType 
  * @param key 
  */
-template <typename key_type,typename container_type>
-void improc::Container<key_type,container_type>::Erase(const key_type& key)
+template <typename KeyType,typename ContainerType>
+void improc::Container<KeyType,ContainerType>::Erase(const KeyType& key)
 {
     SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
                       , spdlog::level::trace
@@ -121,11 +121,11 @@ void improc::Container<key_type,container_type>::Erase(const key_type& key)
 /**
  * @brief Clear items from container
  * 
- * @tparam key_type 
- * @tparam container_type 
+ * @tparam KeyType 
+ * @tparam ContainerType 
  */
-template <typename key_type,typename container_type>
-void improc::Container<key_type,container_type>::Clear()
+template <typename KeyType,typename ContainerType>
+void improc::Container<KeyType,ContainerType>::Clear()
 {
     SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
                       , spdlog::level::trace
@@ -136,12 +136,12 @@ void improc::Container<key_type,container_type>::Clear()
 /**
  * @brief Obtain number of items in container
  * 
- * @tparam key_type 
- * @tparam container_type 
+ * @tparam KeyType 
+ * @tparam ContainerType 
  * @return size_t 
  */
-template <typename key_type,typename container_type>
-size_t improc::Container<key_type,container_type>::Size() const
+template <typename KeyType,typename ContainerType>
+size_t improc::Container<KeyType,ContainerType>::Size() const
 {
     SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
                       , spdlog::level::trace

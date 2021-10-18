@@ -14,22 +14,23 @@ namespace improc
      * @brief Factory to create services from json structures
      * This factory is based on the BaseService object.
      * 
-     * @tparam key_type 
+     * @tparam KeyType 
+     * @tparam ContextType 
      */
-    template <typename key_type>
-    class IMPROC_EXPORTS ServicesFactory : public Container<key_type,std::function<std::shared_ptr<BaseService<key_type>>(const Json::Value&)>>
+    template <typename KeyType,typename ContextType>
+    class IMPROC_EXPORTS ServicesFactory : public Container<KeyType,std::function<std::shared_ptr<BaseService<KeyType,ContextType>>(const Json::Value&)>>
     {
         public:
             ServicesFactory();
     };
 
-    typedef ServicesFactory<std::string>    StringKeyServicesFactory;
+    typedef ServicesFactory<std::string,std::any>    StringKeyHeterogeneousServicesFactory;
 
-    template<typename key_type,typename service_type>
-    IMPROC_EXPORTS std::shared_ptr<BaseService<key_type>>   LoadServiceFromJson(const Json::Value& service_json);
+    template<typename KeyType,typename ContextType,typename ServiceType>
+    IMPROC_EXPORTS std::shared_ptr<BaseService<KeyType,ContextType>>    LoadServiceFromJson(const Json::Value& service_json);
 
-    template<typename service_type>
-    IMPROC_EXPORTS std::shared_ptr<StringKeyBaseService>    LoadServiceFromJson(const Json::Value& service_json);
+    template<typename ServiceType>
+    IMPROC_EXPORTS std::shared_ptr<StringKeyHeterogeneousBaseService>   LoadServiceFromJson(const Json::Value& service_json);
 }
 
 #include <factory.tpp>

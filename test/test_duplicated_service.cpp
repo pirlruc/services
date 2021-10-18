@@ -6,35 +6,35 @@
 #include <improc/services/factory.hpp>
 #include <improc/services/sequence_service.hpp>
 
-class IncrementTestDS : public improc::StringKeyBaseService
+class IncrementTestDS : public improc::StringKeyHeterogeneousBaseService
 {
     public:
-        IncrementTestDS() : improc::StringKeyBaseService() {}
+        IncrementTestDS() : improc::StringKeyHeterogeneousBaseService() {}
         void    Load   (const Json::Value& service_json) override
         {
-            this->improc::StringKeyBaseService::Load(service_json);
+            this->improc::StringKeyHeterogeneousBaseService::Load(service_json);
             spdlog::info("--- INCREMENT SERVICE ---");
             spdlog::info("Input : {}",this->inputs_[0]);
             spdlog::info("Output: {}",this->outputs_[0]);
         }
 
-        void    Run    (improc::StringKeyContext&  context) const override
+        void    Run    (improc::StringKeyHeterogeneousContext&  context) const override
         {
             context[this->outputs_[0]] = std::any_cast<int>(context.Get(this->inputs_[0])) + 1;
             spdlog::info("Increment Service: ori = {}",std::any_cast<int>(context[this->outputs_[0]]));
         }
 };
 
-class SubtractTestDS : public improc::StringKeyBaseService
+class SubtractTestDS : public improc::StringKeyHeterogeneousBaseService
 {
     private: 
         int number_to_subtract_ = 0;
 
     public:
-        SubtractTestDS() : improc::StringKeyBaseService() {}
+        SubtractTestDS() : improc::StringKeyHeterogeneousBaseService() {}
         void    Load   (const Json::Value& service_json) override
         {
-            this->improc::StringKeyBaseService::Load(service_json);
+            this->improc::StringKeyHeterogeneousBaseService::Load(service_json);
 
             for (Json::Value::const_iterator service_field_iter = service_json.begin(); service_field_iter != service_json.end(); ++service_field_iter)
             {
@@ -53,23 +53,23 @@ class SubtractTestDS : public improc::StringKeyBaseService
             spdlog::info("Number: {}",this->number_to_subtract_);
         }
 
-        void    Run    (improc::StringKeyContext&  context) const override
+        void    Run    (improc::StringKeyHeterogeneousContext&  context) const override
         {
             context[this->outputs_[0]] = std::any_cast<int>(context.Get(this->inputs_[0])) - this->number_to_subtract_;
             spdlog::info("Subtract Service: ori = {}",std::any_cast<int>(context[this->outputs_[0]]));
         }
 };
 
-class MultiplyTestDS : public improc::StringKeyBaseService
+class MultiplyTestDS : public improc::StringKeyHeterogeneousBaseService
 {
     private: 
         int number_to_multiply_ = 1;
 
     public:
-        MultiplyTestDS() : improc::StringKeyBaseService() {}
+        MultiplyTestDS() : improc::StringKeyHeterogeneousBaseService() {}
         void    Load   (const Json::Value& service_json) override
         {
-            this->improc::StringKeyBaseService::Load(service_json);
+            this->improc::StringKeyHeterogeneousBaseService::Load(service_json);
 
             for (Json::Value::const_iterator service_field_iter = service_json.begin(); service_field_iter != service_json.end(); ++service_field_iter)
             {
@@ -88,7 +88,7 @@ class MultiplyTestDS : public improc::StringKeyBaseService
             spdlog::info("Number: {}",this->number_to_multiply_);
         }
 
-        void    Run    (improc::StringKeyContext&  context) const override
+        void    Run    (improc::StringKeyHeterogeneousContext&  context) const override
         {
             context[this->outputs_[0]] = std::any_cast<int>(context.Get(this->inputs_[0])) * this->number_to_multiply_;
             spdlog::info("Multiply Service: ori = {}",std::any_cast<int>(context[this->outputs_[0]]));
@@ -96,45 +96,84 @@ class MultiplyTestDS : public improc::StringKeyBaseService
 };
 
 TEST(Factory,TestFactoryEmptyConstructor) {
-    improc::StringKeyServicesFactory factory {};
+    improc::StringKeyHeterogeneousServicesFactory factory {};
     EXPECT_EQ(factory.Size(),0);    
 }
 
 TEST(Factory,TestAddItemsToFactory) {
-    improc::StringKeyServicesFactory factory {};
-    factory.Add("increment",std::function<std::shared_ptr<improc::StringKeyBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<IncrementTestDS>});
-    factory.Add("subtract" ,std::function<std::shared_ptr<improc::StringKeyBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<SubtractTestDS>} );
-    factory.Add("multiply" ,std::function<std::shared_ptr<improc::StringKeyBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<MultiplyTestDS>} );
+    improc::StringKeyHeterogeneousServicesFactory factory {};
+    factory.Add("increment",std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<IncrementTestDS>});
+    factory.Add("subtract" ,std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<SubtractTestDS>} );
+    factory.Add("multiply" ,std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<MultiplyTestDS>} );
     EXPECT_EQ(factory.Size(),3);    
 }
 
 TEST(Context,TestContextEmptyConstructor) {
-    improc::StringKeyContext cntxt {};
+    improc::StringKeyHeterogeneousContext cntxt {};
     EXPECT_EQ(cntxt.Size(),0);    
 }
 
 TEST(Context,TestAddItemToContext) {
-    improc::StringKeyContext cntxt {};
+    improc::StringKeyHeterogeneousContext cntxt {};
     cntxt.Add("ori",2);
     EXPECT_EQ(cntxt.Size(),1);    
     EXPECT_EQ(std::any_cast<int>(cntxt.Get("ori")),2);
 }
 
 TEST(SequenceService,TestSequenceServiceEmptyConstructor) {
-    improc::StringKeySequenceService sequence {};
+    improc::StringKeyHeterogeneousSequenceService sequence {};
     EXPECT_EQ(sequence.Size(),0);    
+}
+
+TEST(SequenceService,TestSequenceServiceLoadWithInputError) {
+    improc::JsonFile json_file {"../../test/data/test_ex1_no_in.json"};
+    Json::Value json_content = json_file.Read();
+
+    improc::StringKeyHeterogeneousServicesFactory factory {};
+    factory.Add("increment",std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<IncrementTestDS>});
+    factory.Add("subtract" ,std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<SubtractTestDS>} );
+    factory.Add("multiply" ,std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<MultiplyTestDS>} );
+
+    improc::StringKeyHeterogeneousSequenceService sequence {};
+    EXPECT_THROW(sequence.Load(factory,json_content),improc::file_processing_error);
+}
+
+TEST(SequenceService,TestSequenceServiceLoadWithOutputError) {
+    improc::JsonFile json_file {"../../test/data/test_ex1_no_out.json"};
+    Json::Value json_content = json_file.Read();
+
+    improc::StringKeyHeterogeneousServicesFactory factory {};
+    factory.Add("increment",std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<IncrementTestDS>});
+    factory.Add("subtract" ,std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<SubtractTestDS>} );
+    factory.Add("multiply" ,std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<MultiplyTestDS>} );
+
+    improc::StringKeyHeterogeneousSequenceService sequence {};
+    EXPECT_THROW(sequence.Load(factory,json_content),improc::file_processing_error);
+}
+
+TEST(SequenceService,TestSequenceServiceLoadWithInputAndOutputError) {
+    improc::JsonFile json_file {"../../test/data/test_ex1_no_in_out.json"};
+    Json::Value json_content = json_file.Read();
+
+    improc::StringKeyHeterogeneousServicesFactory factory {};
+    factory.Add("increment",std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<IncrementTestDS>});
+    factory.Add("subtract" ,std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<SubtractTestDS>} );
+    factory.Add("multiply" ,std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<MultiplyTestDS>} );
+
+    improc::StringKeyHeterogeneousSequenceService sequence {};
+    EXPECT_THROW(sequence.Load(factory,json_content),improc::file_processing_error);
 }
 
 TEST(SequenceService,TestSequenceServiceLoad) {
     improc::JsonFile json_file {"../../test/data/test_ex1.json"};
     Json::Value json_content = json_file.Read();
 
-    improc::StringKeyServicesFactory factory {};
-    factory.Add("increment",std::function<std::shared_ptr<improc::StringKeyBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<IncrementTestDS>});
-    factory.Add("subtract" ,std::function<std::shared_ptr<improc::StringKeyBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<SubtractTestDS>} );
-    factory.Add("multiply" ,std::function<std::shared_ptr<improc::StringKeyBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<MultiplyTestDS>} );
+    improc::StringKeyHeterogeneousServicesFactory factory {};
+    factory.Add("increment",std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<IncrementTestDS>});
+    factory.Add("subtract" ,std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<SubtractTestDS>} );
+    factory.Add("multiply" ,std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<MultiplyTestDS>} );
 
-    improc::StringKeySequenceService sequence {};
+    improc::StringKeyHeterogeneousSequenceService sequence {};
     sequence.Load(factory,json_content);
     EXPECT_EQ(sequence.Size(),4);
 }
@@ -143,16 +182,16 @@ TEST(SequenceService,TestSequenceServiceRunWithDuplicateService) {
     improc::JsonFile json_file {"../../test/data/test_ex1.json"};
     Json::Value json_content = json_file.Read();
 
-    improc::StringKeyServicesFactory factory {};
-    factory.Add("increment",std::function<std::shared_ptr<improc::StringKeyBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<IncrementTestDS>});
-    factory.Add("subtract" ,std::function<std::shared_ptr<improc::StringKeyBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<SubtractTestDS>} );
-    factory.Add("multiply" ,std::function<std::shared_ptr<improc::StringKeyBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<MultiplyTestDS>} );
+    improc::StringKeyHeterogeneousServicesFactory factory {};
+    factory.Add("increment",std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<IncrementTestDS>});
+    factory.Add("subtract" ,std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<SubtractTestDS>} );
+    factory.Add("multiply" ,std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<MultiplyTestDS>} );
 
-    improc::StringKeySequenceService sequence {};
+    improc::StringKeyHeterogeneousSequenceService sequence {};
     sequence.Load(factory,json_content);
     EXPECT_EQ(sequence.Size(),4);
 
-    improc::StringKeyContext cntxt {};
+    improc::StringKeyHeterogeneousContext cntxt {};
     cntxt.Add("ori",2);
     spdlog::info("Start, ori = {}",std::any_cast<int>(cntxt.Get("ori")));
     sequence.Run(cntxt);    

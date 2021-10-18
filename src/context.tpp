@@ -1,7 +1,8 @@
 /**
- * @brief Construct a new improc::Context<key type> object
+ * @brief Construct a new improc::Context<KeyType,ContainerType>::Context object
  * 
- * @tparam key_type 
+ * @tparam KeyType 
+ * @tparam ContainerType 
  */
-template <typename key_type>
-improc::Context<key_type>::Context() : improc::Container<key_type,std::any>() {}
+template <typename KeyType, typename ContainerType>
+improc::Context<KeyType,ContainerType>::Context() : improc::Container<KeyType,ContainerType>() {}

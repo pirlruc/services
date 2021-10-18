@@ -1,0 +1,18 @@
+{
+	"data": 
+	[
+		{
+			"name": "ori",
+			"type": "number"
+		}
+	],
+	"services":
+	[
+		{
+			"type": "increment",
+			"args": 
+			{
+			}
+		}
+	]
+}
