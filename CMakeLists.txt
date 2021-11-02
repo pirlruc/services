@@ -62,8 +62,8 @@ install(
   DESTINATION lib
   EXPORT      ${PROJECT_NAME}_target 
 )
-install(FILES   ${PROJECT_SOURCE_DIR}/include/improc/services/logger_services.hpp     DESTINATION include/improc/services)
-install(FILES   ${PROJECT_SOURCE_DIR}/include/improc/services/context.hpp             DESTINATION include/improc/services)
 install(FILES   ${PROJECT_SOURCE_DIR}/include/improc/services/base_service.hpp        DESTINATION include/improc/services)
+install(FILES   ${PROJECT_SOURCE_DIR}/include/improc/services/context.hpp             DESTINATION include/improc/services)
 install(FILES   ${PROJECT_SOURCE_DIR}/include/improc/services/factory.hpp             DESTINATION include/improc/services)
+install(FILES   ${PROJECT_SOURCE_DIR}/include/improc/services/logger_services.hpp     DESTINATION include/improc/services)
 install(FILES   ${PROJECT_SOURCE_DIR}/include/improc/services/sequence_service.hpp    DESTINATION include/improc/services)
