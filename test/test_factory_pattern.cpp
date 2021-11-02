@@ -3,7 +3,7 @@
 #include <improc/infrastructure/file.hpp>
 #include <improc/services/context.hpp>
 #include <improc/services/base_service.hpp>
-#include <improc/services/template_factory.hpp>
+#include <improc/services/factory_pattern.hpp>
 #include <improc/services/factory.hpp>
 
 class IncrementTestDS : public improc::StringKeyHeterogeneousBaseService
@@ -95,17 +95,17 @@ class MultiplyTestDS : public improc::StringKeyHeterogeneousBaseService
         }
 };
 
-typedef improc::TemplateFactory<improc::StringKeyHeterogeneousBaseService,std::string,std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)>> ServicesTemplateFactory;
+typedef improc::FactoryPattern<improc::StringKeyHeterogeneousBaseService,std::string,std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)>> FactoryPattern;
 
-TEST(TemplateFactory,TestFactoryEmptyConstructor) {
-    ServicesTemplateFactory factory {};
+TEST(FactoryPattern,TestFactoryEmptyConstructor) {
+    FactoryPattern factory {};
     EXPECT_EQ(factory.GetRegisteredIds().size(),0);    
     EXPECT_EQ(factory.Unregister("test"),false);    
     EXPECT_EQ(factory.Size(),0);    
 }
 
-TEST(TemplateFactory,TestAddItemsToFactory) {
-    ServicesTemplateFactory factory {};
+TEST(FactoryPattern,TestAddItemsToFactory) {
+    FactoryPattern factory {};
     EXPECT_EQ(factory.Register("increment",std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<IncrementTestDS>}),true);
     EXPECT_EQ(factory.Register("subtract" ,std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<SubtractTestDS>} ),true);
     EXPECT_EQ(factory.Register("multiply" ,std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<MultiplyTestDS>} ),true);
@@ -113,8 +113,8 @@ TEST(TemplateFactory,TestAddItemsToFactory) {
     EXPECT_EQ(factory.Size(),3);    
 }
 
-TEST(TemplateFactory,TestDuplicateItemsToFactory) {
-    ServicesTemplateFactory factory {};
+TEST(FactoryPattern,TestDuplicateItemsToFactory) {
+    FactoryPattern factory {};
     EXPECT_EQ(factory.Register("increment",std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<IncrementTestDS>}),true);
     EXPECT_EQ(factory.Register("increment" ,std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<SubtractTestDS>}),false);
     EXPECT_EQ(factory.GetRegisteredIds().size(),1);    
@@ -122,19 +122,19 @@ TEST(TemplateFactory,TestDuplicateItemsToFactory) {
     EXPECT_EQ(factory.Size(),1);    
 }
 
-TEST(TemplateFactory,TestRemoveItemsFromFactory) {
-    ServicesTemplateFactory factory {};
+TEST(FactoryPattern,TestRemoveItemsFromFactory) {
+    FactoryPattern factory {};
     EXPECT_EQ(factory.Register("increment",std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<IncrementTestDS>}),true);
     EXPECT_EQ(factory.Unregister("increment"),true);
     EXPECT_EQ(factory.GetRegisteredIds().size(),0);    
     EXPECT_EQ(factory.Size(),0);    
 }
 
-TEST(TemplateFactory,TestSequenceServiceLoadWithInputError) {
-    improc::JsonFile json_file {"../../test/data/test_factory_template.json"};
+TEST(FactoryPattern,TestSequenceServiceLoadWithInputError) {
+    improc::JsonFile json_file {"../../test/data/test_factory_pattern.json"};
     Json::Value json_content = json_file.Read();
 
-    ServicesTemplateFactory factory {};
+    FactoryPattern factory {};
     factory.Register("increment",std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<IncrementTestDS>});
     factory.Register("subtract" ,std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<SubtractTestDS>} );
     factory.Register("multiply" ,std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<MultiplyTestDS>} );

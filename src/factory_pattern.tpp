@@ -2,13 +2,13 @@ template    <   class    BaseProduct
             ,   typename KeyType
             ,   typename ProductCreator
             ,   template <typename,class> class FactoryErrorPolicy  >
-improc::TemplateFactory<BaseProduct,KeyType,ProductCreator,FactoryErrorPolicy>::TemplateFactory() : callbacks_() {}
+improc::FactoryPattern<BaseProduct,KeyType,ProductCreator,FactoryErrorPolicy>::FactoryPattern() : callbacks_() {}
 
 template    <   class    BaseProduct
             ,   typename KeyType
             ,   typename ProductCreator
             ,   template <typename,class> class FactoryErrorPolicy  >
-bool improc::TemplateFactory<BaseProduct,KeyType,ProductCreator,FactoryErrorPolicy>::Register(const KeyType& id, ProductCreator creator)
+bool improc::FactoryPattern<BaseProduct,KeyType,ProductCreator,FactoryErrorPolicy>::Register(const KeyType& id, ProductCreator creator)
 {
     SPDLOG_LOGGER_CALL  ( improc::ServicesLogger::get()->data()
                         , spdlog::level::trace
@@ -20,7 +20,7 @@ template    <   class    BaseProduct
             ,   typename KeyType
             ,   typename ProductCreator
             ,   template <typename,class> class FactoryErrorPolicy  >
-bool improc::TemplateFactory<BaseProduct,KeyType,ProductCreator,FactoryErrorPolicy>::Unregister(const KeyType& id)
+bool improc::FactoryPattern<BaseProduct,KeyType,ProductCreator,FactoryErrorPolicy>::Unregister(const KeyType& id)
 {
     SPDLOG_LOGGER_CALL  ( improc::ServicesLogger::get()->data()
                         , spdlog::level::trace
@@ -32,7 +32,7 @@ template    <   class    BaseProduct
             ,   typename KeyType
             ,   typename ProductCreator
             ,   template <typename,class> class FactoryErrorPolicy  >
-std::vector<KeyType> improc::TemplateFactory<BaseProduct,KeyType,ProductCreator,FactoryErrorPolicy>::GetRegisteredIds() const
+std::vector<KeyType> improc::FactoryPattern<BaseProduct,KeyType,ProductCreator,FactoryErrorPolicy>::GetRegisteredIds() const
 {
     SPDLOG_LOGGER_CALL  ( improc::ServicesLogger::get()->data()
                         , spdlog::level::trace
@@ -49,7 +49,7 @@ template    <   class    BaseProduct
             ,   typename KeyType
             ,   typename ProductCreator
             ,   template <typename,class> class FactoryErrorPolicy  >
-size_t improc::TemplateFactory<BaseProduct,KeyType,ProductCreator,FactoryErrorPolicy>::Size() const
+size_t improc::FactoryPattern<BaseProduct,KeyType,ProductCreator,FactoryErrorPolicy>::Size() const
 {
     SPDLOG_LOGGER_CALL  ( improc::ServicesLogger::get()->data()
                         , spdlog::level::trace
@@ -62,7 +62,7 @@ template    <   class    BaseProduct
             ,   typename ProductCreator
             ,   template <typename,class> class FactoryErrorPolicy  >
 template    <   typename ... Args   >
-std::shared_ptr<BaseProduct> improc::TemplateFactory<BaseProduct,KeyType,ProductCreator,FactoryErrorPolicy>::Create(const KeyType& id, Args&& ... args)
+std::shared_ptr<BaseProduct> improc::FactoryPattern<BaseProduct,KeyType,ProductCreator,FactoryErrorPolicy>::Create(const KeyType& id, Args&& ... args)
 {
     SPDLOG_LOGGER_CALL  ( improc::ServicesLogger::get()->data()
                         , spdlog::level::trace
