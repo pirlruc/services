@@ -28,7 +28,7 @@ namespace improc
             size_t                  Size()              const;
 
             template <typename ... Args>
-            std::shared_ptr<BaseProduct>    Create(const KeyType& id, Args&& ... args);
+            std::shared_ptr<BaseProduct>    Create(const KeyType& id, Args&& ... args)  const;
     };
 }
 

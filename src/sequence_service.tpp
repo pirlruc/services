@@ -60,7 +60,7 @@ void improc::SequenceService<KeyType,ContextType>::Load ( const improc::Services
                           , "Adding service element {}...",service_type );
         improc::SequenceService<KeyType,ContextType>::Service service {};
         service.type = service_type;
-        service.data = factory.Get(std::move(service_type))(std::move(service_args));
+        service.data = factory.Create(std::move(service_type),std::move(service_args));
         this->data_.push_back(std::move(service));
     }
     SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()

@@ -4,7 +4,7 @@
 #include <improc/improc_defs.hpp>
 #include <improc/services/logger_services.hpp>
 #include <improc/services/base_service.hpp>
-#include <improc/services/container.hpp>
+#include <improc/services/factory_pattern.hpp>
 
 #include <functional>
 
@@ -18,7 +18,7 @@ namespace improc
      * @tparam ContextType 
      */
     template <typename KeyType,typename ContextType>
-    class IMPROC_EXPORTS ServicesFactory : public Container<KeyType,std::function<std::shared_ptr<BaseService<KeyType,ContextType>>(const Json::Value&)>>
+    class IMPROC_EXPORTS ServicesFactory : public FactoryPattern<BaseService<KeyType,ContextType>,KeyType,std::function<std::shared_ptr<BaseService<KeyType,ContextType>>(const Json::Value&)>>
     {
         public:
             ServicesFactory();

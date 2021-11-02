@@ -62,7 +62,7 @@ template    <   class    BaseProduct
             ,   typename ProductCreator
             ,   template <typename,class> class FactoryErrorPolicy  >
 template    <   typename ... Args   >
-std::shared_ptr<BaseProduct> improc::FactoryPattern<BaseProduct,KeyType,ProductCreator,FactoryErrorPolicy>::Create(const KeyType& id, Args&& ... args)
+std::shared_ptr<BaseProduct> improc::FactoryPattern<BaseProduct,KeyType,ProductCreator,FactoryErrorPolicy>::Create(const KeyType& id, Args&& ... args) const
 {
     SPDLOG_LOGGER_CALL  ( improc::ServicesLogger::get()->data()
                         , spdlog::level::trace
