@@ -1,21 +1,10 @@
 #include <gtest/gtest.h>
 
-#include <improc/infrastructure/benchmark_singleton.hpp>
-#include <improc/services/logger_services.hpp>
-#include <improc/infrastructure/logger_infrastructure.hpp>
+#include <improc/infrastructure/file.hpp>
+#include <improc/services/context.hpp>
 #include <improc/services/base_service.hpp>
+#include <improc/services/factory_pattern.hpp>
 #include <improc/services/factory.hpp>
-#include <improc/services/sequence_service.hpp>
-
-#include <spdlog/sinks/basic_file_sink.h>
-#include <iostream>
-
-class BenchmarkDetector : public improc::BenchmarkSingleton<BenchmarkDetector>
-{
-    friend std::shared_ptr<BenchmarkDetector> LoggerSingleton::get(const std::string& logger_name);
-    private:
-        BenchmarkDetector(std::shared_ptr<spdlog::logger>&& logger) : BenchmarkSingleton(logger) {}
-};
 
 class IncrementTestDS : public improc::StringKeyHeterogeneousBaseService
 {
@@ -33,7 +22,6 @@ class IncrementTestDS : public improc::StringKeyHeterogeneousBaseService
         {
             context[this->outputs_[0]] = std::any_cast<int>(context.Get(this->inputs_[0])) + 1;
             spdlog::info("Increment Service: ori = {}",std::any_cast<int>(context[this->outputs_[0]]));
-            BenchmarkDetector::get()->WriteFields("IncrementTestDS",std::any_cast<int>(context[this->outputs_[0]]));
         }
 };
 
@@ -69,7 +57,6 @@ class SubtractTestDS : public improc::StringKeyHeterogeneousBaseService
         {
             context[this->outputs_[0]] = std::any_cast<int>(context.Get(this->inputs_[0])) - this->number_to_subtract_;
             spdlog::info("Subtract Service: ori = {}",std::any_cast<int>(context[this->outputs_[0]]));
-            BenchmarkDetector::get()->WriteFields("SubtractTestDS",std::any_cast<int>(context[this->outputs_[0]]));
         }
 };
 
@@ -105,57 +92,52 @@ class MultiplyTestDS : public improc::StringKeyHeterogeneousBaseService
         {
             context[this->outputs_[0]] = std::any_cast<int>(context.Get(this->inputs_[0])) * this->number_to_multiply_;
             spdlog::info("Multiply Service: ori = {}",std::any_cast<int>(context[this->outputs_[0]]));
-            BenchmarkDetector::get()->WriteFields("MultiplyTestDS",std::any_cast<int>(context[this->outputs_[0]]));
         }
 };
 
-TEST(ServicesMain,TestMain)
-{
-    auto console_infrastructure_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-    console_infrastructure_sink->set_level(spdlog::level::info);
-    auto file_infrastructure_sink    = std::make_shared<spdlog::sinks::basic_file_sink_mt>("logs/infrastructure.txt", true);
-    file_infrastructure_sink->set_level(spdlog::level::trace);
-    spdlog::logger logger_infrastructure("infrastructure", {console_infrastructure_sink,file_infrastructure_sink});
-    logger_infrastructure.set_level(spdlog::level::trace);
-    spdlog::register_logger(std::make_shared<spdlog::logger>(logger_infrastructure));
+typedef improc::FactoryPattern<improc::StringKeyHeterogeneousBaseService,std::string,std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)>> FactoryPattern;
 
-    auto console_services_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-    console_services_sink->set_level(spdlog::level::info);
-    auto file_services_sink    = std::make_shared<spdlog::sinks::basic_file_sink_mt>("logs/services.txt", true);
-    file_services_sink->set_level(spdlog::level::trace);
-    spdlog::logger logger_services("services", {console_services_sink, file_services_sink});
-    logger_services.set_level(spdlog::level::trace);
-    spdlog::register_logger(std::make_shared<spdlog::logger>(logger_services));
+TEST(FactoryPattern,TestFactoryEmptyConstructor) {
+    FactoryPattern factory {};
+    EXPECT_EQ(factory.GetRegisteredIds().size(),0);    
+    EXPECT_EQ(factory.Unregister("test"),false);    
+    EXPECT_EQ(factory.Size(),0);    
+}
 
-    auto benchmark_logger = spdlog::basic_logger_mt("benchmark", "logs/benchmark.txt");
+TEST(FactoryPattern,TestAddItemsToFactory) {
+    FactoryPattern factory {};
+    EXPECT_EQ(factory.Register("increment",std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<IncrementTestDS>}),true);
+    EXPECT_EQ(factory.Register("subtract" ,std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<SubtractTestDS>} ),true);
+    EXPECT_EQ(factory.Register("multiply" ,std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<MultiplyTestDS>} ),true);
+    EXPECT_EQ(factory.GetRegisteredIds().size(),3);    
+    EXPECT_EQ(factory.Size(),3);    
+}
 
-    improc::InfrastructureLogger::get("infrastructure");
-    improc::ServicesLogger::get("services");
-    BenchmarkDetector::get("benchmark");
+TEST(FactoryPattern,TestDuplicateItemsToFactory) {
+    FactoryPattern factory {};
+    EXPECT_EQ(factory.Register("increment",std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<IncrementTestDS>}),true);
+    EXPECT_EQ(factory.Register("increment" ,std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<SubtractTestDS>}),false);
+    EXPECT_EQ(factory.GetRegisteredIds().size(),1);    
+    EXPECT_EQ(factory.GetRegisteredIds()[0],"increment");    
+    EXPECT_EQ(factory.Size(),1);    
+}
 
-    improc::JsonFile json_file {"../../test/data/test_ex1.json"};
+TEST(FactoryPattern,TestRemoveItemsFromFactory) {
+    FactoryPattern factory {};
+    EXPECT_EQ(factory.Register("increment",std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<IncrementTestDS>}),true);
+    EXPECT_EQ(factory.Unregister("increment"),true);
+    EXPECT_EQ(factory.GetRegisteredIds().size(),0);    
+    EXPECT_EQ(factory.Size(),0);    
+}
+
+TEST(FactoryPattern,TestSequenceServiceLoadWithInputError) {
+    improc::JsonFile json_file {"../../test/data/test_factory_pattern.json"};
     Json::Value json_content = json_file.Read();
 
-    improc::StringKeyHeterogeneousServicesFactory factory {};
+    FactoryPattern factory {};
     factory.Register("increment",std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<IncrementTestDS>});
     factory.Register("subtract" ,std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<SubtractTestDS>} );
     factory.Register("multiply" ,std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<MultiplyTestDS>} );
 
-    improc::StringKeyHeterogeneousSequenceService sequence {};
-    sequence.Load(factory,json_content);
-
-    improc::StringKeyHeterogeneousContext cntxt {};
-    cntxt.Add("ori",2);
-    spdlog::info("Start, ori = {}",std::any_cast<int>(cntxt.Get("ori")));
-    sequence.Run(cntxt);    
-    std::cout << "Computed: " << std::any_cast<int>(cntxt.Get("ori")) << std::endl;
-    std::cout << "Expected: " << 4 << std::endl;
-
-    EXPECT_EQ(std::any_cast<int>(cntxt.Get("ori")),4);
-    improc::File log_infrastructure_file  {"logs/infrastructure.txt"};
-    improc::File log_services_file        {"logs/services.txt"};
-    improc::File benchmark_file           {"logs/benchmark.txt"};
-    EXPECT_TRUE(log_infrastructure_file.Exists());
-    EXPECT_TRUE(log_services_file.Exists());
-    EXPECT_TRUE(benchmark_file.Exists());
+    EXPECT_NO_THROW(std::shared_ptr<improc::StringKeyHeterogeneousBaseService> increment = factory.Create("increment",json_content));
 }

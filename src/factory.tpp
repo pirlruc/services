@@ -1,11 +1,15 @@
 /**
- * @brief Construct a new improc::ServicesFactory<KeyType> object
+ * @brief Construct a new improc::ServicesFactory<KeyType,ContextType> object
  * 
  * @tparam KeyType 
  * @tparam ContextType 
  */
 template <typename KeyType,typename ContextType>
-improc::ServicesFactory<KeyType,ContextType>::ServicesFactory() : improc::Container<KeyType,std::function<std::shared_ptr<improc::BaseService<KeyType,ContextType>>(const Json::Value&)>>() {}
+improc::ServicesFactory<KeyType,ContextType>::ServicesFactory() 
+: improc::FactoryPattern    <   BaseService<KeyType,ContextType>
+                            ,   KeyType
+                            ,   std::function<std::shared_ptr<BaseService<KeyType,ContextType>>(const Json::Value&)>
+                            >() {}
 
 /**
  * @brief Load service from json structure
