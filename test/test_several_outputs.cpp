@@ -10,15 +10,16 @@ class IncrementTestSO : public improc::StringKeyHeterogeneousBaseService
 {
     public:
         IncrementTestSO() : improc::StringKeyHeterogeneousBaseService() {}
-        void    Load   (const Json::Value& service_json) override
+        IncrementTestSO& Load   (const Json::Value& service_json) override
         {
             this->improc::StringKeyHeterogeneousBaseService::Load(service_json);
             spdlog::info("--- INCREMENT SERVICE ---");
             spdlog::info("Input : {}",this->inputs_[0]);
             spdlog::info("Output: {}",this->outputs_[0]);
+            return (*this);
         }
 
-        void    Run    (improc::StringKeyHeterogeneousContext&  context) const override
+        void Run    (improc::StringKeyHeterogeneousContext&  context) const override
         {
             context[this->outputs_[0]] = std::any_cast<int>(context.Get(this->inputs_[0])) + 1;
             spdlog::info("Increment Service: ori-1 = {}",std::any_cast<int>(context[this->outputs_[0]]));
@@ -29,15 +30,16 @@ class SubtractTestSO : public improc::StringKeyHeterogeneousBaseService
 {
     public:
         SubtractTestSO() : improc::StringKeyHeterogeneousBaseService() {}
-        void    Load   (const Json::Value& service_json) override
+        SubtractTestSO& Load   (const Json::Value& service_json) override
         {
             this->improc::StringKeyHeterogeneousBaseService::Load(service_json);
             spdlog::info("--- SUBTRACT SERVICE ---");
             spdlog::info("Input : {};{}",this->inputs_[0],this->inputs_[1]);
             spdlog::info("Output: {}",this->outputs_[0]);
+            return (*this);
         }
 
-        void    Run    (improc::StringKeyHeterogeneousContext&  context) const override
+        void Run    (improc::StringKeyHeterogeneousContext&  context) const override
         {
             context[this->outputs_[0]] = std::any_cast<int>(context.Get(this->inputs_[0])) 
                                        - std::any_cast<int>(context.Get(this->inputs_[1]));
@@ -52,7 +54,7 @@ class MultiplyTestSO : public improc::StringKeyHeterogeneousBaseService
 
     public:
         MultiplyTestSO() : improc::StringKeyHeterogeneousBaseService() {}
-        void    Load   (const Json::Value& service_json) override
+        MultiplyTestSO& Load   (const Json::Value& service_json) override
         {
             this->improc::StringKeyHeterogeneousBaseService::Load(service_json);
 
@@ -71,9 +73,10 @@ class MultiplyTestSO : public improc::StringKeyHeterogeneousBaseService
             spdlog::info("Input : {}",this->inputs_[0]);
             spdlog::info("Output: {}",this->outputs_[0]);
             spdlog::info("Number: {}",this->number_to_multiply_);
+            return (*this);
         }
 
-        void    Run    (improc::StringKeyHeterogeneousContext&  context) const override
+        void Run    (improc::StringKeyHeterogeneousContext&  context) const override
         {
             context[this->outputs_[0]] = std::any_cast<int>(context.Get(this->inputs_[0])) * this->number_to_multiply_;
             spdlog::info("Multiply Service: ori-2 = {}",std::any_cast<int>(context[this->outputs_[0]]));

@@ -21,12 +21,13 @@ class IncrementTestDS : public improc::StringKeyHeterogeneousBaseService
 {
     public:
         IncrementTestDS() : improc::StringKeyHeterogeneousBaseService() {}
-        void    Load   (const Json::Value& service_json) override
+        IncrementTestDS& Load   (const Json::Value& service_json) override
         {
             this->improc::StringKeyHeterogeneousBaseService::Load(service_json);
             spdlog::info("--- INCREMENT SERVICE ---");
             spdlog::info("Input : {}",this->inputs_[0]);
             spdlog::info("Output: {}",this->outputs_[0]);
+            return (*this);
         }
 
         void    Run    (improc::StringKeyHeterogeneousContext&  context) const override
@@ -44,7 +45,7 @@ class SubtractTestDS : public improc::StringKeyHeterogeneousBaseService
 
     public:
         SubtractTestDS() : improc::StringKeyHeterogeneousBaseService() {}
-        void    Load   (const Json::Value& service_json) override
+        SubtractTestDS& Load   (const Json::Value& service_json) override
         {
             this->improc::StringKeyHeterogeneousBaseService::Load(service_json);
 
@@ -63,6 +64,7 @@ class SubtractTestDS : public improc::StringKeyHeterogeneousBaseService
             spdlog::info("Input : {}",this->inputs_[0]);
             spdlog::info("Output: {}",this->outputs_[0]);
             spdlog::info("Number: {}",this->number_to_subtract_);
+            return (*this);
         }
 
         void    Run    (improc::StringKeyHeterogeneousContext&  context) const override
@@ -80,7 +82,7 @@ class MultiplyTestDS : public improc::StringKeyHeterogeneousBaseService
 
     public:
         MultiplyTestDS() : improc::StringKeyHeterogeneousBaseService() {}
-        void    Load   (const Json::Value& service_json) override
+        MultiplyTestDS& Load   (const Json::Value& service_json) override
         {
             this->improc::StringKeyHeterogeneousBaseService::Load(service_json);
 
@@ -99,6 +101,7 @@ class MultiplyTestDS : public improc::StringKeyHeterogeneousBaseService
             spdlog::info("Input : {}",this->inputs_[0]);
             spdlog::info("Output: {}",this->outputs_[0]);
             spdlog::info("Number: {}",this->number_to_multiply_);
+            return (*this);
         }
 
         void    Run    (improc::StringKeyHeterogeneousContext&  context) const override

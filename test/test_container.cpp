@@ -13,6 +13,13 @@ TEST(Container,TestAddItemToContainer) {
     EXPECT_EQ(container.Size(),1);
 }
 
+TEST(Container,TestExistsInContainer) {
+    improc::Container<int,std::any> container {};
+    container.Add(1,"Test 1");
+    EXPECT_TRUE(container.Exists(1));
+    EXPECT_FALSE(container.Exists(2));
+}
+
 TEST(Container,TestAddDuplicateItemToContainer) {
     improc::Container<int,std::any> container {};
     container.Add(1,"Test 1");

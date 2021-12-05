@@ -27,12 +27,13 @@ namespace improc
         public:
             Container();
 
-            void            Add         (const KeyType& key, const ContainerType& item);
+            bool            Exists      (const KeyType& key) const;
             ContainerType   Get         (const KeyType& key) const;
             ContainerType&  operator[]  (const KeyType& key);
 
-            void            Erase       (const KeyType& key);
-            void            Clear();
+            Container&      Add         (const KeyType& key, const ContainerType& item);
+            Container&      Erase       (const KeyType& key);
+            Container&      Clear();
 
             size_t          Size() const;
     };

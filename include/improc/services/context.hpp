@@ -19,6 +19,10 @@ namespace improc
     {
         public:
             Context();
+
+            Context&      Add         (const KeyType& key, const ContainerType& item);
+            Context&      Erase       (const KeyType& key);
+            Context&      Clear();
     };
 
     typedef Context<std::string,std::any>    StringKeyHeterogeneousContext;

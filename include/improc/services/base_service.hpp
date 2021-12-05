@@ -6,7 +6,7 @@
 #include <improc/services/logger_services.hpp>
 #include <improc/services/context.hpp>
 #include <improc/infrastructure/file.hpp>
-#include <improc/infrastructure/jsonfile_parser.hpp>
+#include <improc/infrastructure/json_parser.hpp>
 
 #include <json/json.h>
 #include <vector>
@@ -31,7 +31,7 @@ namespace improc
         public:
             BaseService();
 
-            virtual void            Load            (const Json::Value& service_json);
+            virtual BaseService&    Load            (const Json::Value& service_json);
             virtual void            Run             (Context<KeyType,ContextType>& context) const = 0;
     };
 

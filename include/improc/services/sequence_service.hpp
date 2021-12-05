@@ -7,7 +7,7 @@
 #include <improc/services/base_service.hpp>
 #include <improc/services/factory.hpp>
 #include <improc/infrastructure/file.hpp>
-#include <improc/infrastructure/jsonfile_parser.hpp>
+#include <improc/infrastructure/json_parser.hpp>
 
 #include <json/json.h>
 #include <vector>
@@ -35,11 +35,11 @@ namespace improc
         public:
             SequenceService();
 
-            void    Load   ( const ServicesFactory<KeyType,ContextType>& factory
-                           , const Json::Value& sequence_service_json );
-            void    Run    ( improc::Context<KeyType,ContextType>& context ) const;
+            SequenceService&    Load    ( const ServicesFactory<KeyType,ContextType>& factory
+                                        , const Json::Value& sequence_service_json );
+            void                Run     ( improc::Context<KeyType,ContextType>& context ) const;
 
-            size_t  Size() const;
+            size_t              Size() const;
     };
 
     typedef SequenceService<std::string,std::any>   StringKeyHeterogeneousSequenceService;

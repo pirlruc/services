@@ -17,8 +17,9 @@ if(PROJECT_NAME STREQUAL CMAKE_PROJECT_NAME)
   set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"      CACHE PATH "Library output dir.")
   set(CMAKE_PDB_OUTPUT_DIRECTORY     "${CMAKE_BINARY_DIR}/bin"      CACHE PATH "PDB (MSVC debug symbol)output dir.")
   set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"      CACHE PATH "Executable/dll output dir.")
-  option(BUILD_SHARED_LIBS           "Build using shared libraries" ON)
   set(CMAKE_DEBUG_POSTFIX d)
+  option(BUILD_SHARED_LIBS           "Build using shared libraries" ON)
+  option(IMPROC_WITH_TESTS 			     "Building library with tests"  ON)
 
   add_subdirectory(${PROJECT_SOURCE_DIR}/../infrastructure ${CMAKE_BINARY_DIR}/infrastructure)
 endif()
@@ -51,8 +52,11 @@ target_link_libraries       (${PROJECT_NAME}   PRIVATE   improc::infrastructure)
 target_link_libraries       (${PROJECT_NAME}   INTERFACE improc::infrastructure)
 
 # Tests configuration
+if(IMPROC_WITH_TESTS)
+  add_subdirectory(${PROJECT_SOURCE_DIR}/test     ${CMAKE_BINARY_DIR}/services_test)
+endif()
+
 if(PROJECT_NAME STREQUAL CMAKE_PROJECT_NAME)
-  add_subdirectory(${PROJECT_SOURCE_DIR}/test     ${CMAKE_BINARY_DIR}/test)
   add_subdirectory(${PROJECT_SOURCE_DIR}/version  ${CMAKE_BINARY_DIR}/version)  
 endif()
 

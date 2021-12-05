@@ -16,8 +16,8 @@ improc::SequenceService<KeyType,ContextType>::SequenceService() {}
  * @param sequence_service_json 
  */
 template <typename KeyType,typename ContextType>
-void improc::SequenceService<KeyType,ContextType>::Load ( const improc::ServicesFactory<KeyType,ContextType>& factory
-                                                        , const Json::Value& sequence_service_json )
+improc::SequenceService<KeyType,ContextType>& improc::SequenceService<KeyType,ContextType>::Load( const improc::ServicesFactory<KeyType,ContextType>& factory
+                                                                                                , const Json::Value& sequence_service_json )
 {
     SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
                       , spdlog::level::trace
@@ -47,7 +47,7 @@ void improc::SequenceService<KeyType,ContextType>::Load ( const improc::Services
                               , "ERROR_02: Service type missing for service element." );
             throw improc::file_processing_error();
         }
-        KeyType     service_type {improc::jsonfile::ReadElement<KeyType>((*srvce_elem_iter)[kServiceType])};
+        KeyType     service_type {improc::json::ReadElement<KeyType>((*srvce_elem_iter)[kServiceType])};
 
         Json::Value service_args {};
         if (srvce_elem_iter->isMember(kServiceArgs) == true) 
@@ -66,6 +66,7 @@ void improc::SequenceService<KeyType,ContextType>::Load ( const improc::Services
     SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
                       , spdlog::level::info
                       , "{} services added to sequence.",this->data_.size() );
+    return (*this);
 }
 
 /**

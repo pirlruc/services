@@ -15,6 +15,21 @@ improc::Container<KeyType,ContainerType>::Container()
 }
 
 /**
+ * @brief Check if a item with key exists in the container
+ * 
+ * @return true if key exists in the container
+ * @return false if key does not exist in the container
+ */
+template <typename KeyType,typename ContainerType>
+bool improc::Container<KeyType,ContainerType>::Exists(const KeyType& key) const
+{
+    SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
+                      , spdlog::level::trace
+                      , "Checking if item with key {} exists in container...", key );
+    return this->hash_table_.find(key) != this->hash_table_.end();
+}
+
+/**
  * @brief Add an item of ContainerType with key of KeyType in container
  * This is a method that allows a safe insert without allowing an item to be 
  * overwritten.
@@ -25,12 +40,12 @@ improc::Container<KeyType,ContainerType>::Container()
  * @param item 
  */
 template <typename KeyType,typename ContainerType>
-void improc::Container<KeyType,ContainerType>::Add(const KeyType& key, const ContainerType& item)
+improc::Container<KeyType,ContainerType>& improc::Container<KeyType,ContainerType>::Add(const KeyType& key, const ContainerType& item)
 {
     SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
                       , spdlog::level::trace
                       , "Adding key {} to container...", key );
-    if (this->hash_table_.find(key) == this->hash_table_.end())
+    if (this->Exists(key) == false)
     {
         this->hash_table_[std::move(key)] = std::move(item);
     }
@@ -41,6 +56,7 @@ void improc::Container<KeyType,ContainerType>::Add(const KeyType& key, const Con
                           , "ERROR_01: Duplicated key {} in container.", key );
         throw improc::duplicated_key();
     }
+    return (*this);
 }
 
 /**
@@ -60,7 +76,7 @@ ContainerType improc::Container<KeyType,ContainerType>::Get(const KeyType& key) 
     SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
                       , spdlog::level::trace
                       , "Obtaining key {} from container...", key );
-    if (this->hash_table_.find(key) != this->hash_table_.end())
+    if (this->Exists(key) == true)
     {
         return this->hash_table_.at(std::move(key));
     }
@@ -101,12 +117,12 @@ ContainerType& improc::Container<KeyType,ContainerType>::operator[](const KeyTyp
  * @param key 
  */
 template <typename KeyType,typename ContainerType>
-void improc::Container<KeyType,ContainerType>::Erase(const KeyType& key)
+improc::Container<KeyType,ContainerType>& improc::Container<KeyType,ContainerType>::Erase(const KeyType& key)
 {
     SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
                       , spdlog::level::trace
                       , "Deleting key {} from container...", key );
-    if (this->hash_table_.find(key) != this->hash_table_.end()) 
+    if (this->Exists(key) == true) 
     {
         this->hash_table_.erase(std::move(key));
     }
@@ -116,6 +132,7 @@ void improc::Container<KeyType,ContainerType>::Erase(const KeyType& key)
                           , spdlog::level::warn
                           , "WARN_01: Key {} not found in container.", key );
     }
+    return (*this);
 }
 
 /**
@@ -125,12 +142,13 @@ void improc::Container<KeyType,ContainerType>::Erase(const KeyType& key)
  * @tparam ContainerType 
  */
 template <typename KeyType,typename ContainerType>
-void improc::Container<KeyType,ContainerType>::Clear()
+improc::Container<KeyType,ContainerType>& improc::Container<KeyType,ContainerType>::Clear()
 {
     SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
                       , spdlog::level::trace
                       , "Deleting container..." );
     this->hash_table_.clear();
+    return (*this);
 }
 
 /**
