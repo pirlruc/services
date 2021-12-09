@@ -25,7 +25,8 @@ if(PROJECT_NAME STREQUAL CMAKE_PROJECT_NAME)
 endif()
 
 message(STATUS "Build ${PROJECT_NAME} Version: ${PROJECT_VERSION}")
-message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
+message(STATUS "Build Type : ${CMAKE_BUILD_TYPE}")
+message(STATUS "Install Dir: ${CMAKE_INSTALL_PREFIX}")
 
 add_library(
   ${PROJECT_NAME}
