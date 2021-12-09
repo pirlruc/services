@@ -10,6 +10,8 @@
 #include <spdlog/sinks/basic_file_sink.h>
 #include <iostream>
 
+#include <improc_services_test_config.hpp>
+
 class BenchmarkDetector : public improc::BenchmarkSingleton<BenchmarkDetector>
 {
     friend std::shared_ptr<BenchmarkDetector> LoggerSingleton::get(const std::string& logger_name);
@@ -136,7 +138,8 @@ TEST(ServicesMain,TestMain)
     improc::ServicesLogger::get("services");
     BenchmarkDetector::get("benchmark");
 
-    improc::JsonFile json_file {"../../test/data/test_ex1.json"};
+    std::string filepath = std::string(IMPROC_SERVICES_TEST_FOLDER) + "/test/data/test_ex1.json";
+    improc::JsonFile json_file {filepath};
     Json::Value json_content = json_file.Read();
 
     improc::StringKeyHeterogeneousServicesFactory factory {};

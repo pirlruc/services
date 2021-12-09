@@ -12,7 +12,7 @@ namespace improc
                 ,   typename ProductCreator = std::function<std::shared_ptr<BaseProduct>>()
                 ,   template <typename,class> class FactoryErrorPolicy = improc::FactoryPatternError 
                 >
-    class FactoryPattern : public FactoryErrorPolicy<KeyType,BaseProduct>
+    class IMPROC_EXPORTS FactoryPattern : public FactoryErrorPolicy<KeyType,BaseProduct>
     {
         private:
             typedef std::unordered_map<KeyType,ProductCreator> CallbackMap;

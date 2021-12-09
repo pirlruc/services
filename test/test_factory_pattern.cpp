@@ -6,6 +6,8 @@
 #include <improc/services/factory_pattern.hpp>
 #include <improc/services/factory.hpp>
 
+#include <improc_services_test_config.hpp>
+
 class IncrementTestDS : public improc::StringKeyHeterogeneousBaseService
 {
     public:
@@ -134,7 +136,8 @@ TEST(FactoryPattern,TestRemoveItemsFromFactory) {
 }
 
 TEST(FactoryPattern,TestSequenceServiceLoadWithInputError) {
-    improc::JsonFile json_file {"../../test/data/test_factory_pattern.json"};
+    std::string filepath = std::string(IMPROC_SERVICES_TEST_FOLDER) + "/test/data/test_factory_pattern.json";
+    improc::JsonFile json_file {filepath};
     Json::Value json_content = json_file.Read();
 
     FactoryPattern factory {};

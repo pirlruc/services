@@ -6,6 +6,8 @@
 #include <improc/services/factory.hpp>
 #include <improc/services/sequence_service.hpp>
 
+#include <improc_services_test_config.hpp>
+
 class IncrementTestSO : public improc::StringKeyHeterogeneousBaseService
 {
     public:
@@ -84,7 +86,8 @@ class MultiplyTestSO : public improc::StringKeyHeterogeneousBaseService
 };
 
 TEST(SequenceService,TestSequenceServiceRunWithSeveralOutputs) {
-    improc::JsonFile json_file {"../../test/data/test_ex2.json"};
+    std::string filepath = std::string(IMPROC_SERVICES_TEST_FOLDER) + "/test/data/test_ex2.json";
+    improc::JsonFile json_file {filepath};
     Json::Value json_content = json_file.Read();
 
     improc::StringKeyHeterogeneousServicesFactory factory {};

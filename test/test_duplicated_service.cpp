@@ -6,6 +6,8 @@
 #include <improc/services/factory.hpp>
 #include <improc/services/sequence_service.hpp>
 
+#include <improc_services_test_config.hpp>
+
 class IncrementTestDS : public improc::StringKeyHeterogeneousBaseService
 {
     public:
@@ -129,7 +131,8 @@ TEST(SequenceService,TestSequenceServiceEmptyConstructor) {
 }
 
 TEST(SequenceService,TestSequenceServiceLoadWithInputError) {
-    improc::JsonFile json_file {"../../test/data/test_ex1_no_in.json"};
+    std::string filepath = std::string(IMPROC_SERVICES_TEST_FOLDER) + "/test/data/test_ex1_no_in.json";
+    improc::JsonFile json_file {filepath};
     Json::Value json_content = json_file.Read();
 
     improc::StringKeyHeterogeneousServicesFactory factory {};
@@ -142,7 +145,8 @@ TEST(SequenceService,TestSequenceServiceLoadWithInputError) {
 }
 
 TEST(SequenceService,TestSequenceServiceLoadWithOutputError) {
-    improc::JsonFile json_file {"../../test/data/test_ex1_no_out.json"};
+    std::string filepath = std::string(IMPROC_SERVICES_TEST_FOLDER) + "/test/data/test_ex1_no_out.json";
+    improc::JsonFile json_file {filepath};
     Json::Value json_content = json_file.Read();
 
     improc::StringKeyHeterogeneousServicesFactory factory {};
@@ -155,7 +159,8 @@ TEST(SequenceService,TestSequenceServiceLoadWithOutputError) {
 }
 
 TEST(SequenceService,TestSequenceServiceLoadWithInputAndOutputError) {
-    improc::JsonFile json_file {"../../test/data/test_ex1_no_in_out.json"};
+    std::string filepath = std::string(IMPROC_SERVICES_TEST_FOLDER) + "/test/data/test_ex1_no_out.json";
+    improc::JsonFile json_file {filepath};
     Json::Value json_content = json_file.Read();
 
     improc::StringKeyHeterogeneousServicesFactory factory {};
@@ -168,7 +173,8 @@ TEST(SequenceService,TestSequenceServiceLoadWithInputAndOutputError) {
 }
 
 TEST(SequenceService,TestSequenceServiceLoad) {
-    improc::JsonFile json_file {"../../test/data/test_ex1.json"};
+    std::string filepath = std::string(IMPROC_SERVICES_TEST_FOLDER) + "/test/data/test_ex1.json";
+    improc::JsonFile json_file {filepath};
     Json::Value json_content = json_file.Read();
 
     improc::StringKeyHeterogeneousServicesFactory factory {};
@@ -182,7 +188,8 @@ TEST(SequenceService,TestSequenceServiceLoad) {
 }
 
 TEST(SequenceService,TestSequenceServiceRunWithDuplicateService) {
-    improc::JsonFile json_file {"../../test/data/test_ex1.json"};
+    std::string filepath = std::string(IMPROC_SERVICES_TEST_FOLDER) + "/test/data/test_ex1.json";
+    improc::JsonFile json_file {filepath};
     Json::Value json_content = json_file.Read();
 
     improc::StringKeyHeterogeneousServicesFactory factory {};

@@ -4,7 +4,7 @@
 namespace improc
 {
     template <typename KeyType, class BaseProduct>
-    class FactoryPatternError
+    class IMPROC_EXPORTS FactoryPatternError
     {
         protected:
             static std::shared_ptr<BaseProduct> OnUnknownType(const KeyType&)
