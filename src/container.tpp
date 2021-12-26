@@ -7,11 +7,9 @@
 template <typename KeyType,typename ContainerType>
 improc::Container<KeyType,ContainerType>::Container() 
 {
-    SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
-                      , spdlog::level::trace
-                      , "Creating container with {} key and {} container..."
-                      , typeid(KeyType).name()
-                      , typeid(ContainerType).name() );
+    IMPROC_SERVICES_LOGGER_TRACE( "Creating container with {} key and {} container..."
+                                , typeid(KeyType).name()
+                                , typeid(ContainerType).name() );
 }
 
 /**
@@ -23,9 +21,7 @@ improc::Container<KeyType,ContainerType>::Container()
 template <typename KeyType,typename ContainerType>
 bool improc::Container<KeyType,ContainerType>::Exists(const KeyType& key) const
 {
-    SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
-                      , spdlog::level::trace
-                      , "Checking if item with key {} exists in container...", key );
+    IMPROC_SERVICES_LOGGER_TRACE("Checking if item with key {} exists in container...", key);
     return this->hash_table_.find(key) != this->hash_table_.end();
 }
 
@@ -42,18 +38,14 @@ bool improc::Container<KeyType,ContainerType>::Exists(const KeyType& key) const
 template <typename KeyType,typename ContainerType>
 improc::Container<KeyType,ContainerType>& improc::Container<KeyType,ContainerType>::Add(const KeyType& key, const ContainerType& item)
 {
-    SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
-                      , spdlog::level::trace
-                      , "Adding key {} to container...", key );
+    IMPROC_SERVICES_LOGGER_TRACE("Adding key {} to container...", key);
     if (this->Exists(key) == false)
     {
         this->hash_table_[std::move(key)] = std::move(item);
     }
     else
     {
-        SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
-                          , spdlog::level::err
-                          , "ERROR_01: Duplicated key {} in container.", key );
+        IMPROC_SERVICES_LOGGER_ERROR("ERROR_01: Duplicated key {} in container.", key);
         throw improc::duplicated_key();
     }
     return (*this);
@@ -73,18 +65,14 @@ improc::Container<KeyType,ContainerType>& improc::Container<KeyType,ContainerTyp
 template <typename KeyType,typename ContainerType>
 ContainerType improc::Container<KeyType,ContainerType>::Get(const KeyType& key) const
 {
-    SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
-                      , spdlog::level::trace
-                      , "Obtaining key {} from container...", key );
+    IMPROC_SERVICES_LOGGER_TRACE("Obtaining key {} from container...", key);
     if (this->Exists(key) == true)
     {
         return this->hash_table_.at(std::move(key));
     }
     else
     {
-        SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
-                          , spdlog::level::err
-                          , "ERROR_02: Key {} not found in container.", key );
+        IMPROC_SERVICES_LOGGER_ERROR("ERROR_02: Key {} not found in container.", key);
         throw improc::not_found_key();
     }
 }
@@ -102,9 +90,7 @@ ContainerType improc::Container<KeyType,ContainerType>::Get(const KeyType& key) 
 template <typename KeyType,typename ContainerType>
 ContainerType& improc::Container<KeyType,ContainerType>::operator[](const KeyType& key)
 {
-    SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
-                      , spdlog::level::trace
-                      , "Obtaining key {} from container...", key );
+    IMPROC_SERVICES_LOGGER_TRACE("Obtaining key {} from container...", key);
     return this->hash_table_[std::move(key)];
 }
 
@@ -119,18 +105,14 @@ ContainerType& improc::Container<KeyType,ContainerType>::operator[](const KeyTyp
 template <typename KeyType,typename ContainerType>
 improc::Container<KeyType,ContainerType>& improc::Container<KeyType,ContainerType>::Erase(const KeyType& key)
 {
-    SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
-                      , spdlog::level::trace
-                      , "Deleting key {} from container...", key );
+    IMPROC_SERVICES_LOGGER_TRACE("Deleting key {} from container...", key);
     if (this->Exists(key) == true) 
     {
         this->hash_table_.erase(std::move(key));
     }
     else
     {
-        SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
-                          , spdlog::level::warn
-                          , "WARN_01: Key {} not found in container.", key );
+        IMPROC_SERVICES_LOGGER_WARN("WARN_01: Key {} not found in container.", key);
     }
     return (*this);
 }
@@ -144,9 +126,7 @@ improc::Container<KeyType,ContainerType>& improc::Container<KeyType,ContainerTyp
 template <typename KeyType,typename ContainerType>
 improc::Container<KeyType,ContainerType>& improc::Container<KeyType,ContainerType>::Clear()
 {
-    SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
-                      , spdlog::level::trace
-                      , "Deleting container..." );
+    IMPROC_SERVICES_LOGGER_TRACE("Deleting container...");
     this->hash_table_.clear();
     return (*this);
 }
@@ -161,8 +141,6 @@ improc::Container<KeyType,ContainerType>& improc::Container<KeyType,ContainerTyp
 template <typename KeyType,typename ContainerType>
 size_t improc::Container<KeyType,ContainerType>::Size() const
 {
-    SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
-                      , spdlog::level::trace
-                      , "Obtaining container size..." );
+    IMPROC_SERVICES_LOGGER_TRACE("Obtaining container size...");
     return this->hash_table_.size();
 }

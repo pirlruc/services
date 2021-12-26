@@ -23,10 +23,8 @@ improc::ServicesFactory<KeyType,ContextType>::ServicesFactory()
 template<typename KeyType,typename ContextType,typename ServiceType>
 std::shared_ptr<improc::BaseService<KeyType,ContextType>> improc::LoadServiceFromJson(const Json::Value& service_json)
 {
-    SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
-                      , spdlog::level::trace
-                      , "Creating shared pointer for key {} service {}..."
-                      , typeid(KeyType).name(), typeid(ServiceType).name() );
+    IMPROC_SERVICES_LOGGER_TRACE( "Creating shared pointer for key {} service {}..."
+                                , typeid(KeyType).name(), typeid(ServiceType).name() );
     std::shared_ptr<improc::BaseService<KeyType,ContextType>> service {std::make_shared<ServiceType>(ServiceType())};
     service->Load(std::move(service_json));
     return service;
@@ -43,10 +41,8 @@ std::shared_ptr<improc::BaseService<KeyType,ContextType>> improc::LoadServiceFro
 template<typename ServiceType>
 std::shared_ptr<improc::StringKeyHeterogeneousBaseService> improc::LoadServiceFromJson(const Json::Value& service_json)
 {
-    SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
-                      , spdlog::level::trace
-                      , "Creating shared pointer for key string service {}..."
-                      , typeid(ServiceType).name() );
+    IMPROC_SERVICES_LOGGER_TRACE( "Creating shared pointer for key string service {}..."
+                                , typeid(ServiceType).name() );
     std::shared_ptr<improc::StringKeyHeterogeneousBaseService> service {std::make_shared<ServiceType>(ServiceType())};
     service->Load(std::move(service_json));
     return service;

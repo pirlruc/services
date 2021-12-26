@@ -8,6 +8,7 @@
 #include <improc/services/sequence_service.hpp>
 
 #include <spdlog/sinks/basic_file_sink.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
 #include <iostream>
 
 #include <improc_services_test_config.hpp>
@@ -36,7 +37,9 @@ class IncrementTestDS : public improc::StringKeyHeterogeneousBaseService
         {
             context[this->outputs_[0]] = std::any_cast<int>(context.Get(this->inputs_[0])) + 1;
             spdlog::info("Increment Service: ori = {}",std::any_cast<int>(context[this->outputs_[0]]));
-            BenchmarkDetector::get()->WriteFields("IncrementTestDS",std::any_cast<int>(context[this->outputs_[0]]));
+            BenchmarkDetector::get()->SetKeyContent("service","IncrementTestDS");
+            BenchmarkDetector::get()->SetKeyContent("output" ,std::any_cast<int>(context[this->outputs_[0]]));
+            BenchmarkDetector::get()->WriteLine();
         }
 };
 
@@ -73,7 +76,9 @@ class SubtractTestDS : public improc::StringKeyHeterogeneousBaseService
         {
             context[this->outputs_[0]] = std::any_cast<int>(context.Get(this->inputs_[0])) - this->number_to_subtract_;
             spdlog::info("Subtract Service: ori = {}",std::any_cast<int>(context[this->outputs_[0]]));
-            BenchmarkDetector::get()->WriteFields("SubtractTestDS",std::any_cast<int>(context[this->outputs_[0]]));
+            BenchmarkDetector::get()->SetKeyContent("service","SubtractTestDS");
+            BenchmarkDetector::get()->SetKeyContent("output" ,std::any_cast<int>(context[this->outputs_[0]]));
+            BenchmarkDetector::get()->WriteLine();
         }
 };
 
@@ -110,7 +115,9 @@ class MultiplyTestDS : public improc::StringKeyHeterogeneousBaseService
         {
             context[this->outputs_[0]] = std::any_cast<int>(context.Get(this->inputs_[0])) * this->number_to_multiply_;
             spdlog::info("Multiply Service: ori = {}",std::any_cast<int>(context[this->outputs_[0]]));
-            BenchmarkDetector::get()->WriteFields("MultiplyTestDS",std::any_cast<int>(context[this->outputs_[0]]));
+            BenchmarkDetector::get()->SetKeyContent("service","MultiplyTestDS");
+            BenchmarkDetector::get()->SetKeyContent("output" ,std::any_cast<int>(context[this->outputs_[0]]));
+            BenchmarkDetector::get()->WriteLine();
         }
 };
 
@@ -137,6 +144,8 @@ TEST(ServicesMain,TestMain)
     improc::InfrastructureLogger::get("infrastructure");
     improc::ServicesLogger::get("services");
     BenchmarkDetector::get("benchmark");
+    std::unordered_set<std::string> keys {"service","output"};
+    BenchmarkDetector::get()->AddKeys(keys);
 
     std::string filepath = std::string(IMPROC_SERVICES_TEST_FOLDER) + "/test/data/test_ex1.json";
     improc::JsonFile json_file {filepath};

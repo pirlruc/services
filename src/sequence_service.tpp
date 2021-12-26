@@ -19,22 +19,16 @@ template <typename KeyType,typename ContextType>
 improc::SequenceService<KeyType,ContextType>& improc::SequenceService<KeyType,ContextType>::Load( const improc::ServicesFactory<KeyType,ContextType>& factory
                                                                                                 , const Json::Value& sequence_service_json )
 {
-    SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
-                      , spdlog::level::trace
-                      , "Loading sequence of services..." );
+    IMPROC_SERVICES_LOGGER_TRACE("Loading sequence of services...");
     const std::string kServicesKey = "services";
     if (sequence_service_json.isMember(kServicesKey) == false) 
     {
-        SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
-                          , spdlog::level::err
-                          , "ERROR_01: Member {} missing on json.",kServicesKey );
+        IMPROC_SERVICES_LOGGER_ERROR("ERROR_01: Member {} missing on json.",kServicesKey);
         throw improc::file_processing_error();
     }
     Json::Value service_elements = std::move(sequence_service_json[kServicesKey]);
 
-    SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
-                      , spdlog::level::debug
-                      , "{} services in factory.",factory.Size() );
+    IMPROC_SERVICES_LOGGER_DEBUG("{} services in factory.",factory.Size());
     for (Json::Value::const_iterator srvce_elem_iter = service_elements.begin(); srvce_elem_iter != service_elements.end(); ++srvce_elem_iter)
     {
         const std::string kServiceType = "type";
@@ -55,17 +49,13 @@ improc::SequenceService<KeyType,ContextType>& improc::SequenceService<KeyType,Co
             service_args = (*srvce_elem_iter)[kServiceArgs];
         }
         
-        SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
-                          , spdlog::level::info
-                          , "Adding service element {}...",service_type );
+        IMPROC_SERVICES_LOGGER_INFO("Adding service element {}...",service_type);
         improc::SequenceService<KeyType,ContextType>::Service service {};
         service.type = service_type;
         service.data = factory.Create(std::move(service_type),std::move(service_args));
         this->data_.push_back(std::move(service));
     }
-    SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
-                      , spdlog::level::info
-                      , "{} services added to sequence.",this->data_.size() );
+    IMPROC_SERVICES_LOGGER_INFO("{} services added to sequence.",this->data_.size());
     return (*this);
 }
 
@@ -81,24 +71,18 @@ improc::SequenceService<KeyType,ContextType>& improc::SequenceService<KeyType,Co
 template <typename KeyType,typename ContextType>
 void improc::SequenceService<KeyType,ContextType>::Run(improc::Context<KeyType,ContextType>& context) const
 {
-    SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
-                      , spdlog::level::trace
-                      , "Running service sequence..." );
+    IMPROC_SERVICES_LOGGER_TRACE("Running service sequence...");
     for (auto service_iter = this->data_.begin(); service_iter != this->data_.end(); service_iter++)
     {
-        SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
-                          , spdlog::level::debug
-                          , "Running service {}...",(*service_iter).type );
+        IMPROC_SERVICES_LOGGER_DEBUG("Running service {}...",(*service_iter).type);
         std::chrono::time_point<std::chrono::high_resolution_clock> service_start_time = std::chrono::high_resolution_clock::now();
 
         (*service_iter).data->Run(context);
         
         std::chrono::time_point<std::chrono::high_resolution_clock> service_stop_time  = std::chrono::high_resolution_clock::now();
         auto exec_time = std::chrono::duration_cast<std::chrono::microseconds>(service_stop_time - service_start_time);
-        SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
-                          , spdlog::level::info
-                          , "Service {} executed in {} ms"
-                          , (*service_iter).type,exec_time.count() / 1000.0 );
+        IMPROC_SERVICES_LOGGER_INFO ( "Service {} executed in {} ms"
+                                    , (*service_iter).type,exec_time.count() / 1000.0 );
     }
 }
 
@@ -112,8 +96,6 @@ void improc::SequenceService<KeyType,ContextType>::Run(improc::Context<KeyType,C
 template <typename KeyType,typename ContextType>
 size_t improc::SequenceService<KeyType,ContextType>::Size() const
 {
-    SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
-                      , spdlog::level::trace
-                      , "Obtaining number of services in sequence..." );
+    IMPROC_SERVICES_LOGGER_TRACE("Obtaining number of services in sequence...");
     return this->data_.size();
 }

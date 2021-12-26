@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <improc/infrastructure/file.hpp>
+#include <improc/infrastructure/filesystem/file.hpp>
 #include <improc/services/context.hpp>
 #include <improc/services/base_service.hpp>
 #include <improc/services/factory.hpp>

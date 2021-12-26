@@ -75,3 +75,6 @@ install(FILES   ${PROJECT_SOURCE_DIR}/include/improc/services/factory_patern_pol
 install(FILES   ${PROJECT_SOURCE_DIR}/include/improc/services/factory.hpp                   DESTINATION include/improc/services)
 install(FILES   ${PROJECT_SOURCE_DIR}/include/improc/services/logger_services.hpp           DESTINATION include/improc/services)
 install(FILES   ${PROJECT_SOURCE_DIR}/include/improc/services/sequence_service.hpp          DESTINATION include/improc/services)
+
+add_executable(main_test main.cpp)
+target_link_libraries(main_test   PRIVATE   improc::services)
