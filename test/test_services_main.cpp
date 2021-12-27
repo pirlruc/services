@@ -24,6 +24,10 @@ class IncrementTestDS : public improc::StringKeyHeterogeneousBaseService
 {
     public:
         IncrementTestDS() : improc::StringKeyHeterogeneousBaseService() {}
+        IncrementTestDS(const Json::Value& service_json) : IncrementTestDS() 
+        {
+            this->Load(service_json);
+        }
         IncrementTestDS& Load   (const Json::Value& service_json) override
         {
             this->improc::StringKeyHeterogeneousBaseService::Load(service_json);
@@ -50,6 +54,10 @@ class SubtractTestDS : public improc::StringKeyHeterogeneousBaseService
 
     public:
         SubtractTestDS() : improc::StringKeyHeterogeneousBaseService() {}
+        SubtractTestDS(const Json::Value& service_json) : SubtractTestDS() 
+        {
+            this->Load(service_json);
+        }
         SubtractTestDS& Load   (const Json::Value& service_json) override
         {
             this->improc::StringKeyHeterogeneousBaseService::Load(service_json);
@@ -89,6 +97,10 @@ class MultiplyTestDS : public improc::StringKeyHeterogeneousBaseService
 
     public:
         MultiplyTestDS() : improc::StringKeyHeterogeneousBaseService() {}
+        MultiplyTestDS(const Json::Value& service_json) : MultiplyTestDS() 
+        {
+            this->Load(service_json);
+        }
         MultiplyTestDS& Load   (const Json::Value& service_json) override
         {
             this->improc::StringKeyHeterogeneousBaseService::Load(service_json);

@@ -30,6 +30,7 @@ namespace improc
 
         public:
             BaseService();
+            BaseService(const Json::Value& service_json);
 
             virtual BaseService&    Load            (const Json::Value& service_json);
             virtual void            Run             (Context<KeyType,ContextType>& context) const = 0;

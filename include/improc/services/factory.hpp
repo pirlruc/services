@@ -18,7 +18,9 @@ namespace improc
      * @tparam ContextType 
      */
     template <typename KeyType,typename ContextType>
-    class IMPROC_EXPORTS ServicesFactory : public FactoryPattern<BaseService<KeyType,ContextType>,KeyType,std::function<std::shared_ptr<BaseService<KeyType,ContextType>>(const Json::Value&)>>
+    class IMPROC_EXPORTS ServicesFactory : public FactoryPattern< BaseService<KeyType,ContextType>
+                                                                , KeyType
+                                                                , std::function<std::shared_ptr<BaseService<KeyType,ContextType>>(const Json::Value&)>>
     {
         public:
             ServicesFactory();

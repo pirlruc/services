@@ -20,7 +20,7 @@ improc::SequenceService<KeyType,ContextType>& improc::SequenceService<KeyType,Co
                                                                                                 , const Json::Value& sequence_service_json )
 {
     IMPROC_SERVICES_LOGGER_TRACE("Loading sequence of services...");
-    const std::string kServicesKey = "services";
+    static const std::string kServicesKey = "services";
     if (sequence_service_json.isMember(kServicesKey) == false) 
     {
         IMPROC_SERVICES_LOGGER_ERROR("ERROR_01: Member {} missing on json.",kServicesKey);
@@ -31,14 +31,11 @@ improc::SequenceService<KeyType,ContextType>& improc::SequenceService<KeyType,Co
     IMPROC_SERVICES_LOGGER_DEBUG("{} services in factory.",factory.Size());
     for (Json::Value::const_iterator srvce_elem_iter = service_elements.begin(); srvce_elem_iter != service_elements.end(); ++srvce_elem_iter)
     {
-        const std::string kServiceType = "type";
-        const std::string kServiceArgs = "args";
-
+        static const std::string kServiceType = "type";
+        static const std::string kServiceArgs = "args";
         if (srvce_elem_iter->isMember(kServiceType) == false) 
         {
-            SPDLOG_LOGGER_CALL( improc::ServicesLogger::get()->data()
-                              , spdlog::level::err
-                              , "ERROR_02: Service type missing for service element." );
+            IMPROC_SERVICES_LOGGER_ERROR("ERROR_02: Service type missing for service element.");
             throw improc::file_processing_error();
         }
         KeyType     service_type {improc::json::ReadElement<KeyType>((*srvce_elem_iter)[kServiceType])};

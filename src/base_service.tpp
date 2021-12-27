@@ -8,6 +8,19 @@ template <typename KeyType,typename ContextType>
 improc::BaseService<KeyType,ContextType>::BaseService() {}
 
 /**
+ * @brief Construct a new improc::BaseService<KeyType,ContextType> object
+ * 
+ * @tparam KeyType 
+ * @tparam ContextType 
+ * @param service_json 
+ */
+template <typename KeyType,typename ContextType>
+improc::BaseService<KeyType,ContextType>::BaseService(const Json::Value& service_json) 
+{
+    this->Load(service_json);
+}
+
+/**
  * @brief Load base service according with json structure for service
  * This part of the service is responsible for reading the input and output
  * names of the service.
@@ -20,10 +33,8 @@ template <typename KeyType,typename ContextType>
 improc::BaseService<KeyType,ContextType>& improc::BaseService<KeyType,ContextType>::Load(const Json::Value& service_json)
 {
     IMPROC_SERVICES_LOGGER_TRACE("Loading service inputs and outputs...");
-
-    const std::string kInputKey  = "inputs";
-    const std::string kOutputKey = "outputs";
-
+    static const std::string kInputKey  = "inputs";
+    static const std::string kOutputKey = "outputs";
     if (service_json.isMember(kInputKey) == true)
     {
         IMPROC_SERVICES_LOGGER_DEBUG("Analyzing input field for service...");
