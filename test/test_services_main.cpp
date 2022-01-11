@@ -2,7 +2,7 @@
 
 #include <improc/infrastructure/benchmark_singleton.hpp>
 #include <improc/services/logger_services.hpp>
-#include <improc/infrastructure/logger_infrastructure.hpp>
+#include <improc/infrastructure/logging/logger_infrastructure.hpp>
 #include <improc/services/base_service.hpp>
 #include <improc/services/factory.hpp>
 #include <improc/services/sequence_service.hpp>

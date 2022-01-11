@@ -2,7 +2,7 @@
 #define IMPROC_SERVICES_LOGGER_SERVICES_HPP
 
 #include <improc/improc_defs.hpp>
-#include <improc/infrastructure/logger_singleton.hpp>
+#include <improc/infrastructure/logging/logger_singleton.hpp>
 
 namespace improc 
 {
