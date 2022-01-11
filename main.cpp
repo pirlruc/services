@@ -2,11 +2,23 @@
 // #define IMPROC_BENCHMARK_DISABLED
 
 #include <improc/services/logger_services.hpp>
-#include <improc/infrastructure/logger_infrastructure.hpp>
+#include <improc/infrastructure/logging/logger_infrastructure.hpp>
 #include <improc/infrastructure/benchmark_singleton.hpp>
 
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
+
+#include <vector>
+#include <variant>
+#include <functional>
+#include <iostream>
+
+template<class ... DataType> 
+struct VariantOverload : DataType ... 
+{ 
+    using DataType::operator() ...; 
+};
+template<class ... DataType> VariantOverload(DataType ...) -> VariantOverload<DataType ...>;
 
 class BenchmarkTest : public improc::BenchmarkSingleton<BenchmarkTest>
 {
@@ -14,6 +26,11 @@ class BenchmarkTest : public improc::BenchmarkSingleton<BenchmarkTest>
     private:
         BenchmarkTest(std::shared_ptr<spdlog::logger>&& logger) : BenchmarkSingleton(logger) {}
 };
+
+int add_int(int a) {return a + 1;}
+int add2_int(int a, int b) {return a + b;}
+float multiply(float a) {return a * 2;}
+float multiply2(float a, int b) {return a * b;}
 
 int main()
 {
@@ -56,5 +73,62 @@ int main()
     IMPROC_BENCHMARK_SET_CONTENT(BenchmarkTest::get(),"test","test_bench");
     IMPROC_BENCHMARK_SET_CONTENT(BenchmarkTest::get(),"out" ,true);
     IMPROC_BENCHMARK_WRITE_LINE(BenchmarkTest::get());
+
+    auto visitor = VariantOverload
+    {
+        [](int          arg) { std::cout << "Is integer: " << arg << std::endl; },
+        [](float        arg) { std::cout << "Is float  : " << arg << std::endl; },
+        [](std::string  arg) { std::cout << "Is string : " << arg << std::endl; }
+    };
+
+    std::vector<std::variant<int,float,std::string>> test {};
+    test.push_back(1);
+    test.push_back(3.14f);
+    test.push_back("test");
+    for (size_t idx = 0; idx < test.size(); idx++)
+    {
+        std::cout   << "  int   : " << std::holds_alternative<int>(test[idx])
+                    << "; float : " << std::holds_alternative<float>(test[idx])
+                    << "; string: " << std::holds_alternative<std::string>(test[idx]) << std::endl;
+        std::visit(visitor, test[idx]);    
+    }
+
+    auto visitor_function = VariantOverload
+    {
+        [](std::function<int(int)>          arg) { std::cout << arg(1) << std::endl; },
+        [](std::function<int(int,int)>      arg) { std::cout << arg(1,2) << std::endl; },
+        [](std::function<float(float)>      arg) { std::cout << arg(2.2) << std::endl; },
+        [](std::function<float(float,int)>  arg) { std::cout << arg(2.2,3) << std::endl; }
+    };
+
+    std::vector <std::variant   < std::function<int(int)>
+                                , std::function<int(int,int)>
+                                , std::function<float(float)>
+                                , std::function<float(float,int)> >
+                > test_function {};
+    test_function.push_back(std::function<int(int)>          {&add_int});
+    test_function.push_back(std::function<int(int,int)>      {&add2_int});
+    test_function.push_back(std::function<float(float)>      {&multiply});
+    test_function.push_back(std::function<float(float,int)>  {&multiply2});
+    for (size_t idx = 0; idx < test_function.size(); idx++)
+    {
+        std::visit(visitor_function, test_function[idx]);
+        if (std::holds_alternative<std::function<int(int)>>(test_function[idx]) == true)
+        {
+            std::cout << std::invoke(std::get<std::function<int(int)>>(test_function[idx]),1) << std::endl;
+        }
+        else if (std::holds_alternative<std::function<int(int,int)>>(test_function[idx]) == true)
+        {
+            std::cout << std::invoke(std::get<std::function<int(int,int)>>(test_function[idx]),1,2) << std::endl;
+        }
+        else if (std::holds_alternative<std::function<float(float)>>(test_function[idx]) == true)
+        {
+            std::cout << std::invoke(std::get<std::function<float(float)>>(test_function[idx]),3.14) << std::endl;
+        }
+        else if (std::holds_alternative<std::function<float(float,int)>>(test_function[idx]) == true)
+        {
+            std::cout << std::invoke(std::get<std::function<float(float,int)>>(test_function[idx]),3.14,3) << std::endl;
+        }
+    }
     return 0;
 }

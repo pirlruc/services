@@ -77,4 +77,7 @@ install(FILES   ${PROJECT_SOURCE_DIR}/include/improc/services/logger_services.hp
 install(FILES   ${PROJECT_SOURCE_DIR}/include/improc/services/sequence_service.hpp          DESTINATION include/improc/services)
 
 add_executable(main_test main.cpp)
+set_target_properties(main_test PROPERTIES CXX_STANDARD           17)
+set_target_properties(main_test PROPERTIES CXX_STANDARD_REQUIRED  TRUE)
+set_target_properties(main_test PROPERTIES LINKER_LANGUAGE        CXX)
 target_link_libraries(main_test   PRIVATE   improc::services)
