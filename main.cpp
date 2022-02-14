@@ -3,7 +3,7 @@
 
 #include <improc/services/logger_services.hpp>
 #include <improc/infrastructure/logging/logger_infrastructure.hpp>
-#include <improc/infrastructure/benchmark_singleton.hpp>
+#include <improc/infrastructure/benchmark/benchmark_singleton.hpp>
 
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>

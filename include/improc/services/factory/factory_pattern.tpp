@@ -8,10 +8,15 @@ template    <   class    BaseProduct
             ,   typename KeyType
             ,   typename ProductCreator
             ,   template <typename,class> class FactoryErrorPolicy  >
-bool improc::FactoryPattern<BaseProduct,KeyType,ProductCreator,FactoryErrorPolicy>::Register(const KeyType& id, ProductCreator creator)
+improc::FactoryPattern<BaseProduct,KeyType,ProductCreator,FactoryErrorPolicy>& improc::FactoryPattern<BaseProduct,KeyType,ProductCreator,FactoryErrorPolicy>::Register(const KeyType& id, ProductCreator creator)
 {
     IMPROC_SERVICES_LOGGER_TRACE("Registering ID {} in factory...", id);
-    return this->callbacks_.insert(typename CallbackMap::value_type(id,creator)).second != 0;
+    if (this->callbacks_.insert(typename CallbackMap::value_type(id,creator)).second == 0)
+    {
+        IMPROC_SERVICES_LOGGER_ERROR("ERROR_01: Duplicated ID {} in factory.", id);
+        throw improc::duplicated_key();
+    }
+    return (*this);
 }
 
 template    <   class    BaseProduct
@@ -31,11 +36,9 @@ template    <   class    BaseProduct
 std::vector<KeyType> improc::FactoryPattern<BaseProduct,KeyType,ProductCreator,FactoryErrorPolicy>::GetRegisteredIds() const
 {
     IMPROC_SERVICES_LOGGER_TRACE("Obtaining IDs from factory...");
-    std::vector<KeyType> ids {};
-    for (typename CallbackMap::const_iterator iter_callback = this->callbacks_.begin(); iter_callback != this->callbacks_.end(); ++iter_callback)
-    {
-        ids.push_back(iter_callback->first);
-    }
+    std::vector<KeyType> ids {this->callbacks_.size()};
+    std::transform  ( this->callbacks_.begin(), this->callbacks_.end(), ids.begin()
+                    , [] (const typename CallbackMap::value_type& item) -> KeyType {return item.first;} );
     return ids;
 }
 

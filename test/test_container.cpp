@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <improc/services/container.hpp>
+#include <improc/services/container/container.hpp>
 
 TEST(Container,TestEmptyContainerConstructor) {
     improc::Container<int,std::any> container_empty {};
@@ -51,7 +51,7 @@ TEST(Container,TestGetNonExistingItemFromContainer) {
 TEST(Container,TestEraseNonExistingItemFromContainer) {
     improc::Container<int,std::any> container {};
     container.Add(1,"Test 1");
-    container.Erase(2);
+    EXPECT_FALSE(container.Erase(2));
     EXPECT_EQ(container.Size(),1);
 }
 
@@ -59,7 +59,7 @@ TEST(Container,TestEraseExistingItemFromContainer) {
     improc::Container<int,std::any> container {};
     container.Add(1,"Test 1");
     container.Add(2,45);
-    container.Erase(1);
+    EXPECT_TRUE(container.Erase(1));
     EXPECT_EQ(container.Size(),1);
 }
 

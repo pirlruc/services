@@ -6,7 +6,7 @@
 #include <improc/services/logger_services.hpp>
 #include <improc/services/context.hpp>
 #include <improc/infrastructure/filesystem/file.hpp>
-#include <improc/infrastructure/json_parser.hpp>
+#include <improc/infrastructure/parsers/json_parser.hpp>
 
 #include <json/json.h>
 #include <vector>
@@ -39,6 +39,6 @@ namespace improc
     typedef BaseService<std::string,std::any>   StringKeyHeterogeneousBaseService;
 }
 
-#include <base_service.tpp>
+#include <improc/services/base_service.tpp>
 
 #endif

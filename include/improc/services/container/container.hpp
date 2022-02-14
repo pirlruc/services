@@ -22,7 +22,8 @@ namespace improc
     class IMPROC_EXPORTS Container
     {
         private:
-            std::unordered_map<KeyType,ContainerType> hash_table_;
+            typedef std::unordered_map<KeyType,ContainerType> HashMap;
+            HashMap         hash_table_;
 
         public:
             Container();
@@ -32,7 +33,7 @@ namespace improc
             ContainerType&  operator[]  (const KeyType& key);
 
             Container&      Add         (const KeyType& key, const ContainerType& item);
-            Container&      Erase       (const KeyType& key);
+            bool            Erase       (const KeyType& key);
             Container&      Clear();
 
             size_t          Size() const;
@@ -41,6 +42,6 @@ namespace improc
     typedef Container<std::string,std::any> StringKeyHeterogeneousContainer;
 }
 
-#include <container.tpp>
+#include <improc/services/container/container.tpp>
 
 #endif

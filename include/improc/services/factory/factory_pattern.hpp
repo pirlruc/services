@@ -3,7 +3,7 @@
 
 #include <improc/exception.hpp>
 #include <improc/services/logger_services.hpp>
-#include <improc/services/factory_pattern_policies.hpp>
+#include <improc/services/factory/factory_pattern_policies.hpp>
 
 namespace improc
 {
@@ -16,22 +16,22 @@ namespace improc
     {
         private:
             typedef std::unordered_map<KeyType,ProductCreator> CallbackMap;
-            CallbackMap callbacks_;
+            CallbackMap                     callbacks_;
 
         public:
             FactoryPattern();
 
-            bool                    Register    (const KeyType& id, ProductCreator creator);
-            bool                    Unregister  (const KeyType& id);
+            FactoryPattern&                 Register    (const KeyType& id, ProductCreator creator);
+            bool                            Unregister  (const KeyType& id);
 
-            std::vector<KeyType>    GetRegisteredIds()  const;
-            size_t                  Size()              const;
+            std::vector<KeyType>            GetRegisteredIds()  const;
+            size_t                          Size()              const;
 
             template <typename ... Args>
             std::shared_ptr<BaseProduct>    Create(const KeyType& id, Args&& ... args)  const;
     };
 }
 
-#include <factory_pattern.tpp>
+#include <improc/services/factory/factory_pattern.tpp>
 
 #endif

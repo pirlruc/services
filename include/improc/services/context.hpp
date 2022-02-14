@@ -2,7 +2,7 @@
 #define IMPROC_SERVICES_CONTEXT_HPP
 
 #include <improc/improc_defs.hpp>
-#include <improc/services/container.hpp>
+#include <improc/services/container/container.hpp>
 
 #include <string>
 
@@ -28,6 +28,6 @@ namespace improc
     typedef Context<std::string,std::any>    StringKeyHeterogeneousContext;
 }
 
-#include <context.tpp>
+#include <improc/services/context.tpp>
 
 #endif

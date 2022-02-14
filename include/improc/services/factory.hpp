@@ -4,7 +4,7 @@
 #include <improc/improc_defs.hpp>
 #include <improc/services/logger_services.hpp>
 #include <improc/services/base_service.hpp>
-#include <improc/services/factory_pattern.hpp>
+#include <improc/services/factory/factory_pattern.hpp>
 
 #include <functional>
 
@@ -35,6 +35,6 @@ namespace improc
     IMPROC_EXPORTS std::shared_ptr<StringKeyHeterogeneousBaseService>   LoadServiceFromJson(const Json::Value& service_json);
 }
 
-#include <factory.tpp>
+#include <improc/services/factory.tpp>
 
 #endif

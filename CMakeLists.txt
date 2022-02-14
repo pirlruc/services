@@ -42,10 +42,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES VERSION                ${PROJEC
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX          ${CMAKE_DEBUG_POSTFIX})
 
 target_include_directories  (${PROJECT_NAME}   PRIVATE   ${PROJECT_SOURCE_DIR}/include)
-target_include_directories  (${PROJECT_NAME}   PRIVATE   ${PROJECT_SOURCE_DIR}/src)
 target_include_directories  (${PROJECT_NAME}   INTERFACE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-                                               $<INSTALL_INTERFACE:include> )
-target_include_directories  (${PROJECT_NAME}   INTERFACE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>
                                                $<INSTALL_INTERFACE:include> )
 
 # Link dependencies
@@ -67,13 +64,16 @@ install(
   DESTINATION lib
   EXPORT      ${PROJECT_NAME}_target 
 )
+install(FILES   ${PROJECT_SOURCE_DIR}/include/improc/services/container/container.hpp             DESTINATION include/improc/services/container)
+install(FILES   ${PROJECT_SOURCE_DIR}/include/improc/services/container/container.tpp             DESTINATION include/improc/services/container)
+install(FILES   ${PROJECT_SOURCE_DIR}/include/improc/services/factory/factory_patern_policies.hpp DESTINATION include/improc/services/factory)
+install(FILES   ${PROJECT_SOURCE_DIR}/include/improc/services/factory/factory_patern.hpp          DESTINATION include/improc/services/factory)
+install(FILES   ${PROJECT_SOURCE_DIR}/include/improc/services/factory/factory_patern.tpp          DESTINATION include/improc/services/factory)
+install(FILES   ${PROJECT_SOURCE_DIR}/include/improc/services/logger_services.hpp                 DESTINATION include/improc/services)
+
 install(FILES   ${PROJECT_SOURCE_DIR}/include/improc/services/base_service.hpp              DESTINATION include/improc/services)
-install(FILES   ${PROJECT_SOURCE_DIR}/include/improc/services/container.hpp                 DESTINATION include/improc/services)
 install(FILES   ${PROJECT_SOURCE_DIR}/include/improc/services/context.hpp                   DESTINATION include/improc/services)
-install(FILES   ${PROJECT_SOURCE_DIR}/include/improc/services/factory_patern.hpp            DESTINATION include/improc/services)
-install(FILES   ${PROJECT_SOURCE_DIR}/include/improc/services/factory_patern_policies.hpp   DESTINATION include/improc/services)
 install(FILES   ${PROJECT_SOURCE_DIR}/include/improc/services/factory.hpp                   DESTINATION include/improc/services)
-install(FILES   ${PROJECT_SOURCE_DIR}/include/improc/services/logger_services.hpp           DESTINATION include/improc/services)
 install(FILES   ${PROJECT_SOURCE_DIR}/include/improc/services/sequence_service.hpp          DESTINATION include/improc/services)
 
 add_executable(main_test main.cpp)

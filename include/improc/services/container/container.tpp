@@ -39,11 +39,7 @@ template <typename KeyType,typename ContainerType>
 improc::Container<KeyType,ContainerType>& improc::Container<KeyType,ContainerType>::Add(const KeyType& key, const ContainerType& item)
 {
     IMPROC_SERVICES_LOGGER_TRACE("Adding key {} to container...", key);
-    if (this->Exists(key) == false)
-    {
-        this->hash_table_[std::move(key)] = std::move(item);
-    }
-    else
+    if (this->hash_table_.insert(typename HashMap::value_type(key,item)).second == 0)
     {
         IMPROC_SERVICES_LOGGER_ERROR("ERROR_01: Duplicated key {} in container.", key);
         throw improc::duplicated_key();
@@ -103,18 +99,10 @@ ContainerType& improc::Container<KeyType,ContainerType>::operator[](const KeyTyp
  * @param key 
  */
 template <typename KeyType,typename ContainerType>
-improc::Container<KeyType,ContainerType>& improc::Container<KeyType,ContainerType>::Erase(const KeyType& key)
+bool improc::Container<KeyType,ContainerType>::Erase(const KeyType& key)
 {
     IMPROC_SERVICES_LOGGER_TRACE("Deleting key {} from container...", key);
-    if (this->Exists(key) == true) 
-    {
-        this->hash_table_.erase(std::move(key));
-    }
-    else
-    {
-        IMPROC_SERVICES_LOGGER_WARN("WARN_01: Key {} not found in container.", key);
-    }
-    return (*this);
+    return this->hash_table_.erase(key) != 0;
 }
 
 /**

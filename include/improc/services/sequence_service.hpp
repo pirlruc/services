@@ -45,6 +45,6 @@ namespace improc
     typedef SequenceService<std::string,std::any>   StringKeyHeterogeneousSequenceService;
 }
 
-#include <sequence_service.tpp>
+#include <improc/services/sequence_service.tpp>
 
 #endif
