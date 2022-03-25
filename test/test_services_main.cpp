@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <improc/infrastructure/benchmark_singleton.hpp>
+#include <improc/infrastructure/benchmark/benchmark_singleton.hpp>
 #include <improc/services/logger_services.hpp>
 #include <improc/infrastructure/logging/logger_infrastructure.hpp>
 #include <improc/services/base_service.hpp>

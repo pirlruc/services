@@ -7,7 +7,7 @@
 #include <improc/services/base_service.hpp>
 #include <improc/services/factory.hpp>
 #include <improc/infrastructure/filesystem/file.hpp>
-#include <improc/infrastructure/json_parser.hpp>
+#include <improc/infrastructure/parsers/json_parser.hpp>
 
 #include <json/json.h>
 #include <vector>

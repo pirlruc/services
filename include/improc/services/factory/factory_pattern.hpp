@@ -21,7 +21,7 @@ namespace improc
         public:
             FactoryPattern();
 
-            FactoryPattern&                 Register    (const KeyType& id, ProductCreator creator);
+            FactoryPattern&                 Register    (const KeyType& id, const ProductCreator& creator);
             bool                            Unregister  (const KeyType& id);
 
             std::vector<KeyType>            GetRegisteredIds()  const;

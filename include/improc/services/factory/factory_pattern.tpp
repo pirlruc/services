@@ -8,7 +8,7 @@ template    <   class    BaseProduct
             ,   typename KeyType
             ,   typename ProductCreator
             ,   template <typename,class> class FactoryErrorPolicy  >
-improc::FactoryPattern<BaseProduct,KeyType,ProductCreator,FactoryErrorPolicy>& improc::FactoryPattern<BaseProduct,KeyType,ProductCreator,FactoryErrorPolicy>::Register(const KeyType& id, ProductCreator creator)
+improc::FactoryPattern<BaseProduct,KeyType,ProductCreator,FactoryErrorPolicy>& improc::FactoryPattern<BaseProduct,KeyType,ProductCreator,FactoryErrorPolicy>::Register(const KeyType& id, const ProductCreator& creator)
 {
     IMPROC_SERVICES_LOGGER_TRACE("Registering ID {} in factory...", id);
     if (this->callbacks_.insert(typename CallbackMap::value_type(id,creator)).second == 0)

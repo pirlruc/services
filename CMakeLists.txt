@@ -10,9 +10,8 @@ project(
   LANGUAGES   CXX
 )
 
-# Add dependencies
+# Project configuration
 if(PROJECT_NAME STREQUAL CMAKE_PROJECT_NAME)
-  # Project configuration
   set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"      CACHE PATH "Archive output dir.")
   set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"      CACHE PATH "Library output dir.")
   set(CMAKE_PDB_OUTPUT_DIRECTORY     "${CMAKE_BINARY_DIR}/bin"      CACHE PATH "PDB (MSVC debug symbol)output dir.")
@@ -80,4 +79,4 @@ add_executable(main_test main.cpp)
 set_target_properties(main_test PROPERTIES CXX_STANDARD           17)
 set_target_properties(main_test PROPERTIES CXX_STANDARD_REQUIRED  TRUE)
 set_target_properties(main_test PROPERTIES LINKER_LANGUAGE        CXX)
-target_link_libraries(main_test   PRIVATE   improc::services)
+target_link_libraries(main_test PRIVATE    improc::services)
