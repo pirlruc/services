@@ -5,6 +5,9 @@
 #include <improc/infrastructure/logging/logger_infrastructure.hpp>
 #include <improc/infrastructure/benchmark/benchmark_singleton.hpp>
 
+#include <improc/services/factory/variant_factory_pattern.hpp>
+#include <improc/services/base_service.hpp>
+
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
@@ -31,6 +34,9 @@ int add_int(int a) {return a + 1;}
 int add2_int(int a, int b) {return a + b;}
 float multiply(float a) {return a * 2;}
 float multiply2(float a, int b) {return a * b;}
+
+std::shared_ptr<int> add_int_ptr(int a) {return std::make_shared<int>(a + 1);}
+std::shared_ptr<int> add2_int_ptr(int a, int b) {return std::make_shared<int>(a + b);}
 
 int main()
 {
@@ -101,6 +107,15 @@ int main()
         [](std::function<float(float,int)>  arg) { std::cout << arg(2.2,3) << std::endl; }
     };
 
+    int param = 100;
+    auto visitor_function2 = VariantOverload
+    {
+        [&param](std::function<int(int)>          arg) { std::cout << param + arg(1) << std::endl; },
+        [&param](std::function<int(int,int)>      arg) { std::cout << param + arg(1,2) << std::endl; },
+        [&param](std::function<float(float)>      arg) { std::cout << param + arg(2.2) << std::endl; },
+        [&param](std::function<float(float,int)>  arg) { std::cout << param + arg(2.2,3) << std::endl; }
+    };
+
     std::vector <std::variant   < std::function<int(int)>
                                 , std::function<int(int,int)>
                                 , std::function<float(float)>
@@ -113,6 +128,7 @@ int main()
     for (size_t idx = 0; idx < test_function.size(); idx++)
     {
         std::visit(visitor_function, test_function[idx]);
+        std::visit(visitor_function2, test_function[idx]);
         if (std::holds_alternative<std::function<int(int)>>(test_function[idx]) == true)
         {
             std::cout << std::invoke(std::get<std::function<int(int)>>(test_function[idx]),1) << std::endl;
@@ -130,5 +146,18 @@ int main()
             std::cout << std::invoke(std::get<std::function<float(float,int)>>(test_function[idx]),3.14,3) << std::endl;
         }
     }
+
+    std::unordered_map <std::string, std::variant   < std::function<int(int)>
+                                                    , std::function<int(int,int)> >
+                > test_function_map {};
+    test_function_map["add_int"] = &add_int;
+    test_function_map["add2_int"] = &add2_int;
+    test_function_map.insert(std::make_pair<std::string,std::function<int(int)>>("add_int3",&add_int));
+    test_function_map.insert(std::make_pair<std::string,std::function<int(int,int)>>("add_int4",std::function<int(int,int)> {&add2_int}));
+
+    improc::VariantFactoryPattern<int,std::string,std::variant<std::function<std::shared_ptr<int>(int)>,std::function<std::shared_ptr<int>(int,int)>>> multiple {};
+    multiple.Register("add_int",std::function<std::shared_ptr<int>(int)> {&add_int_ptr});
+    multiple.Register("add2_int",std::function<std::shared_ptr<int>(int,int)> {&add2_int_ptr});
+    std::cout << *multiple.Create<std::function<std::shared_ptr<int>(int)>>("add_int",1) << std::endl;;
     return 0;
 }
