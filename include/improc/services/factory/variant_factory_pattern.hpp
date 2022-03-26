@@ -12,7 +12,6 @@ namespace improc
     // TODO: Add validation for variant with just one function
     // TODO: Add validation for ProductCreator not in list of variant types
     // TODO: Add FactoryPattern as base class
-    // TODO: Create tests for class
     template    <   class    BaseProduct
                 ,   typename KeyType
                 ,   typename VariantProductCreator = std::variant<std::function<std::shared_ptr<BaseProduct>>()>
