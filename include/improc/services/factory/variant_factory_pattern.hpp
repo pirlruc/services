@@ -10,19 +10,13 @@
 namespace improc
 {
     // TODO: Add validation for variant with just one function
-    // TODO: Add validation for ProductCreator not in list of variant types
-    // TODO: Add FactoryPattern as base class
     template    <   class    BaseProduct
                 ,   typename KeyType
                 ,   typename VariantProductCreator = std::variant<std::function<std::shared_ptr<BaseProduct>>()>
                 ,   template <typename,class> class FactoryErrorPolicy = improc::FactoryPatternError 
                 >
-    class IMPROC_EXPORTS VariantFactoryPattern : public FactoryErrorPolicy<KeyType,BaseProduct>
+    class IMPROC_EXPORTS VariantFactoryPattern : private improc::FactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>
     {
-        private:
-            typedef std::unordered_map<KeyType,VariantProductCreator> CallbackMap;
-            CallbackMap                     callbacks_;
-
         public:
             VariantFactoryPattern();
 

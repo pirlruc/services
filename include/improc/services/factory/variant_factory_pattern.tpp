@@ -2,7 +2,7 @@ template    <   class    BaseProduct
             ,   typename KeyType
             ,   typename VariantProductCreator
             ,   template <typename,class> class FactoryErrorPolicy  >
-improc::VariantFactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>::VariantFactoryPattern() : callbacks_() {}
+improc::VariantFactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>::VariantFactoryPattern() : improc::FactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>() {};
 
 template    <   class    BaseProduct
             ,   typename KeyType
@@ -12,7 +12,7 @@ template    <   typename ProductCreator >
 improc::VariantFactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>& improc::VariantFactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>::Register(const KeyType& id, const ProductCreator& creator)
 {
     IMPROC_SERVICES_LOGGER_TRACE("Registering ID {} in variant factory...", id);
-    if (this->callbacks_.insert(typename CallbackMap::value_type(id,creator)).second == 0)
+    if (this->callbacks_.insert(typename improc::FactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>::CallbackMap::value_type(id,creator)).second == 0)
     {
         IMPROC_SERVICES_LOGGER_ERROR("ERROR_01: Duplicated ID {} in variant factory.", id);
         throw improc::duplicated_key();
@@ -27,7 +27,7 @@ template    <   class    BaseProduct
 bool improc::VariantFactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>::Unregister(const KeyType& id)
 {
     IMPROC_SERVICES_LOGGER_TRACE("Unregistering ID {} from variant factory...", id);
-    return this->callbacks_.erase(id) != 0;
+    return this->improc::FactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>::Unregister(id);
 }
 
 template    <   class    BaseProduct
@@ -37,10 +37,7 @@ template    <   class    BaseProduct
 std::vector<KeyType> improc::VariantFactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>::GetRegisteredIds() const
 {
     IMPROC_SERVICES_LOGGER_TRACE("Obtaining IDs from variant factory...");
-    std::vector<KeyType> ids {this->callbacks_.size()};
-    std::transform  ( this->callbacks_.begin(), this->callbacks_.end(), ids.begin()
-                    , [] (const typename CallbackMap::value_type& item) -> KeyType {return item.first;} );
-    return ids;
+    return this->improc::FactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>::GetRegisteredIds();
 }
 
 template    <   class    BaseProduct
@@ -50,7 +47,7 @@ template    <   class    BaseProduct
 size_t improc::VariantFactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>::Size() const
 {
     IMPROC_SERVICES_LOGGER_TRACE("Obtaining size of variant factory...");
-    return this->callbacks_.size();
+    return this->improc::FactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>::Size();
 }
 
 template    <   class    BaseProduct
@@ -61,7 +58,7 @@ template    <   typename ProductCreator, typename ... Args   >
 std::shared_ptr<BaseProduct> improc::VariantFactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>::Create(const KeyType& id, Args&& ... args) const
 {
     IMPROC_SERVICES_LOGGER_TRACE("Creating object from variant factory with ID {}...", id);
-    typename CallbackMap::const_iterator iter_callback = this->callbacks_.find(id);
+    typename improc::FactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>::CallbackMap::const_iterator iter_callback = this->callbacks_.find(id);
     if (iter_callback != this->callbacks_.end())
     {
         if (std::holds_alternative<ProductCreator>(iter_callback->second) == true)

@@ -14,7 +14,7 @@ namespace improc
                 >
     class IMPROC_EXPORTS FactoryPattern : public FactoryErrorPolicy<KeyType,BaseProduct>
     {
-        private:
+        protected:
             typedef std::unordered_map<KeyType,ProductCreator> CallbackMap;
             CallbackMap                     callbacks_;
 
