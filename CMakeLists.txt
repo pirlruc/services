@@ -10,6 +10,8 @@ project(
   LANGUAGES   CXX
 )
 
+include(FetchContent)
+
 # Project configuration
 if(PROJECT_NAME STREQUAL CMAKE_PROJECT_NAME)
   set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"      CACHE PATH "Archive output dir.")
@@ -22,6 +24,18 @@ if(PROJECT_NAME STREQUAL CMAKE_PROJECT_NAME)
 
   add_subdirectory(${PROJECT_SOURCE_DIR}/../infrastructure ${CMAKE_BINARY_DIR}/infrastructure)
 endif()
+
+# Add external dependencies
+# PIPES
+FetchContent_Declare(
+  pipes
+  GIT_REPOSITORY  https://github.com/pirlruc/pipes
+  GIT_TAG         e4dd4758bf60abcae5137608f825e291fe315148
+  SOURCE_DIR      ${PROJECT_SOURCE_DIR}/external/pipes
+)
+FetchContent_MakeAvailable(pipes)
+target_include_directories(pipes INTERFACE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/external/pipes/include>
+                                            $<INSTALL_INTERFACE:include> )
 
 message(STATUS "Build ${PROJECT_NAME} Version: ${PROJECT_VERSION}")
 message(STATUS "Build Type : ${CMAKE_BUILD_TYPE}")
@@ -46,7 +60,9 @@ target_include_directories  (${PROJECT_NAME}   INTERFACE $<BUILD_INTERFACE:${PRO
 
 # Link dependencies
 target_link_libraries       (${PROJECT_NAME}   PRIVATE   improc::infrastructure)
+target_link_libraries       (${PROJECT_NAME}   PRIVATE   pipes)
 target_link_libraries       (${PROJECT_NAME}   INTERFACE improc::infrastructure)
+target_link_libraries       (${PROJECT_NAME}   INTERFACE pipes)
 
 # Tests configuration
 if(IMPROC_WITH_TESTS)
@@ -80,3 +96,10 @@ set_target_properties(main_test PROPERTIES CXX_STANDARD           17)
 set_target_properties(main_test PROPERTIES CXX_STANDARD_REQUIRED  TRUE)
 set_target_properties(main_test PROPERTIES LINKER_LANGUAGE        CXX)
 target_link_libraries(main_test PRIVATE    improc::services)
+
+add_executable(main_transform_test main_transform.cpp)
+set_target_properties(main_transform_test PROPERTIES CXX_STANDARD           17)
+set_target_properties(main_transform_test PROPERTIES CXX_STANDARD_REQUIRED  TRUE)
+set_target_properties(main_transform_test PROPERTIES LINKER_LANGUAGE        CXX)
+target_link_libraries(main_transform_test PRIVATE    improc::services)
+target_link_libraries(main_transform_test PRIVATE    pipes)
