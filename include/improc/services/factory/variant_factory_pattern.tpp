@@ -63,7 +63,7 @@ std::shared_ptr<BaseProduct> improc::VariantFactoryPattern<BaseProduct,KeyType,V
     {
         if (std::holds_alternative<ProductCreator>(iter_callback->second) == true)
         {
-            return std::invoke(std::get<ProductCreator>(iter_callback->second),std::forward<Args>(args) ...);
+            return pipes::detail::invoke(std::get<ProductCreator>(iter_callback->second),FWD(args) ...);
         }
     }
     return this->OnUnknownType(id);

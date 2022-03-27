@@ -6,6 +6,7 @@
 
 #include <pipes/base.hpp>
 #include <pipes/send.hpp>
+#include <pipes/helpers/FWD.hpp>
 #include <pipes/helpers/assignable.hpp>
 #include <pipes/helpers/invoke.hpp>
 
@@ -30,7 +31,7 @@ namespace improc
             template<typename ... Values, typename TailPipeline>
             void onReceive(Values&&... values, TailPipeline&& tail_pipeline)
             {
-                pipes::send(pipes::detail::invoke(this->function_.get(), std::forward<Values>(values) ...), tail_pipeline);
+                pipes::send(pipes::detail::invoke(this->function_.get(), FWD(values) ...), tail_pipeline);
             }
     };
 
@@ -45,7 +46,7 @@ namespace improc
             {
                 if (this->function_(values ...) == true)
                 {
-                    pipes::send(std::forward<Values>(values) ..., tail_pipeline);
+                    pipes::send(FWD(values) ..., tail_pipeline);
                 }
             }
     };
