@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <functional>
 #include <iostream>
+// #include <execution>
 
 double transform_increment(int number)
 {
@@ -57,6 +58,7 @@ int main()
 
     std::vector<IntClass> original_class {1,2,3,4,5,6,7,8,9,10};
     std::vector<double> res_transf_mem_fn(original.size());
+    // std::transform  ( std::execution::par_unseq, original_class.begin(), original_class.end(), res_transf_mem_fn.begin()
     std::transform  ( original_class.begin(), original_class.end(), res_transf_mem_fn.begin()
                     , std::mem_fn(&IntClass::double_increment) );
 
