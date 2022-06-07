@@ -179,9 +179,9 @@ TEST(ServicesMain,TestMain)
     std::cout << "Expected: " << 4 << std::endl;
 
     EXPECT_EQ(std::any_cast<int>(cntxt.Get("ori")),4);
-    improc::File log_infrastructure_file  {"logs/infrastructure.txt"};
-    improc::File log_services_file        {"logs/services.txt"};
-    improc::File benchmark_file           {"logs/benchmark.txt"};
+    improc::File log_infrastructure_file  {std::string("logs/infrastructure.txt")};
+    improc::File log_services_file        {std::string("logs/services.txt")};
+    improc::File benchmark_file           {std::string("logs/benchmark.txt")};
     EXPECT_TRUE(log_infrastructure_file.Exists());
     EXPECT_TRUE(log_services_file.Exists());
     EXPECT_TRUE(benchmark_file.Exists());
