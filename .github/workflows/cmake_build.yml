@@ -75,7 +75,7 @@ jobs:
           gcc-11   --version
           clang-10 --version
 
-- name: Configure
+      - name: Configure
         shell: bash
         run: |
           rm -rf build
