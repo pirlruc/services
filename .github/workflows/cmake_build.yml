@@ -43,6 +43,13 @@ jobs:
             cc: "gcc",
             cxx: "g++"
           }
+        - {
+            name: "windows_latest_clang",
+            os: windows-latest,
+            build_type: "Release",
+            cc: "clang",
+            cxx: "clang++"
+          }
 
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -70,9 +77,10 @@ jobs:
       - name: Install Dependencies Windows
         if: startsWith(matrix.config.name, 'windows_latest')
         run: |
+          choco install llvm
           cmake    --version
           gcc      --version
-          clang-10 --version
+          clang    --version
 
       - name: Configure
         shell: bash
