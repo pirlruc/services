@@ -72,7 +72,6 @@ jobs:
         run: |
           cmake    --version
           gcc      --version
-          gcc-11   --version
           clang-10 --version
 
       - name: Configure
