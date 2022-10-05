@@ -55,7 +55,7 @@ jobs:
           echo github.event.action: ${{ github.event.action }}
           echo github.event_name: ${{ github.event_name }}
           
-      - name: Install Dependencies
+      - name: Install Dependencies Linux
         if: startsWith(matrix.config.name, 'ubuntu_latest')
         run: |
           sudo apt-get update
@@ -67,7 +67,7 @@ jobs:
           gcc-11   --version
           clang-10 --version
           
-      - name: Install Dependencies
+      - name: Install Dependencies Windows
         if: startsWith(matrix.config.name, 'windows_latest')
         run: |
           cmake    --version
