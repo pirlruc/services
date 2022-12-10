@@ -1,0 +1,104 @@
+name: CMake Build
+
+on:
+  # Triggers the workflow on push or pull request events
+  push:
+    branches: 
+    - main
+  pull_request:
+    branches: 
+    - main
+
+  # Runs this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    # The type of runner that the job will run on
+    name: ${{ matrix.config.name }} - Boost ${{ matrix.boost }}
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        boost: ["OFF"]
+        config:
+        - {
+            name: "ubuntu_latest_gcc",
+            os: ubuntu-latest,
+            build_type: "Release",
+            cc: "gcc-11",
+            cxx: "g++-11"
+          }
+        - {
+            name: "ubuntu_latest_clang",
+            os: ubuntu-latest,
+            build_type: "Release",
+            cc: "clang-10",
+            cxx: "clang++-10"
+          }
+        - {
+            name: "windows_latest_gcc",
+            os: windows-latest,
+            build_type: "Release",
+            cc: "gcc",
+            cxx: "g++"
+          }
+        - {
+            name: "windows_latest_clang",
+            os: windows-latest,
+            build_type: "Release",
+            cc: "clang",
+            cxx: "clang++"
+          }
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@main
+        with:
+          submodules: recursive
+
+      - name: Print Event
+        run: |
+          echo github.event.action: ${{ github.event.action }}
+          echo github.event_name: ${{ github.event_name }}
+          
+      - name: Install Dependencies Linux
+        if: startsWith(matrix.config.name, 'ubuntu_latest')
+        run: |
+          sudo apt-get update
+          sudo apt-get install cmake
+          sudo apt-get install gcc-11 g++-11
+          sudo apt-get install clang-10
+          cmake    --version
+          gcc      --version
+          gcc-11   --version
+          clang-10 --version
+          
+      - name: Install Dependencies Windows
+        if: startsWith(matrix.config.name, 'windows_latest')
+        run: |
+          choco install llvm
+          cmake    --version
+          gcc      --version
+          clang    --version
+
+      - name: Configure
+        shell: bash
+        run: |
+          rm -rf build
+          mkdir build
+          cmake \
+            -S . \
+            -B build \
+            -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} \
+            -DCMAKE_C_COMPILER=${{ matrix.config.cc }} \
+            -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }} \
+            -DIMPROC_WITH_BOOST=${{ matrix.boost }}
+      
+      - name: Build
+        shell: bash
+        run: cmake --build build --config ${{ matrix.config.build_type }}
+
+      - name: Test
+        shell: bash
+        run: ./build/bin/improc_services_test
