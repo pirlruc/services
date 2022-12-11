@@ -15,7 +15,7 @@ namespace improc
                 ,   typename VariantProductCreator = std::variant<std::function<std::shared_ptr<BaseProduct>>()>
                 ,   template <typename,class> class FactoryErrorPolicy = improc::FactoryPatternError 
                 >
-    class IMPROC_EXPORTS VariantFactoryPattern : private improc::FactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>
+    class IMPROC_API VariantFactoryPattern : private improc::FactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>
     {
         public:
             VariantFactoryPattern();

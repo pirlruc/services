@@ -22,7 +22,7 @@ namespace improc
      * @tparam ContextType 
      */
     template <typename KeyType,typename ContextType>
-    class IMPROC_EXPORTS BaseService
+    class IMPROC_API BaseService
     {
         protected:
             std::vector<KeyType>    inputs_;

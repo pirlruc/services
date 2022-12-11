@@ -1,0 +1,82 @@
+name: Codacy Coverage Reporter
+
+on:
+  # Triggers the workflow on push or pull request events
+  push:
+    branches: 
+    - main
+    - developer
+  pull_request:
+    branches: 
+    - main
+
+jobs:
+  codacy-coverage-reporter:
+    # The type of runner that the job will run on
+    name: ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+        - {
+            name: codacy-coverage-reporter,
+            os: ubuntu-latest,
+            build_type: "Debug",
+            cc: "clang-14",
+            cxx: "clang++-14",
+            boost: "OFF",
+            coverage: "ON"
+          }
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: recursive
+
+      - name: Install Dependencies Linux
+        run: |
+          sudo apt-get update
+          sudo apt-get install cmake
+          sudo apt-get install gcc-11 g++-11
+          sudo apt-get install clang-14
+          sudo apt-get install lcov
+          cmake    --version
+          gcc      --version
+          gcc-11   --version
+          clang-14 --version
+          lcov     --version
+
+      - name: Configure
+        shell: bash
+        run: |
+          rm -rf build
+          mkdir build
+          cmake \
+            -S . \
+            -B build \
+            -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} \
+            -DCMAKE_C_COMPILER=${{ matrix.config.cc }} \
+            -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }} \
+            -DIMPROC_WITH_BOOST=${{ matrix.config.boost }} \
+            -DIMPROC_WITH_COVERAGE=${{ matrix.config.coverage }} \
+            -DIMPROC_WITH_TESTS=ON \
+            -G "Unix Makefiles"
+
+      - name: Build
+        shell: bash
+        run: cmake --build build --config ${{ matrix.config.build_type }} --target all
+
+      - name: Code Coverage Report
+        shell: bash
+        run: |
+          cd build/bin
+          ./improc_services_testd
+          cd ..
+          make coverage
+
+      - name: Run codacy-coverage-reporter
+        uses: codacy/codacy-coverage-reporter-action@v1
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          coverage-reports: ./build/improc_services_coverage.lcov

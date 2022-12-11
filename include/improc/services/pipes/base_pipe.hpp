@@ -13,7 +13,7 @@
 namespace improc 
 {
     template<typename Function>
-    class IMPROC_EXPORTS BasePipe : public pipes::pipe_base
+    class IMPROC_API BasePipe : public pipes::pipe_base
     {
         protected:
             pipes::detail::assignable<Function> function_;
@@ -23,7 +23,7 @@ namespace improc
     };
 
     template<typename Function>
-    class IMPROC_EXPORTS TransformPipe  : public improc::BasePipe<Function>
+    class IMPROC_API TransformPipe  : public improc::BasePipe<Function>
     {
         public:
             explicit TransformPipe(Function function) : improc::BasePipe<Function>(function) {};
@@ -36,7 +36,7 @@ namespace improc
     };
 
     template<typename Predicate>
-    class IMPROC_EXPORTS FilterPipe : public improc::BasePipe<Predicate>
+    class IMPROC_API FilterPipe : public improc::BasePipe<Predicate>
     {
         public:
             explicit FilterPipe(Predicate predicate) : improc::BasePipe<Predicate>(predicate) {};

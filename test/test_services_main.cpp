@@ -17,7 +17,7 @@ class BenchmarkDetector : public improc::BenchmarkSingleton<BenchmarkDetector>
 {
     friend std::shared_ptr<BenchmarkDetector> LoggerSingleton::get(const std::string& logger_name);
     private:
-        BenchmarkDetector(std::shared_ptr<spdlog::logger>&& logger) : BenchmarkSingleton(logger) {}
+        BenchmarkDetector(std::shared_ptr<spdlog::logger>&& logger) : BenchmarkSingleton(std::move(logger)) {}
 };
 
 class IncrementTestDS : public improc::StringKeyHeterogeneousBaseService

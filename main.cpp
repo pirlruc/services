@@ -27,7 +27,7 @@ class BenchmarkTest : public improc::BenchmarkSingleton<BenchmarkTest>
 {
     friend std::shared_ptr<BenchmarkTest> LoggerSingleton::get(const std::string& logger_name);
     private:
-        BenchmarkTest(std::shared_ptr<spdlog::logger>&& logger) : BenchmarkSingleton(logger) {}
+        BenchmarkTest(std::shared_ptr<spdlog::logger>&& logger) : BenchmarkSingleton(std::move(logger)) {}
 };
 
 int add_int(int a) {return a + 1;}

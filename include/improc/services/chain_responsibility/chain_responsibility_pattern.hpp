@@ -8,7 +8,7 @@
 namespace improc
 {
     template<class RequestType, class HandleOutputType>
-    class IMPROC_EXPORTS Handler 
+    class IMPROC_API Handler 
     {
         protected:
             std::shared_ptr<Handler>            next_handler_;
@@ -21,7 +21,7 @@ namespace improc
     };
 
     template<class RequestType, class HandleOutputType>
-    class IMPROC_EXPORTS BaseHandler : public improc::Handler<RequestType,HandleOutputType>
+    class IMPROC_API BaseHandler : public improc::Handler<RequestType,HandleOutputType>
     {
         public:
             BaseHandler();

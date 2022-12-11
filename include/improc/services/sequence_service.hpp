@@ -21,7 +21,7 @@ namespace improc
      * @tparam ContextType 
      */
     template <typename KeyType,typename ContextType>
-    class IMPROC_EXPORTS SequenceService
+    class IMPROC_API SequenceService
     {
         private:
             struct Service

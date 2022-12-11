@@ -19,7 +19,7 @@ namespace improc
      * @tparam ContainerType 
      */
     template <typename KeyType,typename ContainerType>
-    class IMPROC_EXPORTS Container
+    class IMPROC_API Container
     {
         private:
             typedef std::unordered_map<KeyType,ContainerType> HashMap;

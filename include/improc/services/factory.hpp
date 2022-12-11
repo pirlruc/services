@@ -18,7 +18,7 @@ namespace improc
      * @tparam ContextType 
      */
     template <typename KeyType,typename ContextType>
-    class IMPROC_EXPORTS ServicesFactory : public FactoryPattern< BaseService<KeyType,ContextType>
+    class IMPROC_API ServicesFactory : public FactoryPattern< BaseService<KeyType,ContextType>
                                                                 , KeyType
                                                                 , std::function<std::shared_ptr<BaseService<KeyType,ContextType>>(const Json::Value&)>>
     {
@@ -29,10 +29,10 @@ namespace improc
     typedef ServicesFactory<std::string,std::any>    StringKeyHeterogeneousServicesFactory;
 
     template<typename KeyType,typename ContextType,typename ServiceType>
-    IMPROC_EXPORTS std::shared_ptr<BaseService<KeyType,ContextType>>    LoadServiceFromJson(const Json::Value& service_json);
+    IMPROC_API std::shared_ptr<BaseService<KeyType,ContextType>>    LoadServiceFromJson(const Json::Value& service_json);
 
     template<typename ServiceType>
-    IMPROC_EXPORTS std::shared_ptr<StringKeyHeterogeneousBaseService>   LoadServiceFromJson(const Json::Value& service_json);
+    IMPROC_API std::shared_ptr<StringKeyHeterogeneousBaseService>   LoadServiceFromJson(const Json::Value& service_json);
 }
 
 #include <improc/services/factory.tpp>

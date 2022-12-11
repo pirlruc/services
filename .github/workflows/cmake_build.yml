@@ -15,42 +15,67 @@ on:
 jobs:
   build:
     # The type of runner that the job will run on
-    name: ${{ matrix.config.name }} - Boost ${{ matrix.boost }}
+    name: ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
     strategy:
       fail-fast: false
       matrix:
-        boost: ["OFF"]
         config:
         - {
-            name: "ubuntu_latest_gcc",
+            name: "ubuntu-latest-gcc-boost-on",
             os: ubuntu-latest,
             build_type: "Release",
             cc: "gcc-11",
-            cxx: "g++-11"
+            cxx: "g++-11",
+            boost: "ON",
+            coverage: "OFF"
           }
         - {
-            name: "ubuntu_latest_clang",
+            name: "ubuntu-latest-gcc-boost-off",
             os: ubuntu-latest,
             build_type: "Release",
-            cc: "clang-10",
-            cxx: "clang++-10"
+            cc: "gcc-11",
+            cxx: "g++-11",
+            boost: "OFF",
+            coverage: "OFF"
           }
         - {
-            name: "windows_latest_gcc",
-            os: windows-latest,
+            name: "ubuntu-latest-clang-boost-on",
+            os: ubuntu-latest,
             build_type: "Release",
-            cc: "gcc",
-            cxx: "g++"
+            cc: "clang-14",
+            cxx: "clang++-14",
+            boost: "ON",
+            coverage: "OFF"
           }
         - {
-            name: "windows_latest_clang",
-            os: windows-latest,
+            name: "ubuntu-latest-clang-boost-off",
+            os: ubuntu-latest,
             build_type: "Release",
-            cc: "clang",
-            cxx: "clang++"
+            cc: "clang-14",
+            cxx: "clang++-14",
+            boost: "OFF",
+            coverage: "OFF"
           }
-
+        # - {
+        #     name: "windows-latest-gcc-boost-off",
+        #     os: windows-latest,
+        #     build_type: "Release",
+        #     cc: "gcc",
+        #     cxx: "g++",
+        #     boost: "OFF",
+        #     coverage: "OFF"
+        #   }
+        # - {
+        #     name: "windows-latest-clang",
+        #     os: windows-latest,
+        #     build_type: "Release",
+        #     cc: "clang",
+        #     cxx: "clang++",
+        #     boost: "OFF",
+        #     coverage: "OFF"
+        #   }
+          
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@main
@@ -68,20 +93,21 @@ jobs:
           sudo apt-get update
           sudo apt-get install cmake
           sudo apt-get install gcc-11 g++-11
-          sudo apt-get install clang-10
+          sudo apt-get install clang-14
+          sudo apt-get install lcov
           cmake    --version
           gcc      --version
           gcc-11   --version
-          clang-10 --version
-          
+          clang-14 --version
+          lcov     --version
+
       - name: Install Dependencies Windows
         if: startsWith(matrix.config.name, 'windows_latest')
         run: |
-          choco install llvm
           cmake    --version
           gcc      --version
           clang    --version
-
+          
       - name: Configure
         shell: bash
         run: |
@@ -93,12 +119,16 @@ jobs:
             -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} \
             -DCMAKE_C_COMPILER=${{ matrix.config.cc }} \
             -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }} \
-            -DIMPROC_WITH_BOOST=${{ matrix.boost }}
+            -DIMPROC_WITH_BOOST=${{ matrix.config.boost }} \
+            -DIMPROC_WITH_COVERAGE=${{ matrix.config.coverage }} \
+            -DIMPROC_WITH_TESTS=ON \
+            -G "Unix Makefiles"
       
       - name: Build
         shell: bash
-        run: cmake --build build --config ${{ matrix.config.build_type }}
+        run: cmake --build build --config ${{ matrix.config.build_type }} --target all
 
       - name: Test
+        if: startsWith(matrix.config.coverage, 'OFF')
         shell: bash
         run: ./build/bin/improc_services_test
