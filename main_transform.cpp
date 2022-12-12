@@ -26,7 +26,7 @@ class IntClass
 
     public:
         IntClass() : data_(0) {};
-        IntClass(int number) : data_(number) {};
+        explicit IntClass(int number) : data_(number) {};
 
         double double_increment()
         {
@@ -56,7 +56,7 @@ int main()
     }
     std::cout << std::endl;
 
-    std::vector<IntClass> original_class {1,2,3,4,5,6,7,8,9,10};
+    std::vector<IntClass> original_class {IntClass(1),IntClass(2),IntClass(3),IntClass(4),IntClass(5),IntClass(6),IntClass(7),IntClass(8),IntClass(9),IntClass(10)};
     std::vector<double> res_transf_mem_fn(original.size());
     // std::transform  ( std::execution::par_unseq, original_class.begin(), original_class.end(), res_transf_mem_fn.begin()
     std::transform  ( original_class.begin(), original_class.end(), res_transf_mem_fn.begin()

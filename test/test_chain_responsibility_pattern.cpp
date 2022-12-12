@@ -46,14 +46,7 @@ TEST(BaseHandler,TestEmptyConstructor) {
     EXPECT_EQ(handler_empty.Handle(""),"");
 }
 
-TEST(BaseHandler,TestSetNextHandle) {
-    std::shared_ptr<HandlerA> handler_a {std::make_shared<HandlerA>(HandlerA())};
-    std::shared_ptr<HandlerB> handler_b {std::make_shared<HandlerB>(HandlerB())};
-    std::shared_ptr<HandlerC> handler_c {std::make_shared<HandlerC>(HandlerC())};
-    handler_a->set_next_handler(handler_b)->set_next_handler(handler_c);
-}
-
-TEST(BaseHandler,TestHandle) {
+TEST(BaseHandler,TestSetNextAndHandle) {
     std::shared_ptr<HandlerA> handler_a {std::make_shared<HandlerA>(HandlerA())};
     std::shared_ptr<HandlerB> handler_b {std::make_shared<HandlerB>(HandlerB())};
     std::shared_ptr<HandlerC> handler_c {std::make_shared<HandlerC>(HandlerC())};

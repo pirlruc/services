@@ -15,8 +15,8 @@ class TestBaseService
         std::vector<std::string>    outputs_;
 
     public:
-        TestBaseService();
-        TestBaseService(const Json::Value& service_json);
+        TestBaseService() {};
+        explicit TestBaseService(const Json::Value& service_json) {};
 
         virtual void            Run             (improc::Context<std::string,std::any>& context) const = 0;
 };
@@ -25,7 +25,7 @@ class IncrementTestDS : public TestBaseService
 {
     public:
         IncrementTestDS() : TestBaseService() {}
-        IncrementTestDS(const Json::Value& service_json) : IncrementTestDS() 
+        explicit IncrementTestDS(const Json::Value& service_json) : IncrementTestDS() 
         {
             this->Load(service_json);
         }
@@ -72,7 +72,7 @@ class SubtractTestDS : public TestBaseService
 
     public:
         SubtractTestDS() : TestBaseService() {}
-        SubtractTestDS(const Json::Value& service_json) : SubtractTestDS() 
+        explicit SubtractTestDS(const Json::Value& service_json) : SubtractTestDS() 
         {
             this->Load(service_json,0);
         }
@@ -134,7 +134,7 @@ class MultiplyTestDS : public TestBaseService
 
     public:
         MultiplyTestDS() : TestBaseService() {}
-        MultiplyTestDS(const Json::Value& service_json) : MultiplyTestDS() 
+        explicit MultiplyTestDS(const Json::Value& service_json) : MultiplyTestDS() 
         {
             this->Load(service_json,1);
         }

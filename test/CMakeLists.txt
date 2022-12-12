@@ -71,13 +71,13 @@ add_executable(
   ${PROJECT_NAME}_test
     
   ${PROJECT_SOURCE_DIR}/test/test_logger_services.cpp
+  ${PROJECT_SOURCE_DIR}/test/test_services_main.cpp
   ${PROJECT_SOURCE_DIR}/test/test_chain_responsibility_pattern.cpp
   ${PROJECT_SOURCE_DIR}/test/test_container.cpp
   ${PROJECT_SOURCE_DIR}/test/test_factory_pattern.cpp
   ${PROJECT_SOURCE_DIR}/test/test_variant_factory_pattern.cpp
   ${PROJECT_SOURCE_DIR}/test/test_duplicated_service.cpp
   ${PROJECT_SOURCE_DIR}/test/test_several_outputs.cpp
-  ${PROJECT_SOURCE_DIR}/test/test_services_main.cpp
 )
 set_target_properties(${PROJECT_NAME}_test PROPERTIES CXX_STANDARD           17)
 set_target_properties(${PROJECT_NAME}_test PROPERTIES CXX_STANDARD_REQUIRED  TRUE)

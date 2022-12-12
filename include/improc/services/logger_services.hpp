@@ -14,7 +14,7 @@ namespace improc
     {
         friend std::shared_ptr<ServicesLogger> LoggerSingleton::get(const std::string& logger_name);
         private:
-            ServicesLogger(std::shared_ptr<spdlog::logger>&&      logger) : LoggerSingleton(std::move(logger)) {}
+            explicit ServicesLogger(std::shared_ptr<spdlog::logger>&&      logger) : LoggerSingleton(std::move(logger)) {}
 
         public:
             ServicesLogger(ServicesLogger&  that)       = delete;
