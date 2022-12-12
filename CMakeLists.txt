@@ -38,6 +38,7 @@ FetchContent_Declare(
   GIT_TAG         e4dd4758bf60abcae5137608f825e291fe315148
   SOURCE_DIR      ${PROJECT_SOURCE_DIR}/external/pipes
 )
+set(BUILD_TESTING OFF)
 FetchContent_MakeAvailable(pipes)
 target_include_directories(pipes INTERFACE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/external/pipes/include>
                                            $<INSTALL_INTERFACE:include> )
