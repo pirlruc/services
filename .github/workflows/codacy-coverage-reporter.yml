@@ -79,7 +79,7 @@ jobs:
           cd build/bin
           ./improc_services_testd
           cd ..
-          make coverage
+          make improc_services_coverage
 
       - name: Run codacy-coverage-reporter
         uses: codacy/codacy-coverage-reporter-action@v1

@@ -92,7 +92,7 @@ target_link_libraries       (${PROJECT_NAME}   INTERFACE pipes)
 
 # Tests configuration
 if(IMPROC_WITH_TESTS)
-  add_subdirectory(${PROJECT_SOURCE_DIR}/test     ${CMAKE_BINARY_DIR}/services_test)
+  add_subdirectory(${PROJECT_SOURCE_DIR}/test     ${CMAKE_BINARY_DIR}/improc_services_test)
 endif()
 
 # Install configuration

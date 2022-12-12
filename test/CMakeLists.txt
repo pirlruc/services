@@ -36,7 +36,7 @@ if(IMPROC_WITH_COVERAGE AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
   find_program(GENHTML       genhtml          REQUIRED)
   
   add_custom_target(
-    coverage
+    ${PROJECT_NAME}_coverage
 
     COMMAND ${LLVM_PROFDATA} merge --sparse ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/default.profraw 
                                    -o ${CMAKE_BINARY_DIR}/${PROJECT_NAME}_coverage.profdata
@@ -57,7 +57,7 @@ if(IMPROC_WITH_COVERAGE AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
   find_program(GENHTML genhtml REQUIRED)
   
   add_custom_target(
-    coverage
+    ${PROJECT_NAME}_coverage
 
     COMMAND ${LCOV}    --directory ${CMAKE_BINARY_DIR}/${PROJECT_NAME}_test/CMakeFiles/${PROJECT_NAME}_test.dir
                        --capture --output-file ${CMAKE_BINARY_DIR}/${PROJECT_NAME}_coverage.info
