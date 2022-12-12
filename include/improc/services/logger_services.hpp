@@ -10,7 +10,7 @@ namespace improc
      * @brief Logger used for services library
      * 
      */
-    class IMPROC_API ServicesLogger : public LoggerSingleton<ServicesLogger>
+    class IMPROC_API ServicesLogger final: public LoggerSingleton<ServicesLogger>
     {
         friend std::shared_ptr<ServicesLogger> LoggerSingleton::get(const std::string& logger_name);
         private:

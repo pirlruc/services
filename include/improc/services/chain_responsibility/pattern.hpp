@@ -7,6 +7,12 @@
 
 namespace improc
 {
+    /**
+     * @brief Template for chain of responsibility handlers
+     * 
+     * @tparam RequestType - Data type of the request to the chain of responsibility
+     * @tparam HandleOutputType - Data type of the output from the handle
+     */
     template<class RequestType, class HandleOutputType>
     class IMPROC_API Handler 
     {
@@ -20,17 +26,23 @@ namespace improc
             virtual HandleOutputType            Handle(const RequestType& request) = 0;
     };
 
+    /**
+     * @brief Chain of responsibility handlers base
+     * 
+     * @tparam RequestType - Data type of the request to the chain of responsibility
+     * @tparam HandleOutputType - Data type of the output from the handle
+     */
     template<class RequestType, class HandleOutputType>
     class IMPROC_API BaseHandler : public improc::Handler<RequestType,HandleOutputType>
     {
         public:
             BaseHandler();
 
-            std::shared_ptr<Handler<RequestType,HandleOutputType>>  set_next_handler(std::shared_ptr<Handler<RequestType,HandleOutputType>> next_handler);
+            std::shared_ptr<Handler<RequestType,HandleOutputType>>  set_next_handler(std::shared_ptr<Handler<RequestType,HandleOutputType>> next_handler) final;
             HandleOutputType                                        Handle(const RequestType& request);
     };    
 }
 
-#include <improc/services/chain_responsibility/chain_responsibility_pattern.tpp>
+#include <improc/services/chain_responsibility/pattern.tpp>
 
 #endif

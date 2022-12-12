@@ -59,8 +59,8 @@ set(
   ${PROJECT_SOURCE_DIR}/include/improc/services/logger_services.hpp
   ${PROJECT_SOURCE_DIR}/include/improc/services/sequence_service.hpp
   ${PROJECT_SOURCE_DIR}/include/improc/services/sequence_service.tpp
-  ${PROJECT_SOURCE_DIR}/include/improc/services/chain_responsibility/chain_responsibility_pattern.hpp
-  ${PROJECT_SOURCE_DIR}/include/improc/services/chain_responsibility/chain_responsibility_pattern.tpp
+  ${PROJECT_SOURCE_DIR}/include/improc/services/chain_responsibility/pattern.hpp
+  ${PROJECT_SOURCE_DIR}/include/improc/services/chain_responsibility/pattern.tpp
   ${PROJECT_SOURCE_DIR}/include/improc/services/container/container.hpp
   ${PROJECT_SOURCE_DIR}/include/improc/services/container/container.tpp
   ${PROJECT_SOURCE_DIR}/include/improc/services/factory/factory_pattern_policies.hpp

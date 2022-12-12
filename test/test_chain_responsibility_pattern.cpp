@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <improc/services/chain_responsibility/chain_responsibility_pattern.hpp>
+#include <improc/services/chain_responsibility/pattern.hpp>
 
 class HandlerA : public improc::BaseHandler<std::string,std::string>
 {
