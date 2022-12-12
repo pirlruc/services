@@ -30,6 +30,10 @@ jobs:
           }
 
     steps:
+      - name: Get Branch Name
+        id: branch-name
+        uses: tj-actions/branch-names@v6
+
       - uses: actions/checkout@v2
         with:
           submodules: recursive
@@ -46,6 +50,8 @@ jobs:
           gcc-11   --version
           clang-14 --version
           lcov     --version
+          cd ..
+          git clone --recurse-submodules -b ${{ steps.branch-name.outputs.current_branch }} https://github.com/pirlruc/infrastructure.git
 
       - name: Configure
         shell: bash
