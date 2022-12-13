@@ -1,20 +1,23 @@
 /**
  * @brief Construct a new improc::Container<KeyType,ContainerType> object
  * 
- * @tparam KeyType 
- * @tparam ContainerType 
+ * @tparam KeyType - data type of the access key to the container
+ * @tparam ContainerType - data type of the items in the container
  */
 template <typename KeyType,typename ContainerType>
 improc::Container<KeyType,ContainerType>::Container() 
 {
+    static_assert(std::is_integral_v<KeyType> || std::is_same_v<KeyType,std::string>, "KeyType should be an integral or a string data type.");
     IMPROC_SERVICES_LOGGER_TRACE( "Creating container with {} key and {} container..."
                                 , typeid(KeyType).name()
                                 , typeid(ContainerType).name() );
 }
 
 /**
- * @brief Check if a item with key exists in the container
+ * @brief Check if an item with key exists in the container
  * 
+ * @tparam KeyType - data type of the access key to the container
+ * @tparam ContainerType - data type of the items in the container
  * @return true if key exists in the container
  * @return false if key does not exist in the container
  */
@@ -22,7 +25,7 @@ template <typename KeyType,typename ContainerType>
 bool improc::Container<KeyType,ContainerType>::Exists(const KeyType& key) const
 {
     IMPROC_SERVICES_LOGGER_TRACE("Checking if item with key {} exists in container...", key);
-    return this->hash_table_.find(key) != this->hash_table_.end();
+    return this->hash_table_.find(std::move(key)) != this->hash_table_.end();
 }
 
 /**
@@ -30,16 +33,16 @@ bool improc::Container<KeyType,ContainerType>::Exists(const KeyType& key) const
  * This is a method that allows a safe insert without allowing an item to be 
  * overwritten.
  * 
- * @tparam KeyType 
- * @tparam ContainerType 
+ * @tparam KeyType - data type of the access key to the container
+ * @tparam ContainerType - data type of the items in the container
  * @param key 
- * @param item 
+ * @param item
  */
 template <typename KeyType,typename ContainerType>
 improc::Container<KeyType,ContainerType>& improc::Container<KeyType,ContainerType>::Add(const KeyType& key, const ContainerType& item)
 {
     IMPROC_SERVICES_LOGGER_TRACE("Adding key {} to container...", key);
-    if (this->hash_table_.insert(typename HashMap::value_type(key,item)).second == 0)
+    if (this->hash_table_.insert(typename HashMap::value_type(key,std::move(item))).second == 0)
     {
         IMPROC_SERVICES_LOGGER_ERROR("ERROR_01: Duplicated key {} in container.", key);
         throw improc::duplicated_key();
@@ -53,8 +56,8 @@ improc::Container<KeyType,ContainerType>& improc::Container<KeyType,ContainerTyp
  * does not exist, the method will throw an exception. The retrieved item
  * cannot be edited.
  *  
- * @tparam KeyType 
- * @tparam ContainerType 
+ * @tparam KeyType - data type of the access key to the container
+ * @tparam ContainerType - data type of the items in the container
  * @param key 
  * @return ContainerType 
  */
@@ -78,8 +81,8 @@ ContainerType improc::Container<KeyType,ContainerType>::Get(const KeyType& key) 
  * This method will retrieve an item if it exists otherwise it will create a new 
  * entry on the container which can be edited. 
  * 
- * @tparam KeyType 
- * @tparam ContainerType 
+ * @tparam KeyType - data type of the access key to the container
+ * @tparam ContainerType - data type of the items in the container
  * @param key 
  * @return ContainerType& 
  */
@@ -94,22 +97,24 @@ ContainerType& improc::Container<KeyType,ContainerType>::operator[](const KeyTyp
  * @brief Erase item with key of KeyType from container
  * The method does not throw an error if key does not exist.
  * 
- * @tparam KeyType 
- * @tparam ContainerType 
+ * @tparam KeyType - data type of the access key to the container
+ * @tparam ContainerType - data type of the items in the container
  * @param key 
+ * @return true if key exists and is removed from the container
+ * @return false if key does not exist in the container
  */
 template <typename KeyType,typename ContainerType>
 bool improc::Container<KeyType,ContainerType>::Erase(const KeyType& key)
 {
     IMPROC_SERVICES_LOGGER_TRACE("Deleting key {} from container...", key);
-    return this->hash_table_.erase(key) != 0;
+    return this->hash_table_.erase(std::move(key)) != 0;
 }
 
 /**
  * @brief Clear items from container
  * 
- * @tparam KeyType 
- * @tparam ContainerType 
+ * @tparam KeyType - data type of the access key to the container
+ * @tparam ContainerType - data type of the items in the container
  */
 template <typename KeyType,typename ContainerType>
 improc::Container<KeyType,ContainerType>& improc::Container<KeyType,ContainerType>::Clear()
@@ -122,8 +127,8 @@ improc::Container<KeyType,ContainerType>& improc::Container<KeyType,ContainerTyp
 /**
  * @brief Obtain number of items in container
  * 
- * @tparam KeyType 
- * @tparam ContainerType 
+ * @tparam KeyType - data type of the access key to the container
+ * @tparam ContainerType - data type of the items in the container
  * @return size_t 
  */
 template <typename KeyType,typename ContainerType>

@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <any>
 #include <string>
+#include <type_traits>
 
 namespace improc
 {
@@ -15,8 +16,8 @@ namespace improc
      * containers with different types of keys. The container does not allow
      * duplicate keys.
      * 
-     * @tparam KeyType 
-     * @tparam ContainerType 
+     * @tparam KeyType - data type of the access key to the container
+     * @tparam ContainerType - data type of the items in the container
      */
     template <typename KeyType,typename ContainerType>
     class IMPROC_API Container
