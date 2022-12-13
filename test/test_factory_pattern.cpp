@@ -11,6 +11,11 @@
 
 typedef improc::FactoryPattern<improc::StringKeyHeterogeneousBaseService,std::string,std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)>> FactoryPattern;
 
+TEST(FactoryPatternPolicy,TestFactoryOnUnknownType) {
+    improc::FactoryPatternError<std::string,int> factory_error;
+    EXPECT_THROW(factory_error.OnUnknownType("1"),improc::not_found_in_factory);
+}
+
 TEST(FactoryPattern,TestFactoryEmptyConstructor) {
     FactoryPattern factory {};
     EXPECT_EQ(factory.GetRegisteredIds().size(),0);    
