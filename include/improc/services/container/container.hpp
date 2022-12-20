@@ -3,11 +3,11 @@
 
 #include <improc/exception.hpp>
 #include <improc/services/logger_services.hpp>
+#include <improc/improc_type_traits.hpp>
 
 #include <unordered_map>
 #include <any>
 #include <string>
-#include <type_traits>
 
 namespace improc
 {

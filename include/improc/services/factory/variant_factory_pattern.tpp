@@ -12,7 +12,7 @@ template    <   typename ProductCreator >
 improc::VariantFactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>& improc::VariantFactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>::Register(const KeyType& id, const ProductCreator& creator)
 {
     IMPROC_SERVICES_LOGGER_TRACE("Registering ID {} in variant factory...", id);
-    if (this->callbacks_.insert(typename improc::FactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>::CallbackMap::value_type(id,creator)).second == 0)
+    if (this->callbacks_.insert(typename improc::FactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>::CallbackMap::value_type(id,std::move(creator))).second == 0)
     {
         IMPROC_SERVICES_LOGGER_ERROR("ERROR_01: Duplicated ID {} in variant factory.", id);
         throw improc::duplicated_key();
@@ -27,7 +27,7 @@ template    <   class    BaseProduct
 bool improc::VariantFactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>::Unregister(const KeyType& id)
 {
     IMPROC_SERVICES_LOGGER_TRACE("Unregistering ID {} from variant factory...", id);
-    return this->improc::FactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>::Unregister(id);
+    return this->improc::FactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>::Unregister(std::move(id));
 }
 
 template    <   class    BaseProduct
@@ -63,8 +63,8 @@ std::shared_ptr<BaseProduct> improc::VariantFactoryPattern<BaseProduct,KeyType,V
     {
         if (std::holds_alternative<ProductCreator>(iter_callback->second) == true)
         {
-            return pipes::detail::invoke(std::get<ProductCreator>(iter_callback->second),FWD(args) ...);
+            return pipes::detail::invoke(std::get<ProductCreator>(std::move(iter_callback->second)),IMPROC_FWD(std::move(args)) ...);
         }
     }
-    return this->OnUnknownType(id);
+    return this->OnUnknownType(std::move(id));
 }

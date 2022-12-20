@@ -2,7 +2,10 @@ template    <   class    BaseProduct
             ,   typename KeyType
             ,   typename ProductCreator
             ,   template <typename,class> class FactoryErrorPolicy  >
-improc::FactoryPattern<BaseProduct,KeyType,ProductCreator,FactoryErrorPolicy>::FactoryPattern() : callbacks_() {}
+improc::FactoryPattern<BaseProduct,KeyType,ProductCreator,FactoryErrorPolicy>::FactoryPattern() : callbacks_() 
+{
+    static_assert(improc::is_hashable_v<KeyType>, "KeyType should be an integral or a string data type.");
+}
 
 template    <   class    BaseProduct
             ,   typename KeyType
@@ -11,7 +14,7 @@ template    <   class    BaseProduct
 improc::FactoryPattern<BaseProduct,KeyType,ProductCreator,FactoryErrorPolicy>& improc::FactoryPattern<BaseProduct,KeyType,ProductCreator,FactoryErrorPolicy>::Register(const KeyType& id, const ProductCreator& creator)
 {
     IMPROC_SERVICES_LOGGER_TRACE("Registering ID {} in factory...", id);
-    if (this->callbacks_.insert(typename CallbackMap::value_type(id,creator)).second == 0)
+    if (this->callbacks_.insert(typename CallbackMap::value_type(id,std::move(creator))).second == 0)
     {
         IMPROC_SERVICES_LOGGER_ERROR("ERROR_01: Duplicated ID {} in factory.", id);
         throw improc::duplicated_key();
@@ -26,7 +29,7 @@ template    <   class    BaseProduct
 bool improc::FactoryPattern<BaseProduct,KeyType,ProductCreator,FactoryErrorPolicy>::Unregister(const KeyType& id)
 {
     IMPROC_SERVICES_LOGGER_TRACE("Unregistering ID {} from factory...", id);
-    return this->callbacks_.erase(id) != 0;
+    return this->callbacks_.erase(std::move(id)) != 0;
 }
 
 template    <   class    BaseProduct
@@ -63,7 +66,7 @@ std::shared_ptr<BaseProduct> improc::FactoryPattern<BaseProduct,KeyType,ProductC
     typename CallbackMap::const_iterator iter_callback = this->callbacks_.find(id);
     if (iter_callback != this->callbacks_.end())
     {
-        return pipes::detail::invoke(iter_callback->second,FWD(args) ...);
+        return pipes::detail::invoke(std::move(iter_callback->second),IMPROC_FWD(std::move(args)) ...);
     }
-    return this->OnUnknownType(id);
+    return this->OnUnknownType(std::move(id));
 }

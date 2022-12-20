@@ -5,7 +5,6 @@
 #include <improc/services/logger_services.hpp>
 #include <improc/services/factory/factory_pattern_policies.hpp>
 
-#include <pipes/helpers/FWD.hpp>
 #include <pipes/helpers/invoke.hpp>
 
 namespace improc

@@ -7,7 +7,7 @@
 template <typename KeyType,typename ContainerType>
 improc::Container<KeyType,ContainerType>::Container() 
 {
-    static_assert(std::is_integral_v<KeyType> || std::is_same_v<KeyType,std::string>, "KeyType should be an integral or a string data type.");
+    static_assert(improc::is_hashable_v<KeyType>, "KeyType should be an integral or a string data type.");
     IMPROC_SERVICES_LOGGER_TRACE( "Creating container with {} key and {} container..."
                                 , typeid(KeyType).name()
                                 , typeid(ContainerType).name() );
