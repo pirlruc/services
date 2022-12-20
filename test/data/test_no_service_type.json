@@ -1,0 +1,19 @@
+{
+	"data": 
+	[
+		{
+			"name": "ori",
+			"type": "number"
+		}
+	],
+	"services":
+	[
+		{
+			"args": 
+			{
+				"inputs": "ori",
+				"outputs": "ori"
+			}
+		}
+	]
+}
