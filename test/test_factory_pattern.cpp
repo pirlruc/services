@@ -57,6 +57,15 @@ TEST(FactoryPattern,TestRemoveNonExistingItemFromFactory) {
     EXPECT_EQ(factory.Size(),1);    
 }
 
+TEST(FactoryPattern,TestCreationExceptionFromFactory) {
+    std::string filepath = std::string(IMPROC_SERVICES_TEST_FOLDER) + "/test/data/test_factory_pattern.json";
+    improc::JsonFile json_file {filepath};
+    Json::Value json_content = json_file.Read();
+
+    FactoryPattern factory {};
+    EXPECT_THROW(factory.Create("increment",json_content),improc::not_found_in_factory);
+}
+
 TEST(FactoryPattern,TestCreationFromFactory) {
     std::string filepath = std::string(IMPROC_SERVICES_TEST_FOLDER) + "/test/data/test_factory_pattern.json";
     improc::JsonFile json_file {filepath};
