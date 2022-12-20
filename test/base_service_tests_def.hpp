@@ -1,4 +1,8 @@
+#ifndef IMPROC_TEST_BASE_SERVICE_DEFINITIONS_HPP
+#define IMPROC_TEST_BASE_SERVICE_DEFINITIONS_HPP
+
 #include <improc/services/base_service.hpp>
+#include <improc/services/factory.hpp>
 #include <improc/infrastructure/benchmark/benchmark_singleton.hpp>
 
 class BenchmarkDetector : public improc::BenchmarkSingleton<BenchmarkDetector>
@@ -19,14 +23,12 @@ class IncrementTest : public improc::StringKeyHeterogeneousBaseService
         IncrementTest& Load   (const Json::Value& service_json) override
         {
             this->improc::StringKeyHeterogeneousBaseService::Load(service_json);
-            std::cout << "IncrementTest: I = " << this->inputs_[0] << " -> O = " << this->outputs_[0] << std::endl; 
             return (*this);
         }
 
         void Run    (improc::StringKeyHeterogeneousContext&  context) const override
         {
             context[this->outputs_[0]] = std::any_cast<int>(context.Get(this->inputs_[0])) + 1;
-            spdlog::info("Increment Service: ori = {}",std::any_cast<int>(context[this->outputs_[0]]));
             BenchmarkDetector::get()->SetKeyContent("service","IncrementTest");
             BenchmarkDetector::get()->SetKeyContent("output" ,std::any_cast<int>(context[this->outputs_[0]]));
             BenchmarkDetector::get()->WriteLine();
@@ -44,9 +46,6 @@ class SubtractTestTwoInputs : public improc::StringKeyHeterogeneousBaseService
         SubtractTestTwoInputs& Load   (const Json::Value& service_json) override
         {
             this->improc::StringKeyHeterogeneousBaseService::Load(service_json);
-            std::cout << "SubtractTestTwoInputs: I1 = " << this->inputs_[0] 
-                                                        << this->inputs_[1]
-                                                        << " -> O = " << this->outputs_[0] << std::endl; 
             return (*this);
         }
 
@@ -54,7 +53,6 @@ class SubtractTestTwoInputs : public improc::StringKeyHeterogeneousBaseService
         {
             context[this->outputs_[0]] = std::any_cast<int>(context.Get(this->inputs_[0])) 
                                        - std::any_cast<int>(context.Get(this->inputs_[1]));
-            spdlog::info("Subtract Service: ori = {}",std::any_cast<int>(context[this->outputs_[0]]));
             BenchmarkDetector::get()->SetKeyContent("service","SubtractTestTwoInputs");
             BenchmarkDetector::get()->SetKeyContent("output" ,std::any_cast<int>(context[this->outputs_[0]]));
             BenchmarkDetector::get()->WriteLine();
@@ -83,16 +81,12 @@ class MultiplyTest : public improc::StringKeyHeterogeneousBaseService
                     break;
                 }
             }
-            std::cout << "MultiplyTest: I = "   << this->inputs_[0]
-                                                << " , N = " << this->number_to_multiply_ 
-                                                << " -> O = " << this->outputs_[0] << std::endl; 
             return (*this);
         }
 
         void Run    (improc::StringKeyHeterogeneousContext&  context) const override
         {
             context[this->outputs_[0]] = std::any_cast<int>(context.Get(this->inputs_[0])) * this->number_to_multiply_;
-            spdlog::info("Multiply Service: ori = {}",std::any_cast<int>(context[this->outputs_[0]]));
             BenchmarkDetector::get()->SetKeyContent("service","MultiplyTest");
             BenchmarkDetector::get()->SetKeyContent("output" ,std::any_cast<int>(context[this->outputs_[0]]));
             BenchmarkDetector::get()->WriteLine();
@@ -121,18 +115,30 @@ class SubtractTestOneInput : public improc::StringKeyHeterogeneousBaseService
                     break;
                 }
             }
-            std::cout << "SubtractTestOneInput: I = "   << this->inputs_[0]
-                                                        << " , N = " << this->number_to_subtract_ 
-                                                        << " -> O = " << this->outputs_[0] << std::endl; 
             return (*this);
         }
 
         void    Run    (improc::StringKeyHeterogeneousContext&  context) const override
         {
             context[this->outputs_[0]] = std::any_cast<int>(context.Get(this->inputs_[0])) - this->number_to_subtract_;
-            spdlog::info("Subtract Service: ori = {}",std::any_cast<int>(context[this->outputs_[0]]));
             BenchmarkDetector::get()->SetKeyContent("service","SubtractTestOneInput");
             BenchmarkDetector::get()->SetKeyContent("output" ,std::any_cast<int>(context[this->outputs_[0]]));
             BenchmarkDetector::get()->WriteLine();
         }
 };
+
+class LoadFactory
+{
+    public:
+        improc::StringKeyHeterogeneousServicesFactory factory;
+
+    public:
+        LoadFactory()
+        {
+            this->factory.Register("increment",std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<IncrementTest>});
+            this->factory.Register("subtract" ,std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<SubtractTestOneInput>} );
+            this->factory.Register("multiply" ,std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<MultiplyTest>} );
+        }
+};
+
+#endif

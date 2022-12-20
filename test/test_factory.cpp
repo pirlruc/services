@@ -15,9 +15,6 @@ TEST(Factory,TestFactoryEmptyConstructor) {
 }
 
 TEST(Factory,TestAddItemsToFactory) {
-    improc::StringKeyHeterogeneousServicesFactory factory {};
-    factory.Register("increment",std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<IncrementTest>});
-    factory.Register("subtract" ,std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<SubtractTestOneInput>} );
-    factory.Register("multiply" ,std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<MultiplyTest>} );
+    improc::StringKeyHeterogeneousServicesFactory factory = LoadFactory().factory;
     EXPECT_EQ(factory.Size(),3);    
 }

@@ -8,88 +8,49 @@
 
 #include <improc_services_test_config.hpp>
 
-improc::StringKeyHeterogeneousServicesFactory LoadFactory()
-{
-    improc::StringKeyHeterogeneousServicesFactory factory {};
-    factory.Register("increment",std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<IncrementTest>});
-    factory.Register("subtract" ,std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<SubtractTestOneInput>} );
-    factory.Register("multiply" ,std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<MultiplyTest>} );
-    return factory;
-}
-
 TEST(SequenceService,TestSequenceServiceEmptyConstructor) {
     improc::StringKeyHeterogeneousSequenceService sequence {};
     EXPECT_EQ(sequence.Size(),0);    
 }
 
 TEST(SequenceService,TestServicesNotInJson) {
-    std::string filepath = std::string(IMPROC_SERVICES_TEST_FOLDER) + "/test/data/test_no_services.json";
-    improc::JsonFile json_file {filepath};
-    Json::Value json_content = json_file.Read();
+    Json::Value json_content = improc::JsonFile::Read(std::string(IMPROC_SERVICES_TEST_FOLDER) + "/test/data/test_no_services.json");
     improc::StringKeyHeterogeneousSequenceService sequence {};
-    EXPECT_THROW(sequence.Load(LoadFactory(),json_content),improc::file_processing_error);
+    EXPECT_THROW(sequence.Load(LoadFactory().factory,json_content),improc::file_processing_error);
 }
 
 TEST(SequenceService,TestServiceTypeNotInJson) {
-    std::string filepath = std::string(IMPROC_SERVICES_TEST_FOLDER) + "/test/data/test_no_service_type.json";
-    improc::JsonFile json_file {filepath};
-    Json::Value json_content = json_file.Read();
+    Json::Value json_content = improc::JsonFile::Read(std::string(IMPROC_SERVICES_TEST_FOLDER) + "/test/data/test_no_service_type.json");
     improc::StringKeyHeterogeneousSequenceService sequence {};
-    EXPECT_THROW(sequence.Load(LoadFactory(),json_content),improc::file_processing_error);
+    EXPECT_THROW(sequence.Load(LoadFactory().factory,json_content),improc::file_processing_error);
 }
 
-TEST(SequenceService,TestSequenceServiceLoadWithInputError) {
-    std::string filepath = std::string(IMPROC_SERVICES_TEST_FOLDER) + "/test/data/test_ex1_no_in.json";
-    improc::JsonFile json_file {filepath};
-    Json::Value json_content = json_file.Read();
+TEST(SequenceService,TestServiceInputsNotInJson) {
+    Json::Value json_content = improc::JsonFile::Read(std::string(IMPROC_SERVICES_TEST_FOLDER) + "/test/data/test_no_service_inputs.json");
     improc::StringKeyHeterogeneousSequenceService sequence {};
-    EXPECT_THROW(sequence.Load(LoadFactory(),json_content),improc::file_processing_error);
+    EXPECT_THROW(sequence.Load(LoadFactory().factory,json_content),improc::file_processing_error);
 }
 
-TEST(SequenceService,TestSequenceServiceLoadWithOutputError) {
-    std::string filepath = std::string(IMPROC_SERVICES_TEST_FOLDER) + "/test/data/test_ex1_no_out.json";
-    improc::JsonFile json_file {filepath};
-    Json::Value json_content = json_file.Read();
+TEST(SequenceService,TestServiceOutputsNotInJson) {
+    Json::Value json_content = improc::JsonFile::Read(std::string(IMPROC_SERVICES_TEST_FOLDER) + "/test/data/test_no_service_outputs.json");
     improc::StringKeyHeterogeneousSequenceService sequence {};
-    EXPECT_THROW(sequence.Load(LoadFactory(),json_content),improc::file_processing_error);
-}
-
-TEST(SequenceService,TestSequenceServiceLoadWithInputAndOutputError) {
-    std::string filepath = std::string(IMPROC_SERVICES_TEST_FOLDER) + "/test/data/test_ex1_no_out.json";
-    improc::JsonFile json_file {filepath};
-    Json::Value json_content = json_file.Read();
-    improc::StringKeyHeterogeneousSequenceService sequence {};
-    EXPECT_THROW(sequence.Load(LoadFactory(),json_content),improc::file_processing_error);
-}
-
-TEST(SequenceService,TestSequenceServiceLoad) {
-    std::string filepath = std::string(IMPROC_SERVICES_TEST_FOLDER) + "/test/data/test_ex1.json";
-    improc::JsonFile json_file {filepath};
-    Json::Value json_content = json_file.Read();
-    improc::StringKeyHeterogeneousSequenceService sequence {};
-    sequence.Load(LoadFactory(),json_content);
-    EXPECT_EQ(sequence.Size(),4);
+    EXPECT_THROW(sequence.Load(LoadFactory().factory,json_content),improc::file_processing_error);
 }
 
 TEST(SequenceService,TestSequenceServiceRunWithDuplicateService) {
-    std::string filepath = std::string(IMPROC_SERVICES_TEST_FOLDER) + "/test/data/test_ex1.json";
-    improc::JsonFile json_file {filepath};
-    Json::Value json_content = json_file.Read();
+    Json::Value json_content = improc::JsonFile::Read(std::string(IMPROC_SERVICES_TEST_FOLDER) + "/test/data/test_duplicated_service.json");
     improc::StringKeyHeterogeneousSequenceService sequence {};
-    sequence.Load(LoadFactory(),json_content);
+    sequence.Load(LoadFactory().factory,json_content);
     EXPECT_EQ(sequence.Size(),4);
 
     improc::StringKeyHeterogeneousContext cntxt {};
     cntxt.Add("ori",2);
-    spdlog::info("Start, ori = {}",std::any_cast<int>(cntxt.Get("ori")));
     sequence.Run(cntxt);    
     EXPECT_EQ(std::any_cast<int>(cntxt.Get("ori")),4);
 }
 
 TEST(SequenceService,TestSequenceServiceRunWithSeveralOutputs) {
-    std::string filepath = std::string(IMPROC_SERVICES_TEST_FOLDER) + "/test/data/test_ex2.json";
-    improc::JsonFile json_file {filepath};
-    Json::Value json_content = json_file.Read();
+    Json::Value json_content = improc::JsonFile::Read(std::string(IMPROC_SERVICES_TEST_FOLDER) + "/test/data/test_several_outputs.json");
 
     improc::StringKeyHeterogeneousServicesFactory factory {};
     factory.Register("increment",std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<IncrementTest>});
@@ -102,7 +63,6 @@ TEST(SequenceService,TestSequenceServiceRunWithSeveralOutputs) {
 
     improc::StringKeyHeterogeneousContext cntxt {};
     cntxt.Add("ori",2);
-    spdlog::info("Start, ori = {}",std::any_cast<int>(cntxt.Get("ori")));
     sequence.Run(cntxt);    
     EXPECT_EQ(std::any_cast<int>(cntxt.Get("ori-1")),3);
     EXPECT_EQ(std::any_cast<int>(cntxt.Get("ori-2")),6);
