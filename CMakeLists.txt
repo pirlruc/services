@@ -106,12 +106,6 @@ install(
 install(FILES     ${PROJECT_SOURCE_DIR}/external/pipes/LICENSE  DESTINATION share/licenses/improc/pipes)
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/improc          DESTINATION include)
 
-add_executable(main_test main.cpp)
-set_target_properties(main_test PROPERTIES CXX_STANDARD           17)
-set_target_properties(main_test PROPERTIES CXX_STANDARD_REQUIRED  TRUE)
-set_target_properties(main_test PROPERTIES LINKER_LANGUAGE        CXX)
-target_link_libraries(main_test PRIVATE    improc::services)
-
 add_executable(main_transform_test main_transform.cpp)
 set_target_properties(main_transform_test PROPERTIES CXX_STANDARD           17)
 set_target_properties(main_transform_test PROPERTIES CXX_STANDARD_REQUIRED  TRUE)

@@ -71,7 +71,6 @@ add_executable(
   ${PROJECT_NAME}_test
     
   ${PROJECT_SOURCE_DIR}/test/test_logger_services.cpp
-  ${PROJECT_SOURCE_DIR}/test/test_services_main.cpp
   ${PROJECT_SOURCE_DIR}/test/test_chain_responsibility_pattern.cpp
   ${PROJECT_SOURCE_DIR}/test/test_container.cpp
   ${PROJECT_SOURCE_DIR}/test/test_context.cpp

@@ -19,9 +19,7 @@ class IncrementTest : public improc::StringKeyHeterogeneousBaseService
         IncrementTest& Load   (const Json::Value& service_json) override
         {
             this->improc::StringKeyHeterogeneousBaseService::Load(service_json);
-            spdlog::info("--- INCREMENT SERVICE ---");
-            spdlog::info("Input : {}",this->inputs_[0]);
-            spdlog::info("Output: {}",this->outputs_[0]);
+            std::cout << "IncrementTest: I = " << this->inputs_[0] << " -> O = " << this->outputs_[0] << std::endl; 
             return (*this);
         }
 
@@ -46,9 +44,9 @@ class SubtractTestTwoInputs : public improc::StringKeyHeterogeneousBaseService
         SubtractTestTwoInputs& Load   (const Json::Value& service_json) override
         {
             this->improc::StringKeyHeterogeneousBaseService::Load(service_json);
-            spdlog::info("--- SUBTRACT SERVICE ---");
-            spdlog::info("Input : {};{}",this->inputs_[0],this->inputs_[1]);
-            spdlog::info("Output: {}",this->outputs_[0]);
+            std::cout << "SubtractTestTwoInputs: I1 = " << this->inputs_[0] 
+                                                        << this->inputs_[1]
+                                                        << " -> O = " << this->outputs_[0] << std::endl; 
             return (*this);
         }
 
@@ -77,22 +75,17 @@ class MultiplyTest : public improc::StringKeyHeterogeneousBaseService
         MultiplyTest& Load   (const Json::Value& service_json) override
         {
             this->improc::StringKeyHeterogeneousBaseService::Load(service_json);
-
-            for (Json::Value::const_iterator service_field_iter = service_json.begin(); service_field_iter != service_json.end(); ++service_field_iter)
+            for (Json::Value::const_iterator multiply_field_iter = service_json.begin(); multiply_field_iter != service_json.end(); ++multiply_field_iter)
             {
-                const std::string kNumberKey = "number";
-                spdlog::debug("Analyzing field {} for multiply service...",service_field_iter.name());
-
-                if (service_field_iter.name() == kNumberKey)
+                if (multiply_field_iter.name() == "number")
                 {
-                    this->number_to_multiply_ = service_field_iter->asInt();
+                    this->number_to_multiply_ = multiply_field_iter->asInt();
                     break;
                 }
             }
-            spdlog::info("--- MULTIPLY SERVICE ---");
-            spdlog::info("Input : {}",this->inputs_[0]);
-            spdlog::info("Output: {}",this->outputs_[0]);
-            spdlog::info("Number: {}",this->number_to_multiply_);
+            std::cout << "MultiplyTest: I = "   << this->inputs_[0]
+                                                << " , N = " << this->number_to_multiply_ 
+                                                << " -> O = " << this->outputs_[0] << std::endl; 
             return (*this);
         }
 
@@ -120,22 +113,17 @@ class SubtractTestOneInput : public improc::StringKeyHeterogeneousBaseService
         SubtractTestOneInput& Load   (const Json::Value& service_json) override
         {
             this->improc::StringKeyHeterogeneousBaseService::Load(service_json);
-
-            for (Json::Value::const_iterator service_field_iter = service_json.begin(); service_field_iter != service_json.end(); ++service_field_iter)
+            for (Json::Value::const_iterator subtract_field_iter = service_json.begin(); subtract_field_iter != service_json.end(); ++subtract_field_iter)
             {
-                const std::string kNumberKey = "number";
-                spdlog::debug("Analyzing field {} for subtract service...",service_field_iter.name());
-
-                if (service_field_iter.name() == kNumberKey)
+                if (subtract_field_iter.name() == "number")
                 {
-                    this->number_to_subtract_ = service_field_iter->asInt();
+                    this->number_to_subtract_ = subtract_field_iter->asInt();
                     break;
                 }
             }
-            spdlog::info("--- SUBTRACT SERVICE ---");
-            spdlog::info("Input : {}",this->inputs_[0]);
-            spdlog::info("Output: {}",this->outputs_[0]);
-            spdlog::info("Number: {}",this->number_to_subtract_);
+            std::cout << "SubtractTestOneInput: I = "   << this->inputs_[0]
+                                                        << " , N = " << this->number_to_subtract_ 
+                                                        << " -> O = " << this->outputs_[0] << std::endl; 
             return (*this);
         }
 

@@ -35,10 +35,11 @@ TEST(FactoryPattern,TestAddItemsToFactory) {
 TEST(FactoryPattern,TestDuplicateItemsToFactory) {
     FactoryPattern factory {};
     EXPECT_NO_THROW(factory.Register("increment",std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<IncrementTest>}));
-    EXPECT_THROW(factory.Register("increment" ,std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<SubtractTestOneInput>}),improc::duplicated_key);
-    EXPECT_EQ(factory.GetRegisteredIds().size(),1);    
-    EXPECT_EQ(factory.GetRegisteredIds()[0],"increment");    
-    EXPECT_EQ(factory.Size(),1);    
+    EXPECT_NO_THROW(factory.Register("subtract",std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<SubtractTestOneInput>}));
+    EXPECT_THROW(factory.Register("increment" ,std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<MultiplyTest>}),improc::duplicated_key);
+    EXPECT_EQ(factory.GetRegisteredIds().size(),2);    
+    EXPECT_EQ(factory.GetRegisteredIds()[0],"subtract");    
+    EXPECT_EQ(factory.Size(),2);    
 }
 
 TEST(FactoryPattern,TestRemoveExistingItemFromFactory) {
