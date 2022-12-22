@@ -5,6 +5,10 @@ template    <   class    BaseProduct
 improc::FactoryPattern<BaseProduct,KeyType,ProductCreator,FactoryErrorPolicy>::FactoryPattern() : callbacks_() 
 {
     static_assert(improc::is_hashable_v<KeyType>, "KeyType should be an integral or a string data type.");
+    // TODO: Add validation regarding functor and return type
+    // static_assert(improc::is_function_v<ProductCreator>, "Product creator must be a functor.");
+    // using ProductCreatorTraits = improc::function_traits<ProductCreator>;
+    // static_assert(std::is_same<typename ProductCreatorTraits::return_type, std::shared_ptr<BaseProduct>>::value,"Return type should be a BaseProduct pointer.");
 }
 
 template    <   class    BaseProduct

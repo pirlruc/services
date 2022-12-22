@@ -4,6 +4,7 @@
 #include <improc/exception.hpp>
 #include <improc/services/logger_services.hpp>
 #include <improc/services/factory/factory_pattern_policies.hpp>
+#include <improc/improc_function_traits.hpp>
 
 #include <pipes/helpers/invoke.hpp>
 

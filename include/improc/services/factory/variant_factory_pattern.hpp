@@ -4,12 +4,12 @@
 #include <improc/exception.hpp>
 #include <improc/services/logger_services.hpp>
 #include <improc/services/factory/factory_pattern.hpp>
+#include <improc/improc_function_traits.hpp>
 
 #include <variant>
 
 namespace improc
 {
-    // TODO: Add validation for variant with just one function
     template    <   class    BaseProduct
                 ,   typename KeyType
                 ,   typename VariantProductCreator = std::variant<std::function<std::shared_ptr<BaseProduct>>()>

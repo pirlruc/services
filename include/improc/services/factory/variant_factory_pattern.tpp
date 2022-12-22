@@ -2,7 +2,12 @@ template    <   class    BaseProduct
             ,   typename KeyType
             ,   typename VariantProductCreator
             ,   template <typename,class> class FactoryErrorPolicy  >
-improc::VariantFactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>::VariantFactoryPattern() : improc::FactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>() {};
+improc::VariantFactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>::VariantFactoryPattern() : improc::FactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>()
+{
+    static_assert(std::variant_size_v<VariantProductCreator> > 1, "If only one functor is going to be used, please use FactoryPattern.");
+    static_assert(improc::is_variant_arg_function_type_v<VariantProductCreator>, "Variant should have functor arguments.");
+    static_assert(improc::is_variant_arg_function_return_type_v<std::shared_ptr<BaseProduct>,VariantProductCreator>, "Return type should be a BaseProduct pointer.");
+};
 
 template    <   class    BaseProduct
             ,   typename KeyType
