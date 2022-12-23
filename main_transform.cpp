@@ -107,6 +107,11 @@ class TestVariant
 
 int main()
 {
+    static_assert(improc::is_variant<std::variant<int>>::value,"");
+    static_assert(improc::is_variant<std::variant<int,float>>::value,"");
+    static_assert(improc::is_variant<std::variant<int(float)>>::value,"");
+    // static_assert(improc::is_variant<int(float)>::value,"");
+
     using Traits_v1_1 = improc::function_traits<decltype(free_function)>;
     static_assert(Traits_v1_1::arity == 2,"");
     static_assert(std::is_same<Traits_v1_1::return_type,float>::value,"");
