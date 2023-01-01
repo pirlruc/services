@@ -6,6 +6,12 @@
 
 namespace improc
 {
+    /**
+     * @brief Factory pattern error policy throws an error if key is not found in factory.
+     * 
+     * @tparam KeyType - data type of the access key to the factory
+     * @tparam BaseProduct - output type of the factory pattern 
+     */
     template <typename KeyType, class BaseProduct>
     struct IMPROC_API FactoryPatternError
     {

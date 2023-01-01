@@ -1,3 +1,11 @@
+/**
+ * @brief Construct a new improc::FactoryPattern<BaseProduct,KeyType,ProductCreator,FactoryErrorPolicy> object
+ * 
+ * @tparam BaseProduct - output type of the factory pattern 
+ * @tparam KeyType - data type of the access key to the factory
+ * @tparam ProductCreator - functor to create the object of the factory
+ * @tparam FactoryErrorPolicy - policy to consider if key is not found in factory
+ */
 template    <   class    BaseProduct
             ,   typename KeyType
             ,   typename ProductCreator
@@ -13,6 +21,16 @@ improc::FactoryPattern<BaseProduct,KeyType,ProductCreator,FactoryErrorPolicy>::F
     }
 }
 
+/**
+ * @brief Registers a new object type to the factory
+ * 
+ * @param id - identification for the object type in the factory
+ * @param creator - functor to create the object type
+ * @tparam BaseProduct - output type of the factory pattern 
+ * @tparam KeyType - data type of the access key to the factory
+ * @tparam ProductCreator - functor to create the object of the factory
+ * @tparam FactoryErrorPolicy - policy to consider if key is not found in factory
+ */
 template    <   class    BaseProduct
             ,   typename KeyType
             ,   typename ProductCreator
@@ -28,6 +46,16 @@ improc::FactoryPattern<BaseProduct,KeyType,ProductCreator,FactoryErrorPolicy>& i
     return (*this);
 }
 
+/**
+ * @brief Unregisters a given object type from the factory
+ * 
+ * @param id - identification for the object type in the factory
+ * @tparam BaseProduct - output type of the factory pattern 
+ * @tparam KeyType - data type of the access key to the factory
+ * @tparam ProductCreator - functor to create the object of the factory
+ * @tparam FactoryErrorPolicy - policy to consider if key is not found in factory
+ * @return true if key exists in the factory and false if key does not exist
+ */
 template    <   class    BaseProduct
             ,   typename KeyType
             ,   typename ProductCreator
@@ -38,6 +66,15 @@ bool improc::FactoryPattern<BaseProduct,KeyType,ProductCreator,FactoryErrorPolic
     return this->callbacks_.erase(std::move(id)) != 0;
 }
 
+/**
+ * @brief Obtains the identifiers for the object types registered in the factory
+ * 
+ * @tparam BaseProduct - output type of the factory pattern 
+ * @tparam KeyType - data type of the access key to the factory
+ * @tparam ProductCreator - functor to create the object of the factory
+ * @tparam FactoryErrorPolicy - policy to consider if key is not found in factory
+ * @return std::vector<KeyType>
+ */
 template    <   class    BaseProduct
             ,   typename KeyType
             ,   typename ProductCreator
@@ -51,6 +88,15 @@ std::vector<KeyType> improc::FactoryPattern<BaseProduct,KeyType,ProductCreator,F
     return ids;
 }
 
+/**
+ * @brief Obtains the number of object types registered in the factory
+ * 
+ * @tparam BaseProduct - output type of the factory pattern 
+ * @tparam KeyType - data type of the access key to the factory
+ * @tparam ProductCreator - functor to create the object of the factory
+ * @tparam FactoryErrorPolicy - policy to consider if key is not found in factory
+ * @return size_t
+ */
 template    <   class    BaseProduct
             ,   typename KeyType
             ,   typename ProductCreator
@@ -61,6 +107,17 @@ size_t improc::FactoryPattern<BaseProduct,KeyType,ProductCreator,FactoryErrorPol
     return this->callbacks_.size();
 }
 
+/**
+ * @brief Creates the object type using the functor registered on the factory
+ * 
+ * @param id - identification for the object type in the factory
+ * @param args - arguments to pass to the functor of the object type
+ * @tparam BaseProduct - output type of the factory pattern 
+ * @tparam KeyType - data type of the access key to the factory
+ * @tparam ProductCreator - functor to create the object of the factory
+ * @tparam FactoryErrorPolicy - policy to consider if key is not found in factory
+ * @return std::shared_ptr<BaseProduct>
+ */
 template    <   class    BaseProduct
             ,   typename KeyType
             ,   typename ProductCreator

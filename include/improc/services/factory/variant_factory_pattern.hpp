@@ -10,6 +10,15 @@
 
 namespace improc
 {
+    /**
+     * @brief The variant factory pattern can be used to create different objects that share
+     * the same BaseProduct using different functors.
+     * 
+     * @tparam BaseProduct - output type of the factory pattern 
+     * @tparam KeyType - data type of the access key to the factory
+     * @tparam VariantProductCreator - different functors that allow to create the object of the factory
+     * @tparam FactoryErrorPolicy - policy to consider if key is not found in factory
+     */
     template    <   class    BaseProduct
                 ,   typename KeyType
                 ,   typename VariantProductCreator = std::variant<std::function<std::shared_ptr<BaseProduct>>()>

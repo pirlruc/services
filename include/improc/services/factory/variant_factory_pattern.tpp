@@ -1,3 +1,11 @@
+/**
+ * @brief Construct a new improc::VariantFactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy> object
+ * 
+ * @tparam BaseProduct - output type of the factory pattern 
+ * @tparam KeyType - data type of the access key to the factory
+ * @tparam VariantProductCreator - different functors that allow to create the object of the factory
+ * @tparam FactoryErrorPolicy - policy to consider if key is not found in factory
+ */
 template    <   class    BaseProduct
             ,   typename KeyType
             ,   typename VariantProductCreator
@@ -9,6 +17,16 @@ improc::VariantFactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryE
     static_assert(improc::is_variant_arg_function_return_type_v<std::shared_ptr<BaseProduct>,VariantProductCreator>, "Return type should be a BaseProduct pointer.");
 };
 
+/**
+ * @brief Registers a new object type to the factory
+ * 
+ * @param id - identification for the object type in the factory
+ * @param creator - functor to create the object type
+ * @tparam BaseProduct - output type of the factory pattern 
+ * @tparam KeyType - data type of the access key to the factory
+ * @tparam VariantProductCreator - different functors that allow to create the object of the factory
+ * @tparam FactoryErrorPolicy - policy to consider if key is not found in factory
+ */
 template    <   class    BaseProduct
             ,   typename KeyType
             ,   typename VariantProductCreator
@@ -25,6 +43,16 @@ improc::VariantFactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryE
     return (*this);
 }
 
+/**
+ * @brief Unregisters a given object type from the factory
+ * 
+ * @param id - identification for the object type in the factory
+ * @tparam BaseProduct - output type of the factory pattern 
+ * @tparam KeyType - data type of the access key to the factory
+ * @tparam VariantProductCreator - different functors that allow to create the object of the factory
+ * @tparam FactoryErrorPolicy - policy to consider if key is not found in factory
+ * @return true if key exists in the factory and false if key does not exist
+ */
 template    <   class    BaseProduct
             ,   typename KeyType
             ,   typename VariantProductCreator
@@ -35,6 +63,15 @@ bool improc::VariantFactoryPattern<BaseProduct,KeyType,VariantProductCreator,Fac
     return this->improc::FactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>::Unregister(std::move(id));
 }
 
+/**
+ * @brief Obtains the identifiers for the object types registered in the factory
+ * 
+ * @tparam BaseProduct - output type of the factory pattern 
+ * @tparam KeyType - data type of the access key to the factory
+ * @tparam VariantProductCreator - different functors that allow to create the object of the factory
+ * @tparam FactoryErrorPolicy - policy to consider if key is not found in factory
+ * @return std::vector<KeyType>
+ */
 template    <   class    BaseProduct
             ,   typename KeyType
             ,   typename VariantProductCreator
@@ -45,6 +82,15 @@ std::vector<KeyType> improc::VariantFactoryPattern<BaseProduct,KeyType,VariantPr
     return this->improc::FactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>::GetRegisteredIds();
 }
 
+/**
+ * @brief Obtains the number of object types registered in the factory
+ * 
+ * @tparam BaseProduct - output type of the factory pattern 
+ * @tparam KeyType - data type of the access key to the factory
+ * @tparam VariantProductCreator - different functors that allow to create the object of the factory
+ * @tparam FactoryErrorPolicy - policy to consider if key is not found in factory
+ * @return size_t
+ */
 template    <   class    BaseProduct
             ,   typename KeyType
             ,   typename VariantProductCreator
@@ -55,6 +101,18 @@ size_t improc::VariantFactoryPattern<BaseProduct,KeyType,VariantProductCreator,F
     return this->improc::FactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>::Size();
 }
 
+/**
+ * @brief Creates the object type using the functor registered on the factory
+ * 
+ * @param id - identification for the object type in the factory
+ * @param args - arguments to pass to the functor of the object type
+ * @tparam BaseProduct - output type of the factory pattern 
+ * @tparam KeyType - data type of the access key to the factory
+ * @tparam VariantProductCreator - different functors that allow to create the object of the factory
+ * @tparam FactoryErrorPolicy - policy to consider if key is not found in factory
+ * @tparam ProductCreator - specific functor to create the object of the factory
+ * @return std::shared_ptr<BaseProduct>
+ */
 template    <   class    BaseProduct
             ,   typename KeyType
             ,   typename VariantProductCreator
