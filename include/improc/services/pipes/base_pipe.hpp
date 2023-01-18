@@ -13,6 +13,7 @@
 namespace improc 
 {
     // TODO: Add documentation
+    // TODO: Review implementation
     template<typename Function>
     class IMPROC_API BasePipe : public pipes::pipe_base
     {
