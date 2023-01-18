@@ -22,30 +22,12 @@ jobs:
       matrix:
         config:
         - {
-            name: "ubuntu-latest-gcc-boost-on",
-            os: ubuntu-latest,
-            build_type: "Release",
-            cc: "gcc-11",
-            cxx: "g++-11",
-            boost: "ON",
-            coverage: "OFF"
-          }
-        - {
             name: "ubuntu-latest-gcc-boost-off",
             os: ubuntu-latest,
             build_type: "Release",
             cc: "gcc-11",
             cxx: "g++-11",
             boost: "OFF",
-            coverage: "OFF"
-          }
-        - {
-            name: "ubuntu-latest-clang-boost-on",
-            os: ubuntu-latest,
-            build_type: "Release",
-            cc: "clang-14",
-            cxx: "clang++-14",
-            boost: "ON",
             coverage: "OFF"
           }
         - {
@@ -57,24 +39,6 @@ jobs:
             boost: "OFF",
             coverage: "OFF"
           }
-        # - {
-        #     name: "windows-latest-gcc-boost-off",
-        #     os: windows-latest,
-        #     build_type: "Release",
-        #     cc: "gcc",
-        #     cxx: "g++",
-        #     boost: "OFF",
-        #     coverage: "OFF"
-        #   }
-        # - {
-        #     name: "windows-latest-clang",
-        #     os: windows-latest,
-        #     build_type: "Release",
-        #     cc: "clang",
-        #     cxx: "clang++",
-        #     boost: "OFF",
-        #     coverage: "OFF"
-        #   }
           
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
