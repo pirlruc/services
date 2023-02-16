@@ -77,9 +77,18 @@ jobs:
         shell: bash
         run: |
           cd build/bin
-          ./improc_services_testd
+          ./improc_services_testd --gtest_output="xml:improc_services_tests.xml"
           cd ..
           make improc_services_coverage
+
+      - name: Unit Tests Report 
+        uses: EnricoMi/publish-unit-test-result-action@v2.4.1
+        if: always()
+        with:
+          check_name: "Unit Tests Report"
+          time_unit: milliseconds
+          files: |
+            build/**/improc_services_tests.xml
 
       - name: Run codacy-coverage-reporter
         uses: codacy/codacy-coverage-reporter-action@v1
