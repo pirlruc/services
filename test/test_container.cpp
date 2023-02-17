@@ -23,7 +23,7 @@ TEST(Container,TestExistsInContainer) {
 TEST(Container,TestAddDuplicateItemToContainer) {
     improc::Container<int,std::any> container {};
     container.Add(1,"Test 1");
-    EXPECT_THROW(container.Add(1,"Test 2"),improc::duplicated_key);
+    EXPECT_THROW(container.Add(1,"Test 2"),improc::key_error);
 }
 
 TEST(Container,TestAddDifferentItemsToContainer) {
@@ -45,7 +45,7 @@ TEST(Container,TestGetExistingItemFromContainer) {
 
 TEST(Container,TestGetNonExistingItemFromContainer) {
     improc::Container<int,std::any> container {};
-    EXPECT_THROW(container.Get(1),improc::not_found_key);
+    EXPECT_THROW(container.Get(1),improc::key_error);
 }
 
 TEST(Container,TestEraseNonExistingItemFromContainer) {

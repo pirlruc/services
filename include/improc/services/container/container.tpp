@@ -44,8 +44,9 @@ improc::Container<KeyType,ContainerType>& improc::Container<KeyType,ContainerTyp
     IMPROC_SERVICES_LOGGER_TRACE("Adding key {} to container...", key);
     if (this->hash_table_.insert(typename HashMap::value_type(key,std::move(item))).second == 0)
     {
-        IMPROC_SERVICES_LOGGER_ERROR("ERROR_01: Duplicated key {} in container.", key);
-        throw improc::duplicated_key();
+        std::string error_message = fmt::format("Duplicated key {} in container", key);
+        IMPROC_SERVICES_LOGGER_ERROR("ERROR_01: " + error_message);
+        throw improc::key_error(std::move(error_message));
     }
     return (*this);
 }
@@ -71,8 +72,9 @@ ContainerType improc::Container<KeyType,ContainerType>::Get(const KeyType& key) 
     }
     else
     {
-        IMPROC_SERVICES_LOGGER_ERROR("ERROR_02: Key {} not found in container.", key);
-        throw improc::not_found_key();
+        std::string error_message = fmt::format("Key {} not found in container", key);
+        IMPROC_SERVICES_LOGGER_ERROR("ERROR_02: " + error_message);
+        throw improc::key_error(std::move(error_message));
     }
 }
 

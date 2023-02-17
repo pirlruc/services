@@ -37,8 +37,9 @@ improc::VariantFactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryE
     IMPROC_SERVICES_LOGGER_TRACE("Registering ID {} in variant factory...", id);
     if (this->callbacks_.insert(typename improc::FactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>::CallbackMap::value_type(id,std::move(creator))).second == 0)
     {
-        IMPROC_SERVICES_LOGGER_ERROR("ERROR_01: Duplicated ID {} in variant factory.", id);
-        throw improc::duplicated_key();
+        std::string error_message = fmt::format("Duplicated ID {} in variant factory", id);
+        IMPROC_SERVICES_LOGGER_ERROR("ERROR_01: " + error_message);
+        throw improc::key_error(std::move(error_message));
     }
     return (*this);
 }

@@ -15,10 +15,12 @@ namespace improc
     template <typename KeyType, class BaseProduct>
     struct IMPROC_API FactoryPatternError
     {
-        static std::shared_ptr<BaseProduct> OnUnknownType(const KeyType&)
+        static std::shared_ptr<BaseProduct> OnUnknownType(const KeyType& id)
         {
             static_assert(improc::is_hashable_v<KeyType>, "KeyType should be an integral or a string data type.");
-            throw improc::not_found_in_factory();
+            std::string error_message = fmt::format("Unknown object type passed to factory with id {}", id);
+            IMPROC_SERVICES_LOGGER_ERROR("ERROR_01: " + error_message);
+            throw improc::key_error(std::move(error_message));
         }
     };
 }

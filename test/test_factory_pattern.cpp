@@ -13,7 +13,7 @@ typedef improc::FactoryPattern<improc::StringKeyHeterogeneousBaseService,std::st
 
 TEST(FactoryPatternPolicy,TestFactoryOnUnknownType) {
     improc::FactoryPatternError<std::string,int> factory_error;
-    EXPECT_THROW(factory_error.OnUnknownType("1"),improc::not_found_in_factory);
+    EXPECT_THROW(factory_error.OnUnknownType("1"),improc::key_error);
 }
 
 TEST(FactoryPattern,TestFactoryEmptyConstructor) {
@@ -36,7 +36,7 @@ TEST(FactoryPattern,TestDuplicateItemsToFactory) {
     FactoryPattern factory {};
     EXPECT_NO_THROW(factory.Register("increment",std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<IncrementTest>}));
     EXPECT_NO_THROW(factory.Register("subtract",std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<SubtractTestOneInput>}));
-    EXPECT_THROW(factory.Register("increment" ,std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<MultiplyTest>}),improc::duplicated_key);
+    EXPECT_THROW(factory.Register("increment" ,std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)> {&improc::LoadServiceFromJson<MultiplyTest>}),improc::key_error);
     EXPECT_EQ(factory.GetRegisteredIds().size(),2);    
     EXPECT_EQ(factory.GetRegisteredIds()[0],"subtract");    
     EXPECT_EQ(factory.Size(),2);    
@@ -64,7 +64,7 @@ TEST(FactoryPattern,TestCreationExceptionFromFactory) {
     Json::Value json_content = json_file.Read();
 
     FactoryPattern factory {};
-    EXPECT_THROW(factory.Create("increment",json_content),improc::not_found_in_factory);
+    EXPECT_THROW(factory.Create("increment",json_content),improc::key_error);
 }
 
 TEST(FactoryPattern,TestCreationFromFactory) {

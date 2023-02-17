@@ -16,25 +16,25 @@ TEST(SequenceService,TestSequenceServiceEmptyConstructor) {
 TEST(SequenceService,TestServicesNotInJson) {
     Json::Value json_content = improc::JsonFile::Read(std::string(IMPROC_SERVICES_TEST_FOLDER) + "/test/data/test_no_services.json");
     improc::StringKeyHeterogeneousSequenceService sequence {};
-    EXPECT_THROW(sequence.Load(LoadFactory().factory,json_content),improc::file_processing_error);
+    EXPECT_THROW(sequence.Load(LoadFactory().factory,json_content),improc::json_error);
 }
 
 TEST(SequenceService,TestServiceTypeNotInJson) {
     Json::Value json_content = improc::JsonFile::Read(std::string(IMPROC_SERVICES_TEST_FOLDER) + "/test/data/test_no_service_type.json");
     improc::StringKeyHeterogeneousSequenceService sequence {};
-    EXPECT_THROW(sequence.Load(LoadFactory().factory,json_content),improc::file_processing_error);
+    EXPECT_THROW(sequence.Load(LoadFactory().factory,json_content),improc::json_error);
 }
 
 TEST(SequenceService,TestServiceInputsNotInJson) {
     Json::Value json_content = improc::JsonFile::Read(std::string(IMPROC_SERVICES_TEST_FOLDER) + "/test/data/test_no_service_inputs.json");
     improc::StringKeyHeterogeneousSequenceService sequence {};
-    EXPECT_THROW(sequence.Load(LoadFactory().factory,json_content),improc::file_processing_error);
+    EXPECT_THROW(sequence.Load(LoadFactory().factory,json_content),improc::json_error);
 }
 
 TEST(SequenceService,TestServiceOutputsNotInJson) {
     Json::Value json_content = improc::JsonFile::Read(std::string(IMPROC_SERVICES_TEST_FOLDER) + "/test/data/test_no_service_outputs.json");
     improc::StringKeyHeterogeneousSequenceService sequence {};
-    EXPECT_THROW(sequence.Load(LoadFactory().factory,json_content),improc::file_processing_error);
+    EXPECT_THROW(sequence.Load(LoadFactory().factory,json_content),improc::json_error);
 }
 
 TEST(SequenceService,TestSequenceServiceRunWithDuplicateService) {

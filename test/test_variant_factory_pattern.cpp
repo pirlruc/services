@@ -72,7 +72,7 @@ TEST(VariantFactoryPattern,TestAddItemsToFactory) {
 TEST(VariantFactoryPattern,TestDuplicateItemsToFactory) {
     VariantFactoryPattern factory {};
     EXPECT_NO_THROW(factory.Register("increment",std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)>   {&TestLoadServiceFromJson<IncrementTest>}));
-    EXPECT_THROW(factory.Register("increment" ,std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&,int)> {&TestLoadServiceFromJsonInt<SubtractTestWithOneInputLoad>}),improc::duplicated_key);
+    EXPECT_THROW(factory.Register("increment" ,std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&,int)> {&TestLoadServiceFromJsonInt<SubtractTestWithOneInputLoad>}),improc::key_error);
     EXPECT_EQ(factory.GetRegisteredIds().size(),1);    
     EXPECT_EQ(factory.GetRegisteredIds()[0],"increment");    
     EXPECT_EQ(factory.Size(),1);    
@@ -100,7 +100,7 @@ TEST(VariantFactoryPattern,TestCreationExceptionFromFactory) {
     Json::Value json_content = json_file.Read();
 
     VariantFactoryPattern factory {};
-    EXPECT_THROW(factory.Create<std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)>>("increment",json_content),improc::not_found_in_factory);
+    EXPECT_THROW(factory.Create<std::function<std::shared_ptr<improc::StringKeyHeterogeneousBaseService>(const Json::Value&)>>("increment",json_content),improc::key_error);
 }
 
 TEST(VariantFactoryPattern,TestCreationFromFactory) {
