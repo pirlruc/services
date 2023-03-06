@@ -12,7 +12,6 @@ template    <   class    BaseProduct
             ,   template <typename,class> class FactoryErrorPolicy  >
 improc::FactoryPattern<BaseProduct,KeyType,ProductCreator,FactoryErrorPolicy>::FactoryPattern() : callbacks_() 
 {
-    static_assert(improc::is_hashable_v<KeyType>, "KeyType should be an integral or a string data type.");
     if constexpr (!improc::is_variant_v<ProductCreator>)
     {
         static_assert(improc::is_function_v<ProductCreator>, "Product creator must be a functor.");

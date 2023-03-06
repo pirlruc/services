@@ -22,6 +22,8 @@ namespace improc
     template <typename KeyType,typename ContainerType>
     class IMPROC_API Container
     {
+        static_assert(improc::is_hashable_v<KeyType>, "KeyType should be an integral or a string data type.");
+        
         private:
             typedef std::unordered_map<KeyType,ContainerType> HashMap;
             HashMap         hash_table_;
