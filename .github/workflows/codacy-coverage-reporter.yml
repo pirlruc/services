@@ -85,7 +85,7 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action@v2.4.1
         if: always()
         with:
-          check_name: "Unit Tests Report"
+          check_name: "unit-tests-report"
           time_unit: milliseconds
           files: |
             build/**/improc_services_tests.xml
