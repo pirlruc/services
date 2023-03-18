@@ -139,6 +139,4 @@ jobs:
       - name: Test
         if: startsWith(matrix.config.coverage, 'OFF')
         shell: bash
-        run: |
-          cat build/improc_services_test/improc_services_test[1]_tests.cmake
-          ./build/bin/improc_services_test
+        run: ./build/bin/improc_services_test
