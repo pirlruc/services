@@ -82,7 +82,6 @@ jobs:
       - name: Code Coverage Report
         shell: bash
         run: |
-          cat build/improc_infrastructure_test/improc_infrastructure_test[1]_tests.cmake
           cat build/improc_services_test/improc_services_test[1]_tests.cmake
           cd build/bin
           ./improc_services_testd --gtest_output="xml:improc_services_tests.xml"
