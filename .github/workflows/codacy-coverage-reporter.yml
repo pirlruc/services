@@ -84,8 +84,9 @@ jobs:
       - name: Code Coverage Report
         shell: bash
         run: |
+          ls
           cd build/bin
-          chmod +x improc_services_testd
+          ls
           ./improc_services_testd --gtest_output="xml:improc_services_tests.xml"
           cd ..
           make improc_services_coverage
