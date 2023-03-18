@@ -75,7 +75,7 @@ set(
   ${PROJECT_SOURCE_DIR}/include/improc/services/pipes/base_pipe.hpp
 )
 
-if (WIN32 OR WINCE)
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND (WIN32 OR WINCE))
   set(IMPROC_SERVICES_LIB_FILES ${IMPROC_SERVICES_LIB_FILES} ${PROJECT_SOURCE_DIR}/src/main.cpp)
 endif()
 
