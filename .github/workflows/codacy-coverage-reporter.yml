@@ -85,7 +85,7 @@ jobs:
         shell: bash
         run: |
           cd build/bin
-          ls
+          chmod +x improc_services_testd
           ./improc_services_testd --gtest_output="xml:improc_services_tests.xml"
           cd ..
           make improc_services_coverage
