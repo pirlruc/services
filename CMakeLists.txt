@@ -35,7 +35,7 @@ endif()
 FetchContent_Declare(
   pipes
   GIT_REPOSITORY  https://github.com/pirlruc/pipes
-  GIT_TAG         e4dd4758bf60abcae5137608f825e291fe315148
+  GIT_TAG         db9c72f7b7c5fb77de7c0f25b0636de986a219c1
   SOURCE_DIR      ${PROJECT_SOURCE_DIR}/external/pipes
 )
 set(BUILD_TESTING OFF)
@@ -69,6 +69,8 @@ set(
   ${PROJECT_SOURCE_DIR}/include/improc/services/factory/variant_factory_pattern.hpp
   ${PROJECT_SOURCE_DIR}/include/improc/services/factory/variant_factory_pattern.tpp
   ${PROJECT_SOURCE_DIR}/include/improc/services/pipes/base_pipe.hpp
+
+  ${PROJECT_SOURCE_DIR}/src/main.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${IMPROC_SERVICES_LIB_FILES})
@@ -106,9 +108,9 @@ install(
 install(FILES     ${PROJECT_SOURCE_DIR}/external/pipes/LICENSE  DESTINATION share/licenses/improc/pipes)
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/improc          DESTINATION include)
 
-add_executable(main_transform_test main_transform.cpp)
-set_target_properties(main_transform_test PROPERTIES CXX_STANDARD           17)
-set_target_properties(main_transform_test PROPERTIES CXX_STANDARD_REQUIRED  TRUE)
-set_target_properties(main_transform_test PROPERTIES LINKER_LANGUAGE        CXX)
-target_link_libraries(main_transform_test PRIVATE    improc::services)
-target_link_libraries(main_transform_test PRIVATE    pipes)
+# add_executable(main_transform_test main_transform.cpp)
+# set_target_properties(main_transform_test PROPERTIES CXX_STANDARD           17)
+# set_target_properties(main_transform_test PROPERTIES CXX_STANDARD_REQUIRED  TRUE)
+# set_target_properties(main_transform_test PROPERTIES LINKER_LANGUAGE        CXX)
+# target_link_libraries(main_transform_test PRIVATE    improc::services)
+# target_link_libraries(main_transform_test PRIVATE    pipes)

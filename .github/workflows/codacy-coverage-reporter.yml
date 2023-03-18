@@ -38,13 +38,20 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Print Event
+        run: |
+          echo github.event.action: ${{ github.event.action }}
+          echo github.event_name: ${{ github.event_name }}
+
       - name: Install Dependencies Linux
         run: |
           sudo apt-get update
+          sudo apt-get install ninja-build
           sudo apt-get install cmake
           sudo apt-get install gcc-11 g++-11
           sudo apt-get install clang-14
           sudo apt-get install lcov
+          ninja    --version
           cmake    --version
           gcc      --version
           gcc-11   --version
