@@ -8,6 +8,10 @@ if(NOT DEFINED IMPROC_SUPERPROJECT_VERSION)
   set(IMPROC_SUPERPROJECT_VERSION 1.0.0)
 endif()
 
+if(NOT DEFINED IMPROC_SERVICES_WITH_TESTS)
+  set(IMPROC_SERVICES_WITH_TESTS OFF)
+endif()
+
 project(
   improc_services
   VERSION     ${IMPROC_SUPERPROJECT_VERSION}
@@ -69,9 +73,11 @@ set(
   ${PROJECT_SOURCE_DIR}/include/improc/services/factory/variant_factory_pattern.hpp
   ${PROJECT_SOURCE_DIR}/include/improc/services/factory/variant_factory_pattern.tpp
   ${PROJECT_SOURCE_DIR}/include/improc/services/pipes/base_pipe.hpp
-
-  ${PROJECT_SOURCE_DIR}/src/main.cpp
 )
+
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND (WIN32 OR WINCE))
+  set(IMPROC_SERVICES_LIB_FILES ${IMPROC_SERVICES_LIB_FILES} ${PROJECT_SOURCE_DIR}/src/main.cpp)
+endif()
 
 add_library(${PROJECT_NAME} SHARED ${IMPROC_SERVICES_LIB_FILES})
 add_library(improc::services ALIAS ${PROJECT_NAME})
@@ -94,7 +100,7 @@ target_link_libraries       (${PROJECT_NAME}   INTERFACE improc::infrastructure)
 target_link_libraries       (${PROJECT_NAME}   INTERFACE pipes)
 
 # Tests configuration
-if(IMPROC_WITH_TESTS)
+if(IMPROC_WITH_TESTS OR IMPROC_SERVICES_WITH_TESTS)
   add_subdirectory(${PROJECT_SOURCE_DIR}/test     ${CMAKE_BINARY_DIR}/improc_services_test)
 endif()
 
