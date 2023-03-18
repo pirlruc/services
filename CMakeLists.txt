@@ -8,6 +8,10 @@ if(NOT DEFINED IMPROC_SUPERPROJECT_VERSION)
   set(IMPROC_SUPERPROJECT_VERSION 1.0.0)
 endif()
 
+if(NOT DEFINED IMPROC_SERVICES_WITH_TESTS)
+  set(IMPROC_SERVICES_WITH_TESTS OFF)
+endif()
+
 project(
   improc_services
   VERSION     ${IMPROC_SUPERPROJECT_VERSION}
@@ -94,7 +98,7 @@ target_link_libraries       (${PROJECT_NAME}   INTERFACE improc::infrastructure)
 target_link_libraries       (${PROJECT_NAME}   INTERFACE pipes)
 
 # Tests configuration
-if(IMPROC_WITH_TESTS)
+if(IMPROC_WITH_TESTS OR IMPROC_SERVICES_WITH_TESTS)
   add_subdirectory(${PROJECT_SOURCE_DIR}/test     ${CMAKE_BINARY_DIR}/improc_services_test)
 endif()
 
