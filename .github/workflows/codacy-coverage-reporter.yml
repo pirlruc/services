@@ -82,9 +82,10 @@ jobs:
       - name: Code Coverage Report
         shell: bash
         run: |
-          ls
+          ls build/improc_services_test
+          cat build/improc_services_test/improc_services_test[1]_tests.cmake
           cd build/bin
-          ls
+          cat improc_services_testd
           ./improc_services_testd --gtest_output="xml:improc_services_tests.xml"
           cd ..
           make improc_services_coverage
