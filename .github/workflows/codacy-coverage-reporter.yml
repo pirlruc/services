@@ -56,7 +56,7 @@ jobs:
           clang-14 --version
           lcov     --version
           cd ..
-          git clone --recurse-submodules -b developer https://github.com/pirlruc/infrastructure.git
+          git clone --recurse-submodules -b ${{ steps.branch-name.outputs.current_branch }} https://github.com/pirlruc/infrastructure.git
 
       - name: Configure
         shell: bash
