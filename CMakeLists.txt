@@ -73,9 +73,11 @@ set(
   ${PROJECT_SOURCE_DIR}/include/improc/services/factory/variant_factory_pattern.hpp
   ${PROJECT_SOURCE_DIR}/include/improc/services/factory/variant_factory_pattern.tpp
   ${PROJECT_SOURCE_DIR}/include/improc/services/pipes/base_pipe.hpp
-
-  ${PROJECT_SOURCE_DIR}/src/main.cpp
 )
+
+if (WIN32 OR WINCE)
+  set(IMPROC_SERVICES_LIB_FILES ${IMPROC_SERVICES_LIB_FILES} ${PROJECT_SOURCE_DIR}/src/main.cpp)
+endif()
 
 add_library(${PROJECT_NAME} SHARED ${IMPROC_SERVICES_LIB_FILES})
 add_library(improc::services ALIAS ${PROJECT_NAME})
