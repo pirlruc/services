@@ -5,9 +5,11 @@ on:
   push:
     branches: 
     - main
+    - developer
   pull_request:
     branches: 
     - main
+    - developer
 
   # Runs this workflow manually from the Actions tab
   workflow_dispatch:
@@ -28,8 +30,6 @@ jobs:
             cc: "gcc-11",
             cxx: "g++-11",
             generator: "Unix Makefiles",
-            archiver: "7z a",
-            artifact: "ubuntu_gcc.7z",
             boost: "OFF",
             coverage: "OFF"
           }
@@ -40,8 +40,6 @@ jobs:
             cc: "clang-14",
             cxx: "clang++-14",
             generator: "Unix Makefiles",
-            archiver: "7z a",
-            artifact: "ubuntu_clang.7z",
             boost: "OFF",
             coverage: "OFF"
           }
@@ -52,8 +50,6 @@ jobs:
             cc: "gcc",
             cxx: "g++",
             generator: "Ninja",
-            archiver: "7z a",
-            artifact: "windows_gcc.7z",
             boost: "OFF",
             coverage: "OFF"
           }
@@ -64,8 +60,6 @@ jobs:
             cc: "clang",
             cxx: "clang++",
             generator: "Ninja",
-            archiver: "7z a",
-            artifact: "windows_clang.7z",
             boost: "OFF",
             coverage: "OFF"
           }
@@ -113,11 +107,28 @@ jobs:
           cd ..
           git clone --recurse-submodules -b ${{ steps.branch-name.outputs.current_branch }} https://github.com/pirlruc/infrastructure.git
           
-      - name: Configure
+      - name: Restore Build Cache
+        id: restore-build-cache
+        uses: actions/cache/restore@v3
+        with:
+          path: |
+            build/*
+            external/*
+            test/external/*
+          key: ${{ matrix.config.os }}-build-${{ matrix.config.cxx }}-${{ matrix.config.build_type }}-boost_${{ matrix.config.boost }}-coverage_${{ matrix.config.coverage }}-tests_OFF-${{ hashFiles('CMakeLists.txt','test/CMakeLists.txt') }}
+          restore-keys: |
+            ${{ matrix.config.os }}-build-${{ matrix.config.cxx }}-${{ matrix.config.build_type }}-boost_${{ matrix.config.boost }}-coverage_${{ matrix.config.coverage }}-tests_OFF-
+
+      - name: Clean Build Folder
+        if: steps.restore-build-cache.outputs.cache-hit != 'true'
         shell: bash
         run: |
           rm -rf build
           mkdir build
+
+      - name: Configure
+        shell: bash
+        run: |
           cmake \
             -S . \
             -B build \
@@ -134,20 +145,23 @@ jobs:
         shell: bash
         run: cmake --build build --config ${{ matrix.config.build_type }} --target all
 
+      - name: Save Build Cache
+        id: save-build-cache
+        uses: actions/cache/save@v3
+        with:
+          path: |
+            build/*
+            external/*
+            test/external/*
+          key: ${{ matrix.config.os }}-build-${{ matrix.config.cxx }}-${{ matrix.config.build_type }}-boost_${{ matrix.config.boost }}-coverage_${{ matrix.config.coverage }}-tests_OFF-${{ hashFiles('CMakeLists.txt','test/CMakeLists.txt') }}
+
       - name: Install Strip
         shell: bash
         run: cmake --install build --strip
 
-      - name: Pack
-        shell: bash
-        working-directory: install
-        run: |
-          ls -laR
-          ${{ matrix.config.archiver }} ../${{ matrix.config.artifact }} .
-
       - name: Upload Build Artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3.1.2
         with: 
           name: ${{ matrix.config.name }}
-          path: ./${{ matrix.config.artifact }}
+          path: install/*
           

@@ -27,8 +27,6 @@ jobs:
             cc: "clang-14",
             cxx: "clang++-14",
             generator: "Unix Makefiles",
-            archiver: "7z a",
-            artifact: "ubuntu_clang.7z",
             boost: "OFF",
             coverage: "ON"
           }

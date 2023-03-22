@@ -30,8 +30,6 @@ jobs:
             cc: "gcc-11",
             cxx: "g++-11",
             generator: "Unix Makefiles",
-            archiver: "7z a",
-            artifact: "ubuntu_gcc.7z",
             boost: "OFF",
             coverage: "OFF"
           }
@@ -42,8 +40,6 @@ jobs:
             cc: "clang-14",
             cxx: "clang++-14",
             generator: "Unix Makefiles",
-            archiver: "7z a",
-            artifact: "ubuntu_clang.7z",
             boost: "OFF",
             coverage: "OFF"
           }
@@ -54,8 +50,6 @@ jobs:
             cc: "gcc",
             cxx: "g++",
             generator: "Ninja",
-            archiver: "7z a",
-            artifact: "windows_gcc.7z",
             boost: "OFF",
             coverage: "OFF"
           }
@@ -66,8 +60,6 @@ jobs:
             cc: "clang",
             cxx: "clang++",
             generator: "Ninja",
-            archiver: "7z a",
-            artifact: "windows_clang.7z",
             boost: "OFF",
             coverage: "OFF"
           }
