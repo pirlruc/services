@@ -9,6 +9,7 @@ on:
   pull_request:
     branches: 
     - main
+    - developer
 
   # Runs this workflow manually from the Actions tab
   workflow_dispatch:
@@ -114,11 +115,28 @@ jobs:
           cd ..
           git clone --recurse-submodules -b ${{ steps.branch-name.outputs.current_branch }} https://github.com/pirlruc/infrastructure.git
           
-      - name: Configure
+      - name: Restore Build Cache
+        id: restore-build-cache
+        uses: actions/cache/restore@v3
+        with:
+          path: |
+            build/*
+            external/*
+            test/external/*
+          key: ${{ matrix.config.os }}-build-${{ matrix.config.cxx }}-${{ matrix.config.build_type }}-boost_${{ matrix.config.boost }}-coverage_${{ matrix.config.coverage }}-tests_ON-${{ hashFiles('CMakeLists.txt','test/CMakeLists.txt') }}
+          restore-keys: |
+            ${{ matrix.config.os }}-build-${{ matrix.config.cxx }}-${{ matrix.config.build_type }}-boost_${{ matrix.config.boost }}-coverage_${{ matrix.config.coverage }}-tests_ON-
+
+      - name: Clean Build Folder
+        if: steps.restore-build-cache.outputs.cache-hit != 'true'
         shell: bash
         run: |
           rm -rf build
           mkdir build
+
+      - name: Configure
+        shell: bash
+        run: |
           cmake \
             -S . \
             -B build \
@@ -134,6 +152,16 @@ jobs:
       - name: Build
         shell: bash
         run: cmake --build build --config ${{ matrix.config.build_type }} --target all
+
+      - name: Save Build Cache
+        id: save-build-cache
+        uses: actions/cache/save@v3
+        with:
+          path: |
+            build/*
+            external/*
+            test/external/*
+          key: ${{ matrix.config.os }}-build-${{ matrix.config.cxx }}-${{ matrix.config.build_type }}-boost_${{ matrix.config.boost }}-coverage_${{ matrix.config.coverage }}-tests_ON-${{ hashFiles('CMakeLists.txt','test/CMakeLists.txt') }}
 
       - name: Test
         if: startsWith(matrix.config.coverage, 'OFF')

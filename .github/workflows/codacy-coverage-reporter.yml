@@ -9,6 +9,7 @@ on:
   pull_request:
     branches: 
     - main
+    - developer
 
 jobs:
   codacy-coverage-reporter:
@@ -25,6 +26,9 @@ jobs:
             build_type: "Debug",
             cc: "clang-14",
             cxx: "clang++-14",
+            generator: "Unix Makefiles",
+            archiver: "7z a",
+            artifact: "ubuntu_clang.7z",
             boost: "OFF",
             coverage: "ON"
           }
@@ -58,11 +62,28 @@ jobs:
           cd ..
           git clone --recurse-submodules -b ${{ steps.branch-name.outputs.current_branch }} https://github.com/pirlruc/infrastructure.git
 
-      - name: Configure
+      - name: Restore Build Cache
+        id: restore-build-cache
+        uses: actions/cache/restore@v3
+        with:
+          path: |
+            build/*
+            external/*
+            test/external/*
+          key: ${{ matrix.config.os }}-build-${{ matrix.config.cxx }}-${{ matrix.config.build_type }}-boost_${{ matrix.config.boost }}-coverage_${{ matrix.config.coverage }}-tests_ON-${{ hashFiles('CMakeLists.txt','test/CMakeLists.txt') }}
+          restore-keys: |
+            ${{ matrix.config.os }}-build-${{ matrix.config.cxx }}-${{ matrix.config.build_type }}-boost_${{ matrix.config.boost }}-coverage_${{ matrix.config.coverage }}-tests_ON-
+
+      - name: Clean Build Folder
+        if: steps.restore-build-cache.outputs.cache-hit != 'true'
         shell: bash
         run: |
           rm -rf build
           mkdir build
+
+      - name: Configure
+        shell: bash
+        run: |
           cmake \
             -S . \
             -B build \
@@ -72,11 +93,21 @@ jobs:
             -DIMPROC_WITH_BOOST=${{ matrix.config.boost }} \
             -DIMPROC_WITH_COVERAGE=${{ matrix.config.coverage }} \
             -DIMPROC_SERVICES_WITH_TESTS=ON \
-            -G "Unix Makefiles"
+            -G "${{ matrix.config.generator }}"
 
       - name: Build
         shell: bash
         run: cmake --build build --config ${{ matrix.config.build_type }} --target all
+
+      - name: Save Build Cache
+        id: save-build-cache
+        uses: actions/cache/save@v3
+        with:
+          path: |
+            build/*
+            external/*
+            test/external/*
+          key: ${{ matrix.config.os }}-build-${{ matrix.config.cxx }}-${{ matrix.config.build_type }}-boost_${{ matrix.config.boost }}-coverage_${{ matrix.config.coverage }}-tests_ON-${{ hashFiles('CMakeLists.txt','test/CMakeLists.txt') }}
 
       - name: Code Coverage Report
         shell: bash
