@@ -57,8 +57,7 @@ jobs:
           gcc-11   --version
           clang-14 --version
           lcov     --version
-          cd ..
-          git clone --recurse-submodules -b ${{ steps.branch-name.outputs.current_branch }} https://github.com/pirlruc/infrastructure.git
+          git clone --recurse-submodules -b ${{ steps.branch-name.outputs.current_branch }} https://github.com/pirlruc/infrastructure.git  modules/infrastructure
 
       - name: Restore Build Cache
         id: restore-build-cache
@@ -68,7 +67,7 @@ jobs:
             build/*
             external/*
             test/external/*
-            ../infrastructure/external/*
+            modules/infrastructure/external/*
           key: ${{ matrix.config.os }}-build-${{ matrix.config.cxx }}-${{ matrix.config.build_type }}-boost_${{ matrix.config.boost }}-coverage_${{ matrix.config.coverage }}-tests_ON-${{ hashFiles('CMakeLists.txt','test/CMakeLists.txt') }}
           restore-keys: |
             ${{ matrix.config.os }}-build-${{ matrix.config.cxx }}-${{ matrix.config.build_type }}-boost_${{ matrix.config.boost }}-coverage_${{ matrix.config.coverage }}-tests_ON-
@@ -106,7 +105,7 @@ jobs:
             build/*
             external/*
             test/external/*
-            ../infrastructure/external/*
+            modules/infrastructure/external/*
           key: ${{ matrix.config.os }}-build-${{ matrix.config.cxx }}-${{ matrix.config.build_type }}-boost_${{ matrix.config.boost }}-coverage_${{ matrix.config.coverage }}-tests_ON-${{ hashFiles('CMakeLists.txt','test/CMakeLists.txt') }}
 
       - name: Code Coverage Report
