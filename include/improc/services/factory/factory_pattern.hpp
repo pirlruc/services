@@ -26,6 +26,8 @@ namespace improc
                 >
     class IMPROC_API FactoryPattern : public FactoryErrorPolicy<KeyType,BaseProduct>
     {
+        static_assert(improc::is_hashable_v<KeyType>, "KeyType should be an integral or a string data type.");
+        
         protected:
             typedef std::unordered_map<KeyType,ProductCreator> CallbackMap;
             CallbackMap                     callbacks_;

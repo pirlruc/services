@@ -8,6 +8,10 @@ if(NOT DEFINED IMPROC_SUPERPROJECT_VERSION)
   set(IMPROC_SUPERPROJECT_VERSION 1.0.0)
 endif()
 
+if(NOT DEFINED IMPROC_SERVICES_WITH_TESTS)
+  set(IMPROC_SERVICES_WITH_TESTS OFF)
+endif()
+
 project(
   improc_services
   VERSION     ${IMPROC_SUPERPROJECT_VERSION}
@@ -27,7 +31,7 @@ if(PROJECT_NAME STREQUAL CMAKE_PROJECT_NAME)
   option(IMPROC_WITH_COVERAGE  	     "Building library with code coverage"  OFF)
   option(BUILD_SHARED_LIBS           "Building shared libraries"            ON)
 
-  add_subdirectory(${PROJECT_SOURCE_DIR}/../infrastructure ${CMAKE_BINARY_DIR}/infrastructure)
+  add_subdirectory(${PROJECT_SOURCE_DIR}/modules/infrastructure ${CMAKE_BINARY_DIR}/infrastructure)
 endif()
 
 # Add external dependencies
@@ -35,7 +39,7 @@ endif()
 FetchContent_Declare(
   pipes
   GIT_REPOSITORY  https://github.com/pirlruc/pipes
-  GIT_TAG         e4dd4758bf60abcae5137608f825e291fe315148
+  GIT_TAG         db9c72f7b7c5fb77de7c0f25b0636de986a219c1
   SOURCE_DIR      ${PROJECT_SOURCE_DIR}/external/pipes
 )
 set(BUILD_TESTING OFF)
@@ -71,6 +75,10 @@ set(
   ${PROJECT_SOURCE_DIR}/include/improc/services/pipes/base_pipe.hpp
 )
 
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND (WIN32 OR WINCE))
+  set(IMPROC_SERVICES_LIB_FILES ${IMPROC_SERVICES_LIB_FILES} ${PROJECT_SOURCE_DIR}/src/main.cpp)
+endif()
+
 add_library(${PROJECT_NAME} SHARED ${IMPROC_SERVICES_LIB_FILES})
 add_library(improc::services ALIAS ${PROJECT_NAME})
 add_dependencies(${PROJECT_NAME} improc::infrastructure pipes)
@@ -92,7 +100,7 @@ target_link_libraries       (${PROJECT_NAME}   INTERFACE improc::infrastructure)
 target_link_libraries       (${PROJECT_NAME}   INTERFACE pipes)
 
 # Tests configuration
-if(IMPROC_WITH_TESTS)
+if(IMPROC_WITH_TESTS OR IMPROC_SERVICES_WITH_TESTS)
   add_subdirectory(${PROJECT_SOURCE_DIR}/test     ${CMAKE_BINARY_DIR}/improc_services_test)
 endif()
 
@@ -106,9 +114,9 @@ install(
 install(FILES     ${PROJECT_SOURCE_DIR}/external/pipes/LICENSE  DESTINATION share/licenses/improc/pipes)
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/improc          DESTINATION include)
 
-add_executable(main_transform_test main_transform.cpp)
-set_target_properties(main_transform_test PROPERTIES CXX_STANDARD           17)
-set_target_properties(main_transform_test PROPERTIES CXX_STANDARD_REQUIRED  TRUE)
-set_target_properties(main_transform_test PROPERTIES LINKER_LANGUAGE        CXX)
-target_link_libraries(main_transform_test PRIVATE    improc::services)
-target_link_libraries(main_transform_test PRIVATE    pipes)
+# add_executable(main_transform_test main_transform.cpp)
+# set_target_properties(main_transform_test PROPERTIES CXX_STANDARD           17)
+# set_target_properties(main_transform_test PROPERTIES CXX_STANDARD_REQUIRED  TRUE)
+# set_target_properties(main_transform_test PROPERTIES LINKER_LANGUAGE        CXX)
+# target_link_libraries(main_transform_test PRIVATE    improc::services)
+# target_link_libraries(main_transform_test PRIVATE    pipes)

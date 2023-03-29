@@ -42,8 +42,9 @@ improc::BaseService<KeyType,ContextType>& improc::BaseService<KeyType,ContextTyp
     }
     else
     {
-        IMPROC_SERVICES_LOGGER_ERROR("ERROR_01: Input member missing.");
-        throw improc::file_processing_error();
+        std::string error_message = fmt::format("Key {} is missing from json",kInputKey);
+        IMPROC_SERVICES_LOGGER_ERROR("ERROR_01: " + error_message);
+        throw improc::json_error(std::move(error_message));
     }
 
     if (service_json.isMember(kOutputKey) == true)
@@ -53,8 +54,9 @@ improc::BaseService<KeyType,ContextType>& improc::BaseService<KeyType,ContextTyp
     }
     else
     {
-        IMPROC_SERVICES_LOGGER_ERROR("ERROR_02: Output member missing.");
-        throw improc::file_processing_error();
+        std::string error_message = fmt::format("Key {} is missing from json",kOutputKey);
+        IMPROC_SERVICES_LOGGER_ERROR("ERROR_02: " + error_message);
+        throw improc::json_error(std::move(error_message));
     }
     return (*this);
 }    

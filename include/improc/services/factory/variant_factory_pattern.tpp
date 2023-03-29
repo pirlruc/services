@@ -10,12 +10,7 @@ template    <   class    BaseProduct
             ,   typename KeyType
             ,   typename VariantProductCreator
             ,   template <typename,class> class FactoryErrorPolicy  >
-improc::VariantFactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>::VariantFactoryPattern() : improc::FactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>()
-{
-    static_assert(std::variant_size_v<VariantProductCreator> > 1, "If only one functor is going to be used, please use FactoryPattern.");
-    static_assert(improc::is_variant_arg_function_type_v<VariantProductCreator>, "Variant should have functor arguments.");
-    static_assert(improc::is_variant_arg_function_return_type_v<std::shared_ptr<BaseProduct>,VariantProductCreator>, "Return type should be a BaseProduct pointer.");
-};
+improc::VariantFactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>::VariantFactoryPattern() : improc::FactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>() {};
 
 /**
  * @brief Registers a new object type to the factory
@@ -37,8 +32,9 @@ improc::VariantFactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryE
     IMPROC_SERVICES_LOGGER_TRACE("Registering ID {} in variant factory...", id);
     if (this->callbacks_.insert(typename improc::FactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>::CallbackMap::value_type(id,std::move(creator))).second == 0)
     {
-        IMPROC_SERVICES_LOGGER_ERROR("ERROR_01: Duplicated ID {} in variant factory.", id);
-        throw improc::duplicated_key();
+        std::string error_message = fmt::format("Duplicated ID {} in variant factory", id);
+        IMPROC_SERVICES_LOGGER_ERROR("ERROR_01: " + error_message);
+        throw improc::key_error(std::move(error_message));
     }
     return (*this);
 }
