@@ -9,7 +9,6 @@ on:
   pull_request:
     branches: 
     - main
-    - developer
 
 jobs:
   codacy-coverage-reporter:
@@ -60,6 +59,7 @@ jobs:
           git clone --recurse-submodules -b ${{ steps.branch-name.outputs.current_branch }} https://github.com/pirlruc/infrastructure.git  modules/infrastructure
 
       - name: Restore Build Cache
+        if: ${{ steps.branch-name.outputs.current_branch }} == 'developer'
         id: restore-build-cache
         uses: actions/cache/restore@v3
         with:
@@ -73,7 +73,7 @@ jobs:
             ${{ matrix.config.os }}-build-${{ matrix.config.cxx }}-${{ matrix.config.build_type }}-boost_${{ matrix.config.boost }}-coverage_${{ matrix.config.coverage }}-tests_ON-
 
       - name: Clean Build Folder
-        if: steps.restore-build-cache.outputs.cache-hit != 'true'
+        if: steps.restore-build-cache.outputs.cache-hit != 'true' || ${{ steps.branch-name.outputs.current_branch }} != 'developer'
         shell: bash
         run: |
           rm -rf build
@@ -98,6 +98,7 @@ jobs:
         run: cmake --build build --config ${{ matrix.config.build_type }} --target all
 
       - name: Save Build Cache
+        if: ${{ steps.branch-name.outputs.current_branch }} == 'developer'
         id: save-build-cache
         uses: actions/cache/save@v3
         with:
