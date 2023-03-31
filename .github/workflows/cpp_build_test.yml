@@ -140,8 +140,8 @@ jobs:
         shell: bash
         run: cmake --build build --config ${{ matrix.config.build_type }} --target all
 
-      - name: Save Build Cache
-        if: ${{ steps.branch-name.outputs.current_branch }} == 'developer'
+      - if: ${{ steps.branch-name.outputs.current_branch == 'developer' }}
+        name: Save Build Cache
         id: save-build-cache
         uses: actions/cache/save@v3
         with:
