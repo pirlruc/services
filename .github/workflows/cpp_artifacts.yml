@@ -118,7 +118,7 @@ jobs:
             ${{ matrix.config.os }}-build-${{ matrix.config.cxx }}-${{ matrix.config.build_type }}-boost_${{ matrix.config.boost }}-coverage_${{ matrix.config.coverage }}-tests_OFF-
 
       - name: Clean Build Folder
-        if: steps.restore-build-cache.outputs.cache-hit != 'true' || ${{ steps.branch-name.outputs.current_branch }} != 'developer'
+        if: steps.restore-build-cache.outputs.cache-hit != 'true'
         shell: bash
         run: |
           rm -rf build
