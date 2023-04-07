@@ -65,13 +65,14 @@ template <typename KeyType,typename ContainerType>
 ContainerType improc::Container<KeyType,ContainerType>::Get(const KeyType& key) const
 {
     IMPROC_SERVICES_LOGGER_TRACE("Obtaining key {} from container...", key);
-    if (this->Exists(key) == true)
+    typename HashMap::const_iterator iter_callback = this->hash_table_.find(key);
+    if (iter_callback != this->hash_table_.end())
     {
-        return this->hash_table_.at(std::move(key));
+        return iter_callback->second;
     }
     else
     {
-        std::string error_message = fmt::format("Key {} not found in container", key);
+        std::string error_message = fmt::format("Key {} not found in container", std::move(key));
         IMPROC_SERVICES_LOGGER_ERROR("ERROR_02: " + error_message);
         throw improc::key_error(std::move(error_message));
     }
