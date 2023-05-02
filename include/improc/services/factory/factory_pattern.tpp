@@ -129,7 +129,7 @@ std::shared_ptr<BaseProduct> improc::FactoryPattern<BaseProduct,KeyType,ProductC
     typename CallbackMap::const_iterator iter_callback = this->callbacks_.find(id);
     if (iter_callback != this->callbacks_.end())
     {
-        return pipes::detail::invoke(std::move(iter_callback->second),IMPROC_FWD(std::move(args)) ...);
+        return pipes::detail::invoke(std::move(iter_callback->second),IMPROC_FWD(args) ...);
     }
     return this->OnUnknownType(std::move(id));
 }
