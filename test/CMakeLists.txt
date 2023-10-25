@@ -8,7 +8,7 @@ include(GoogleTest)
 FetchContent_Declare(
   googletest
   GIT_REPOSITORY  https://github.com/google/googletest.git
-  GIT_TAG         release-1.11.0
+  GIT_TAG         v1.14.0
   SOURCE_DIR      ${PROJECT_SOURCE_DIR}/test/external/googletest
 )
 set(BUILD_GMOCK OFF)
