@@ -41,10 +41,10 @@ jobs:
     steps:
     - name: Get Branch Name
       id: branch-name
-      uses: tj-actions/branch-names@v6
+      uses: tj-actions/branch-names@v7.0.5
         
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4.1.1
 
     - name: Clone Dependencies
       run: |

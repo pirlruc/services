@@ -30,9 +30,9 @@ jobs:
     steps:
       - name: Get Branch Name
         id: branch-name
-        uses: tj-actions/branch-names@v6
+        uses: tj-actions/branch-names@v7.0.5
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4.1.1
         with:
           submodules: recursive
 
@@ -57,7 +57,7 @@ jobs:
 
       - name: Restore Build Cache
         id: restore-build-cache
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v3.3.2
         with:
           path: |
             build/*
@@ -96,7 +96,7 @@ jobs:
       - if: ${{ steps.branch-name.outputs.current_branch == 'developer' }}
         name: Save Build Cache
         id: save-build-cache
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v3.3.2
         with:
           path: |
             build/*
@@ -114,7 +114,7 @@ jobs:
           make improc_services_coverage
 
       - name: Unit Tests Report 
-        uses: EnricoMi/publish-unit-test-result-action@v2.4.1
+        uses: EnricoMi/publish-unit-test-result-action@v2.11.0
         if: always()
         with:
           check_name: "unit-tests-report"
