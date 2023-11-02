@@ -5,21 +5,28 @@ include(GoogleTest)
 
 # Add external dependencies
 # GOOGLETEST
-FetchContent_Declare(
-  googletest
-  GIT_REPOSITORY  https://github.com/google/googletest.git
-  GIT_TAG         v1.14.0
-  SOURCE_DIR      ${PROJECT_SOURCE_DIR}/test/external/googletest
-)
-set(BUILD_GMOCK OFF)
-FetchContent_MakeAvailable(googletest)
+if(DEFINED CMAKE_TOOLCHAIN_FILE)
+  find_package(GTest CONFIG REQUIRED)
+  set_target_properties(GTest::gtest      PROPERTIES FOLDER extern)
+  set_target_properties(GTest::gtest_main PROPERTIES FOLDER extern)
+else()
+  FetchContent_Declare(
+    googletest
+    GIT_REPOSITORY  https://github.com/google/googletest.git
+    GIT_TAG         v1.14.0
+    SOURCE_DIR      ${PROJECT_SOURCE_DIR}/test/external/googletest
+  )
+  set(BUILD_GMOCK OFF)
+  FetchContent_MakeAvailable(googletest)
+  add_library(GTest::gtest         ALIAS gtest)
+  add_library(GTest::gtest_main    ALIAS gtest_main)
+  set_target_properties(gtest      PROPERTIES FOLDER extern)
+  set_target_properties(gtest_main PROPERTIES FOLDER extern)
+endif()
 
 mark_as_advanced(
   gtest_disable_pthreads gtest_force_shared_crt gtest_hide_internal_symbols
 )
-
-set_target_properties(gtest      PROPERTIES FOLDER extern)
-set_target_properties(gtest_main PROPERTIES FOLDER extern)
 
 # Create file to get folder with test
 configure_file(
@@ -89,7 +96,7 @@ set_target_properties(${PROJECT_NAME}_test PROPERTIES DEBUG_POSTFIX          ${C
 target_include_directories(${PROJECT_NAME}_test  PRIVATE ${PROJECT_SOURCE_DIR}/test)
 
 target_link_libraries(${PROJECT_NAME}_test  PRIVATE ${PROJECT_NAME})
-target_link_libraries(${PROJECT_NAME}_test  PRIVATE gtest gtest_main)
+target_link_libraries(${PROJECT_NAME}_test  PRIVATE GTest::gtest GTest::gtest_main)
 
 gtest_discover_tests(
   ${PROJECT_NAME}_test

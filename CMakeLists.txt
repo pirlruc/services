@@ -12,6 +12,10 @@ if(NOT DEFINED IMPROC_SERVICES_WITH_TESTS)
   set(IMPROC_SERVICES_WITH_TESTS OFF)
 endif()
 
+if(IMPROC_WITH_TESTS OR IMPROC_SERVICES_WITH_TESTS)
+  list(APPEND VCPKG_MANIFEST_FEATURES "tests")
+endif()
+
 project(
   improc_services
   VERSION     ${IMPROC_SUPERPROJECT_VERSION}
@@ -31,7 +35,7 @@ if(PROJECT_NAME STREQUAL CMAKE_PROJECT_NAME)
   option(IMPROC_WITH_COVERAGE  	     "Building library with code coverage"  OFF)
   option(BUILD_SHARED_LIBS           "Building shared libraries"            ON)
 
-  add_subdirectory(${PROJECT_SOURCE_DIR}/modules/infrastructure ${CMAKE_BINARY_DIR}/infrastructure)
+  add_subdirectory(${PROJECT_SOURCE_DIR}/infrastructure ${CMAKE_BINARY_DIR}/infrastructure)
 endif()
 
 # Add external dependencies
@@ -48,6 +52,7 @@ target_include_directories(pipes INTERFACE $<BUILD_INTERFACE:${PROJECT_SOURCE_DI
                                            $<INSTALL_INTERFACE:include> )
 
 message(STATUS "Build ${PROJECT_NAME} Version: ${PROJECT_VERSION}")
+message(STATUS "CMake Toolchain File: ${CMAKE_TOOLCHAIN_FILE}")
 message(STATUS "Build Type : ${CMAKE_BUILD_TYPE}")
 message(STATUS "Install Dir: ${CMAKE_INSTALL_PREFIX}")
 

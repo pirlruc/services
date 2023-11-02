@@ -2,10 +2,17 @@
   "name": "services-vcpkg-dependencies",
   "version": "1.0",
   "dependencies": [
-    {
-      "name": "gtest",
-      "version>=": "1.14.0"
-    }
   ],
-  "builtin-baseline": "b669595870177598587d3ff67e675f4f9213fe82"
+  "features": {
+    "tests": {
+      "description": "Support test library",
+      "dependencies": [
+        {
+          "name": "gtest",
+          "version>=": "1.14.0"
+        }
+      ]
+    }
+  },
+  "builtin-baseline": "8eb57355a4ffb410a2e94c07b4dca2dffbee8e50"
 }
