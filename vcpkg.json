@@ -2,7 +2,10 @@
   "name": "services-vcpkg-dependencies",
   "version": "1.0",
   "dependencies": [
-  ],
+    {
+      "name": "improc-infrastructure"
+    }
+],
   "features": {
     "tests": {
       "description": "Support test library",

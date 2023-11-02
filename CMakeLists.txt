@@ -35,7 +35,9 @@ if(PROJECT_NAME STREQUAL CMAKE_PROJECT_NAME)
   option(IMPROC_WITH_COVERAGE  	     "Building library with code coverage"  OFF)
   option(BUILD_SHARED_LIBS           "Building shared libraries"            ON)
 
-  add_subdirectory(${PROJECT_SOURCE_DIR}/infrastructure ${CMAKE_BINARY_DIR}/infrastructure)
+  if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
+    add_subdirectory(${PROJECT_SOURCE_DIR}/modules/infrastructure ${CMAKE_BINARY_DIR}/infrastructure)
+  endif()
 endif()
 
 # Add external dependencies
