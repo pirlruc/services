@@ -7,7 +7,13 @@
     "registries": [
       {
         "kind": "filesystem",
-        "path": "improc-registry",
+        "path": "cpp-registry",
+        "packages": [ "improc-infrastructure" ]
+      },
+      {
+        "kind": "git",
+        "repository": "https://github.com/pirlruc/cpp-registry",
+        "baseline": "ab90f919caa6c045753bd017bce29cf665670a7d",
         "packages": [ "improc-infrastructure" ]
       }
     ]
