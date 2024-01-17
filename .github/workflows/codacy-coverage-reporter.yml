@@ -33,7 +33,8 @@ jobs:
     steps:
       - name: Get Branch Name
         id: branch-name
-        uses: tj-actions/branch-names@v7.0.5
+        shell: bash
+        run: echo "branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT
 
       - uses: actions/checkout@v4.1.1
         with:
@@ -43,6 +44,7 @@ jobs:
         run: |
           echo github.event.action: ${{ github.event.action }}
           echo github.event_name: ${{ github.event_name }}
+          echo github.branch: ${{ steps.branch-name.outputs.branch }}
 
       - name: Install Dependencies Linux
         run: |
@@ -88,7 +90,7 @@ jobs:
         shell: bash
         run: cmake --build --preset ${{ matrix.config.preset_name }} --target all
 
-      - if: ${{ steps.branch-name.outputs.current_branch == 'developer' }}
+      - if: ${{ steps.branch-name.outputs.branch == 'developer' }}
         name: Save Build Cache
         id: save-build-cache
         uses: actions/cache/save@v3.3.2

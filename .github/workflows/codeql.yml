@@ -38,17 +38,9 @@ jobs:
         # Use only 'javascript' to analyze code written in JavaScript, TypeScript or both
         # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
 
-    steps:
-    - name: Get Branch Name
-      id: branch-name
-      uses: tj-actions/branch-names@v7.0.5
-        
+    steps:        
     - name: Checkout repository
       uses: actions/checkout@v4.1.1
-
-    - name: Clone Dependencies
-      run: |
-        git clone --recurse-submodules -b ${{ steps.branch-name.outputs.current_branch }} https://github.com/pirlruc/infrastructure.git  modules/infrastructure
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
