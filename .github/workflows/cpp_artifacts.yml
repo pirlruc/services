@@ -5,7 +5,6 @@ on:
   push:
     branches: 
     - main
-    - feature-ci
 
   # Runs this workflow manually from the Actions tab
   workflow_dispatch:
