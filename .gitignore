@@ -1,5 +1,8 @@
-**/.vscode
 **/build
 **/external
 **/*_config.hpp
+**/install
 **/*.profraw
+**/out
+**/doxygen
+**/.DS_Store

@@ -35,9 +35,7 @@ if(PROJECT_NAME STREQUAL CMAKE_PROJECT_NAME)
   option(IMPROC_WITH_COVERAGE  	     "Building library with code coverage"  OFF)
   option(BUILD_SHARED_LIBS           "Building shared libraries"            ON)
 
-  if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
-    add_subdirectory(${PROJECT_SOURCE_DIR}/modules/infrastructure ${CMAKE_BINARY_DIR}/infrastructure)
-  endif()
+  add_subdirectory(${PROJECT_SOURCE_DIR}/modules/infrastructure ${CMAKE_BINARY_DIR}/infrastructure)
 endif()
 
 # Add external dependencies
@@ -112,18 +110,60 @@ if(IMPROC_WITH_TESTS OR IMPROC_SERVICES_WITH_TESTS)
 endif()
 
 # Install configuration
-set(${PROJECT_NAME}_libs ${PROJECT_NAME} improc_infrastructure pipes)
-install(
-  TARGETS     ${${PROJECT_NAME}_libs}
-  DESTINATION lib
-  EXPORT      ${PROJECT_NAME}_target 
-)
-install(FILES     ${PROJECT_SOURCE_DIR}/external/pipes/LICENSE  DESTINATION share/licenses/improc/pipes)
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/improc          DESTINATION include)
+if (NOT DEFINED CMAKE_INSTALL_LIBDIR)
+  set(CMAKE_INSTALL_LIBDIR "lib")
+endif()
+if (NOT DEFINED CMAKE_INSTALL_BINDIR)
+  set(CMAKE_INSTALL_BINDIR "bin")
+endif()
+if (NOT DEFINED CMAKE_INSTALL_INCLUDEDIR)
+  set(CMAKE_INSTALL_INCLUDEDIR "include")
+endif()
 
-# add_executable(main_transform_test main_transform.cpp)
-# set_target_properties(main_transform_test PROPERTIES CXX_STANDARD           17)
-# set_target_properties(main_transform_test PROPERTIES CXX_STANDARD_REQUIRED  TRUE)
-# set_target_properties(main_transform_test PROPERTIES LINKER_LANGUAGE        CXX)
-# target_link_libraries(main_transform_test PRIVATE    improc::services)
-# target_link_libraries(main_transform_test PRIVATE    pipes)
+# Include files
+install(
+  TARGETS     ${PROJECT_NAME}
+  EXPORT      ${PROJECT_NAME}_targets
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+  INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/improc                  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(FILES     ${PROJECT_SOURCE_DIR}/external/pipes/LICENSE          DESTINATION share/licenses/improc/pipes)
+install(FILES     ${PROJECT_SOURCE_DIR}/LICENSE                         DESTINATION share/licenses/improc/services)
+
+# pkg-config files
+if(IS_ABSOLUTE ${CMAKE_INSTALL_INCLUDEDIR})
+  set(PKG_CONFIG_INCLUDEDIR ${CMAKE_INSTALL_INCLUDEDIR})
+else()
+  set(PKG_CONFIG_INCLUDEDIR "\${prefix}/${CMAKE_INSTALL_INCLUDEDIR}")
+endif()
+if(IS_ABSOLUTE ${CMAKE_INSTALL_LIBDIR})
+  set(PKG_CONFIG_LIBDIR ${CMAKE_INSTALL_LIBDIR})
+else()
+  set(PKG_CONFIG_LIBDIR "\${exec_prefix}/${CMAKE_INSTALL_LIBDIR}")
+endif()
+configure_file(
+  ${PROJECT_SOURCE_DIR}/cmake/${PROJECT_NAME}.pc.in
+  ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pc 
+  @ONLY )
+install(FILES ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+
+# CMake config files
+set(CONFIG_TARGETS_FILE "${PROJECT_NAME}ConfigTargets.cmake")
+set(EXPORT_DESTINATION_DIR ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
+install(EXPORT ${PROJECT_NAME}_targets FILE ${CONFIG_TARGETS_FILE} DESTINATION ${EXPORT_DESTINATION_DIR})
+
+include(CMakePackageConfigHelpers)
+configure_package_config_file(
+  ${PROJECT_SOURCE_DIR}/cmake/${PROJECT_NAME}_config.cmake.in
+  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake 
+  INSTALL_DESTINATION ${EXPORT_DESTINATION_DIR} )
+write_basic_package_version_file(
+  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+  VERSION ${IMPROC_SUPERPROJECT_VERSION}
+  COMPATIBILITY SameMajorVersion)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake 
+              ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+        DESTINATION ${EXPORT_DESTINATION_DIR})

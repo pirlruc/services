@@ -1,9 +1,15 @@
 {
   "name": "services-vcpkg-dependencies",
-  "version": "1.0",
+  "version": "1.0.0",
+  "port-version": 0,
   "dependencies": [
     {
-      "name": "improc-infrastructure"
+      "name": "spdlog",
+      "version>=": "1.12.0"
+    },
+    {
+      "name": "jsoncpp",
+      "version>=": "1.9.5"
     }
 ],
   "features": {
@@ -16,5 +22,6 @@
         }
       ]
     }
-  }
+  },
+  "builtin-baseline": "a42af01b72c28a8e1d7b48107b33e4f286a55ef6"
 }
