@@ -67,7 +67,7 @@ jobs:
             build/*
             external/*
             test/external/*
-            infrastructure/external/*
+            modules/infrastructure/external/*
           key: ${{ matrix.config.os }}-build-${{ matrix.config.preset_name }}-${{ hashFiles('CMakeLists.txt','test/CMakeLists.txt') }}
           restore-keys: |
             ${{ matrix.config.os }}-build-${{ matrix.config.preset_name }}
@@ -99,7 +99,7 @@ jobs:
             build/*
             external/*
             test/external/*
-            infrastructure/external/*
+            modules/infrastructure/external/*
           key: ${{ matrix.config.os }}-build-${{ matrix.config.preset_name }}-${{ hashFiles('CMakeLists.txt','test/CMakeLists.txt') }}
 
       - name: Code Coverage Report
