@@ -3,9 +3,8 @@ name: Ubuntu Artifacts
 on:
   # Triggers the workflow on push or pull request events
   push:
-    branches: 
+    branches:
     - main
-    - feature-os
 
   # Runs this workflow manually from the Actions tab
   workflow_dispatch:
@@ -43,7 +42,7 @@ jobs:
             preset_name: "clang-release-no-toolchain",
             install_dir: "/home/runner/work/services/services/install"
           }
-          
+
     steps:
       - name: Get Branch Name
         id: branch-name
@@ -59,7 +58,7 @@ jobs:
           echo github.event.action: ${{ github.event.action }}
           echo github.event_name: ${{ github.event_name }}
           echo github.branch: ${{ steps.branch-name.outputs.branch }}
-          
+
       - name: Install Dependencies
         run: |
           sudo apt-get install ninja-build
@@ -101,7 +100,7 @@ jobs:
           export VCPKG_ROOT=/usr/local/share/vcpkg
           cmake --preset ${{ matrix.config.preset_name }}
           cmake --build --preset ${{ matrix.config.preset_name }} --target install
-      
+
       - if: ${{ steps.branch-name.outputs.branch == 'developer' }}
         name: Save Build Cache
         id: save-build-cache
@@ -117,7 +116,6 @@ jobs:
 
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v4
-        with: 
+        with:
           name: ${{ matrix.config.name }}
           path: ${{ matrix.config.install_dir }}/*
-          

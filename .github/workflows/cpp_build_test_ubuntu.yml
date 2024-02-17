@@ -3,10 +3,9 @@ name: Ubuntu Build
 on:
   # Triggers the workflow on push or pull request events
   push:
-    branches: 
+    branches:
     - main
     - developer
-    - feature-os
 
   # Runs this workflow manually from the Actions tab
   workflow_dispatch:
@@ -44,13 +43,13 @@ jobs:
             preset_name: "clang-debug-no-toolchain",
             binary_dir: "out/build/clang-debug-no-toolchain"
           }
-          
+
     steps:
       - name: Get Branch Name
         id: branch-name
         shell: bash
         run: echo "branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT
-        
+
       - uses: actions/checkout@v4
         with:
           submodules: recursive
@@ -60,7 +59,7 @@ jobs:
           echo github.event.action: ${{ github.event.action }}
           echo github.event_name: ${{ github.event_name }}
           echo github.branch: ${{ steps.branch-name.outputs.branch }}
-          
+
       - name: Install Dependencies
         run: |
           sudo apt-get install ninja-build

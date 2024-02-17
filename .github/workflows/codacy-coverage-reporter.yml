@@ -3,10 +3,9 @@ name: Coverage Reporter
 on:
   # Triggers the workflow on push or pull request events
   push:
-    branches: 
+    branches:
     - main
     - developer
-    - feature-os
 
   # Runs this workflow manually from the Actions tab
   workflow_dispatch:
@@ -15,7 +14,7 @@ jobs:
   codacy-coverage-reporter:
     env:
       VCPKG_ROOT: /usr/local/share/vcpkg
-      
+
     # The type of runner that the job will run on
     name: ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
@@ -112,7 +111,7 @@ jobs:
           cd "$HOME_DIRECTORY"
           cmake --build --preset ${{ matrix.config.preset_name }} --target improc_services_coverage
 
-      - name: Unit Tests Report 
+      - name: Unit Tests Report
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
         with:
