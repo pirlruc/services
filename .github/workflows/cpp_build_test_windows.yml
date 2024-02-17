@@ -1,9 +1,9 @@
-name: CPP Build and Test
+name: Windows Build
 
 on:
   # Triggers the workflow on push or pull request events
   push:
-    branches: 
+    branches:
     - main
     - developer
 
@@ -20,30 +20,6 @@ jobs:
       matrix:
         config:
         - {
-            name: ubuntu-latest-gcc,
-            os: ubuntu-latest,
-            preset_name: "gcc-debug",
-            binary_dir: "out/build/gcc-debug"
-          }
-        - {
-            name: ubuntu-latest-clang,
-            os: ubuntu-latest,
-            preset_name: "clang-debug",
-            binary_dir: "out/build/clang-debug"
-          }
-        - {
-            name: ubuntu-latest-gcc-no-toolchain,
-            os: ubuntu-latest,
-            preset_name: "gcc-debug-no-toolchain",
-            binary_dir: "out/build/gcc-debug-no-toolchain"
-          }
-        - {
-            name: ubuntu-latest-clang-no-toolchain,
-            os: ubuntu-latest,
-            preset_name: "clang-debug-no-toolchain",
-            binary_dir: "out/build/clang-debug-no-toolchain"
-          }
-        - {
             name: windows-latest-clang,
             os: windows-latest,
             preset_name: "clang-debug",
@@ -55,14 +31,14 @@ jobs:
             preset_name: "clang-debug-no-toolchain",
             binary_dir: "out/build/clang-debug-no-toolchain"
           }
-          
+
     steps:
       - name: Get Branch Name
         id: branch-name
         shell: bash
         run: echo "branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT
-        
-      - uses: actions/checkout@v4.1.1
+
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
 
@@ -71,23 +47,8 @@ jobs:
           echo github.event.action: ${{ github.event.action }}
           echo github.event_name: ${{ github.event_name }}
           echo github.branch: ${{ steps.branch-name.outputs.branch }}
-          
-      - name: Install Dependencies Linux
-        if: startsWith(matrix.config.name, 'ubuntu-latest')
-        run: |
-          sudo apt-get install ninja-build
-          sudo apt-get install lcov
-          ninja    --version
-          cmake    --version
-          gcc      --version
-          gcc-11   --version
-          clang    --version
-          clang-14 --version
-          lcov     --version
-          vcpkg    --version
 
-      - name: Install Dependencies Windows
-        if: startsWith(matrix.config.name, 'windows-latest')
+      - name: Install Dependencies
         run: |
           choco install ninja
           ninja    --version
@@ -95,10 +56,10 @@ jobs:
           gcc      --version
           clang    --version
           vcpkg    --version
-          
+
       - name: Restore Build Cache
         id: restore-build-cache
-        uses: actions/cache/restore@v3.3.2
+        uses: actions/cache/restore@v4
         with:
           path: |
             out/*
@@ -118,16 +79,7 @@ jobs:
           rm -rf build
           mkdir build
 
-      - name: Configure & Build Linux
-        if: startsWith(matrix.config.name, 'ubuntu-latest')
-        shell: bash
-        run: |
-          export VCPKG_ROOT=/usr/local/share/vcpkg
-          cmake --preset ${{ matrix.config.preset_name }}
-          cmake --build --preset ${{ matrix.config.preset_name }} --target all
-
-      - name: Configure & Build Windows
-        if: startsWith(matrix.config.name, 'windows-latest')
+      - name: Configure & Build
         shell: bash
         run: |
           export VCPKG_ROOT=C:\vcpkg
@@ -137,7 +89,7 @@ jobs:
       - if: ${{ steps.branch-name.outputs.branch == 'developer' }}
         name: Save Build Cache
         id: save-build-cache
-        uses: actions/cache/save@v3.3.2
+        uses: actions/cache/save@v4
         with:
           path: |
             out/*
