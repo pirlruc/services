@@ -1,0 +1,185 @@
+{
+    "version": 6,
+    "configurePresets": 
+    [
+        {
+            "name": "clang-coverage",
+            "displayName": "Clang Coverage",
+            "description": "Coverage report with clang",
+            "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "installDir": "${sourceDir}/out/install/${presetName}",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "clang++",
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_BUILD_TYPE": "Debug",
+                "IMPROC_WITH_COVERAGE": "ON",
+                "IMPROC_SERVICES_WITH_TESTS": "ON"
+            }
+        },
+        {
+            "name": "clang-debug",
+            "displayName": "Clang Debug",
+            "description": "Debug using Clang",
+            "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "installDir": "${sourceDir}/out/install/${presetName}",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "clang++",
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_BUILD_TYPE": "Debug",
+                "IMPROC_WITH_COVERAGE": "OFF",
+                "IMPROC_SERVICES_WITH_TESTS": "ON"
+            }
+        },
+        {
+            "name": "clang-release",
+            "displayName": "Clang Release",
+            "description": "Release using Clang",
+            "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "installDir": "${sourceDir}/out/install/${presetName}",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "clang++",
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_BUILD_TYPE": "Release",
+                "IMPROC_WITH_COVERAGE": "OFF",
+                "IMPROC_SERVICES_WITH_TESTS": "OFF"
+            }
+        },
+        {
+            "name": "clang-debug-no-toolchain",
+            "displayName": "Clang Debug w/o vcpkg",
+            "description": "Debug using Clang without vcpkg",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "installDir": "${sourceDir}/out/install/${presetName}",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "clang++",
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_BUILD_TYPE": "Debug",
+                "IMPROC_WITH_COVERAGE": "OFF",
+                "IMPROC_SERVICES_WITH_TESTS": "ON"
+            }
+        },
+        {
+            "name": "clang-release-no-toolchain",
+            "displayName": "Clang Release w/o vcpkg",
+            "description": "Release using Clang without vcpkg",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "installDir": "${sourceDir}/out/install/${presetName}",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "clang++",
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_BUILD_TYPE": "Release",
+                "IMPROC_WITH_COVERAGE": "OFF",
+                "IMPROC_SERVICES_WITH_TESTS": "OFF"
+            }
+        },
+        {
+            "name": "gcc-debug",
+            "displayName": "GCC Debug",
+            "description": "Debug using GCC",
+            "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "installDir": "${sourceDir}/out/install/${presetName}",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "g++",
+                "CMAKE_C_COMPILER": "gcc",
+                "CMAKE_BUILD_TYPE": "Debug",
+                "IMPROC_WITH_COVERAGE": "OFF",
+                "IMPROC_SERVICES_WITH_TESTS": "ON"
+            }
+        },
+        {
+            "name": "gcc-release",
+            "displayName": "GCC Release",
+            "description": "Release using GCC",
+            "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "installDir": "${sourceDir}/out/install/${presetName}",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "g++",
+                "CMAKE_C_COMPILER": "gcc",
+                "CMAKE_BUILD_TYPE": "Release",
+                "IMPROC_WITH_COVERAGE": "OFF",
+                "IMPROC_SERVICES_WITH_TESTS": "OFF"
+            }
+        },
+        {
+            "name": "gcc-debug-no-toolchain",
+            "displayName": "GCC Debug w/o vcpkg",
+            "description": "Debug using GCC without vcpkg",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "installDir": "${sourceDir}/out/install/${presetName}",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "g++",
+                "CMAKE_C_COMPILER": "gcc",
+                "CMAKE_BUILD_TYPE": "Debug",
+                "IMPROC_WITH_COVERAGE": "OFF",
+                "IMPROC_SERVICES_WITH_TESTS": "ON"
+            }
+        },
+        {
+            "name": "gcc-release-no-toolchain",
+            "displayName": "GCC Release w/o vcpkg",
+            "description": "Release using GCC without vcpkg",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "installDir": "${sourceDir}/out/install/${presetName}",
+            "cacheVariables": {
+                "CMAKE_CXX_COMPILER": "g++",
+                "CMAKE_C_COMPILER": "gcc",
+                "CMAKE_BUILD_TYPE": "Release",
+                "IMPROC_WITH_COVERAGE": "OFF",
+                "IMPROC_SERVICES_WITH_TESTS": "OFF"
+            }
+        }
+    ],
+    "buildPresets": 
+    [
+        {
+            "name": "clang-coverage",
+            "configurePreset": "clang-coverage"
+        },
+        {
+            "name": "clang-debug",
+            "configurePreset": "clang-debug"
+        },
+        {
+            "name": "clang-release",
+            "configurePreset": "clang-release"
+        },
+        {
+            "name": "clang-debug-no-toolchain",
+            "configurePreset": "clang-debug-no-toolchain"
+        },
+        {
+            "name": "clang-release-no-toolchain",
+            "configurePreset": "clang-release-no-toolchain"
+        },
+        {
+            "name": "gcc-debug",
+            "configurePreset": "gcc-debug"
+        },
+        {
+            "name": "gcc-release",
+            "configurePreset": "gcc-release"
+        },
+        {
+            "name": "gcc-debug-no-toolchain",
+            "configurePreset": "gcc-debug-no-toolchain"
+        },
+        {
+            "name": "gcc-release-no-toolchain",
+            "configurePreset": "gcc-release-no-toolchain"
+        }
+    ]
+}

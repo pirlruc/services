@@ -1,0 +1,3 @@
+[submodule "modules/infrastructure"]
+	path = modules/infrastructure
+	url = https://github.com/pirlruc/infrastructure.git

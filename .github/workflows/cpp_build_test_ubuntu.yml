@@ -1,4 +1,4 @@
-name: Coverage Reporter
+name: Ubuntu Build
 
 on:
   # Triggers the workflow on push or pull request events
@@ -11,10 +11,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  codacy-coverage-reporter:
-    env:
-      VCPKG_ROOT: /usr/local/share/vcpkg
-
+  build:
     # The type of runner that the job will run on
     name: ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
@@ -23,10 +20,28 @@ jobs:
       matrix:
         config:
         - {
-            name: codacy-coverage-reporter,
+            name: ubuntu-latest-gcc,
             os: ubuntu-latest,
-            preset_name: "clang-coverage",
-            binary_dir: "out/build/clang-coverage"
+            preset_name: "gcc-debug",
+            binary_dir: "out/build/gcc-debug"
+          }
+        - {
+            name: ubuntu-latest-clang,
+            os: ubuntu-latest,
+            preset_name: "clang-debug",
+            binary_dir: "out/build/clang-debug"
+          }
+        - {
+            name: ubuntu-latest-gcc-no-toolchain,
+            os: ubuntu-latest,
+            preset_name: "gcc-debug-no-toolchain",
+            binary_dir: "out/build/gcc-debug-no-toolchain"
+          }
+        - {
+            name: ubuntu-latest-clang-no-toolchain,
+            os: ubuntu-latest,
+            preset_name: "clang-debug-no-toolchain",
+            binary_dir: "out/build/clang-debug-no-toolchain"
           }
 
     steps:
@@ -80,14 +95,12 @@ jobs:
           rm -rf build
           mkdir build
 
-      - name: Configure
+      - name: Configure & Build
         shell: bash
         run: |
+          export VCPKG_ROOT=/usr/local/share/vcpkg
           cmake --preset ${{ matrix.config.preset_name }}
-
-      - name: Build
-        shell: bash
-        run: cmake --build --preset ${{ matrix.config.preset_name }} --target all
+          cmake --build --preset ${{ matrix.config.preset_name }} --target all
 
       - if: ${{ steps.branch-name.outputs.branch == 'developer' }}
         name: Save Build Cache
@@ -102,26 +115,6 @@ jobs:
             modules/infrastructure/external/*
           key: ${{ matrix.config.os }}-build-${{ matrix.config.preset_name }}-${{ hashFiles('CMakeLists.txt','test/CMakeLists.txt') }}
 
-      - name: Code Coverage Report
+      - name: Test
         shell: bash
-        run: |
-          HOME_DIRECTORY=$(pwd)
-          cd ${{ matrix.config.binary_dir }}/bin
-          ./improc_services_testd --gtest_output="xml:improc_services_tests.xml"
-          cd "$HOME_DIRECTORY"
-          cmake --build --preset ${{ matrix.config.preset_name }} --target improc_services_coverage
-
-      - name: Unit Tests Report
-        uses: EnricoMi/publish-unit-test-result-action@v2
-        if: always()
-        with:
-          check_name: "unit-tests-report"
-          time_unit: milliseconds
-          files: |
-            **/improc_services_tests.xml
-
-      - name: Run codacy-coverage-reporter
-        uses: codacy/codacy-coverage-reporter-action@v1
-        with:
-          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-          coverage-reports: ./${{ matrix.config.binary_dir }}/improc_services_coverage.lcov
+        run: ./${{ matrix.config.binary_dir }}/bin/improc_services_testd
