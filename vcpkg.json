@@ -1,17 +1,10 @@
 {
-  "name": "services-vcpkg-dependencies",
-  "version": "1.0.0",
-  "port-version": 0,
   "dependencies": [
-    {
-      "name": "spdlog",
-      "version>=": "1.12.0"
-    },
-    {
-      "name": "jsoncpp",
-      "version>=": "1.9.5"
-    }
-],
+      {
+        "name": "improc-infrastructure",
+        "version>=": "1.0.0"
+      }
+  ],
   "features": {
     "tests": {
       "description": "Support test library",
@@ -22,6 +15,5 @@
         }
       ]
     }
-  },
-  "builtin-baseline": "53bef8994c541b6561884a8395ea35715ece75db"
+  }
 }
