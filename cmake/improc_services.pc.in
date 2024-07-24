@@ -1,12 +1,12 @@
 prefix=@CMAKE_INSTALL_PREFIX@
 exec_prefix=${prefix}
-includedir=@PKG_CONFIG_INCLUDEDIR@
 libdir=@PKG_CONFIG_LIBDIR@
+includedir=@PKG_CONFIG_INCLUDEDIR@
 
 Name: lib@PROJECT_NAME@
 Description: Services module of image-proc library
 URL: https://github.com/pirlruc/services
 Version: @IMPROC_SUPERPROJECT_VERSION@
-Libs: -L${libdir} -limproc_services -lpipes
-CFlags: -I${includedir} @PKG_CONFIG_DEFINES@
+Libs: -L${libdir} -l@PROJECT_NAME@ -limproc-infrastructure -lpipes
+CFlags: -I${includedir}
 Requires: @PKG_CONFIG_REQUIRES@

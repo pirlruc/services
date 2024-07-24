@@ -13,7 +13,7 @@ else()
   FetchContent_Declare(
     googletest
     GIT_REPOSITORY  https://github.com/google/googletest.git
-    GIT_TAG         v1.14.0
+    GIT_TAG         v1.15.0
     SOURCE_DIR      ${PROJECT_SOURCE_DIR}/test/external/googletest
   )
   set(BUILD_GMOCK OFF)
@@ -30,8 +30,8 @@ mark_as_advanced(
 
 # Create file to get folder with test
 configure_file(
-  ${PROJECT_SOURCE_DIR}/test/${PROJECT_NAME}_test_config.hpp.in 
-  ${PROJECT_SOURCE_DIR}/test/${PROJECT_NAME}_test_config.hpp
+  ${PROJECT_SOURCE_DIR}/test/${PROJECT_NAME_FILE}_test_config.hpp.in 
+  ${PROJECT_SOURCE_DIR}/test/${PROJECT_NAME_FILE}_test_config.hpp
 )
 
 if(IMPROC_WITH_COVERAGE AND CMAKE_CXX_COMPILER_ID STREQUAL "Clang")

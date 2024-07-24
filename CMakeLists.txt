@@ -17,10 +17,11 @@ if(IMPROC_WITH_TESTS OR IMPROC_SERVICES_WITH_TESTS)
 endif()
 
 project(
-  improc_services
+  improc-services
   VERSION     ${IMPROC_SUPERPROJECT_VERSION}
   LANGUAGES   CXX
 )
+string(REPLACE "-" "_" PROJECT_NAME_FILE ${PROJECT_NAME})
 
 include(FetchContent)
 
@@ -35,7 +36,12 @@ if(PROJECT_NAME STREQUAL CMAKE_PROJECT_NAME)
   option(IMPROC_WITH_COVERAGE  	     "Building library with code coverage"  OFF)
   option(BUILD_SHARED_LIBS           "Building shared libraries"            ON)
 
-  add_subdirectory(${PROJECT_SOURCE_DIR}/modules/infrastructure ${CMAKE_BINARY_DIR}/infrastructure)
+  if(DEFINED CMAKE_TOOLCHAIN_FILE)
+    find_package(improc-infrastructure CONFIG REQUIRED)
+    add_library(improc::infrastructure ALIAS improc::improc-infrastructure)
+  else()
+    add_subdirectory(${PROJECT_SOURCE_DIR}/modules/infrastructure ${CMAKE_BINARY_DIR}/infrastructure)
+  endif()
 endif()
 
 # Add external dependencies
@@ -51,6 +57,7 @@ FetchContent_MakeAvailable(pipes)
 target_include_directories(pipes INTERFACE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/external/pipes/include>
                                            $<INSTALL_INTERFACE:include> )
 
+set(PKG_CONFIG_REQUIRES "improc-infrastructure pipes")
 message(STATUS "Build ${PROJECT_NAME} Version: ${PROJECT_VERSION}")
 message(STATUS "CMake Toolchain File: ${CMAKE_TOOLCHAIN_FILE}")
 message(STATUS "Build Type : ${CMAKE_BUILD_TYPE}")
@@ -84,7 +91,11 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND (WIN32 OR WINCE))
   set(IMPROC_SERVICES_LIB_FILES ${IMPROC_SERVICES_LIB_FILES} ${PROJECT_SOURCE_DIR}/src/main.cpp)
 endif()
 
-add_library(${PROJECT_NAME} SHARED ${IMPROC_SERVICES_LIB_FILES})
+if (BUILD_SHARED_LIBS)
+  add_library(${PROJECT_NAME} SHARED ${IMPROC_SERVICES_LIB_FILES})
+else()
+  add_library(${PROJECT_NAME} STATIC ${IMPROC_SERVICES_LIB_FILES})
+endif()
 add_library(improc::services ALIAS ${PROJECT_NAME})
 add_dependencies(${PROJECT_NAME} improc::infrastructure pipes)
 
@@ -145,25 +156,21 @@ else()
   set(PKG_CONFIG_LIBDIR "\${exec_prefix}/${CMAKE_INSTALL_LIBDIR}")
 endif()
 configure_file(
-  ${PROJECT_SOURCE_DIR}/cmake/${PROJECT_NAME}.pc.in
-  ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pc 
+  ${PROJECT_SOURCE_DIR}/cmake/${PROJECT_NAME_FILE}.pc.in
+  ${CMAKE_BINARY_DIR}/${PROJECT_NAME_FILE}.pc 
   @ONLY )
-install(FILES ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+install(FILES ${CMAKE_BINARY_DIR}/${PROJECT_NAME_FILE}.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 
 # CMake config files
-set(CONFIG_TARGETS_FILE "${PROJECT_NAME}ConfigTargets.cmake")
-set(EXPORT_DESTINATION_DIR ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
-install(EXPORT ${PROJECT_NAME}_targets FILE ${CONFIG_TARGETS_FILE} DESTINATION ${EXPORT_DESTINATION_DIR})
-
-include(CMakePackageConfigHelpers)
-configure_package_config_file(
-  ${PROJECT_SOURCE_DIR}/cmake/${PROJECT_NAME}_config.cmake.in
-  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake 
-  INSTALL_DESTINATION ${EXPORT_DESTINATION_DIR} )
-write_basic_package_version_file(
-  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
-  VERSION ${IMPROC_SUPERPROJECT_VERSION}
-  COMPATIBILITY SameMajorVersion)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake 
-              ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+set(TARGETS_FILE "${PROJECT_NAME}-targets.cmake")
+set(CONFIG_TARGETS_FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake")
+set(EXPORT_DESTINATION_DIR share/${PROJECT_NAME})
+install(EXPORT ${PROJECT_NAME}_targets
+        FILE ${TARGETS_FILE}
+        NAMESPACE improc::
         DESTINATION ${EXPORT_DESTINATION_DIR})
+configure_file(
+  ${PROJECT_SOURCE_DIR}/cmake/${PROJECT_NAME_FILE}_config.cmake.in
+  ${CONFIG_TARGETS_FILE}
+  @ONLY )
+install(FILES ${CONFIG_TARGETS_FILE} DESTINATION ${EXPORT_DESTINATION_DIR})
