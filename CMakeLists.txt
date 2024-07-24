@@ -46,16 +46,21 @@ endif()
 
 # Add external dependencies
 # PIPES
-FetchContent_Declare(
-  pipes
-  GIT_REPOSITORY  https://github.com/pirlruc/pipes
-  GIT_TAG         db9c72f7b7c5fb77de7c0f25b0636de986a219c1
-  SOURCE_DIR      ${PROJECT_SOURCE_DIR}/external/pipes
-)
-set(BUILD_TESTING OFF)
-FetchContent_MakeAvailable(pipes)
-target_include_directories(pipes INTERFACE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/external/pipes/include>
-                                           $<INSTALL_INTERFACE:include> )
+if(DEFINED CMAKE_TOOLCHAIN_FILE)
+  find_package(pipes CONFIG REQUIRED)
+else()
+  FetchContent_Declare(
+    pipes
+    GIT_REPOSITORY  https://github.com/pirlruc/pipes
+    GIT_TAG         ed42191bc176a82453419ee0c48eec2114244166
+    SOURCE_DIR      ${PROJECT_SOURCE_DIR}/external/pipes
+  )
+  set(BUILD_TESTING OFF)
+  FetchContent_MakeAvailable(pipes)
+  target_include_directories(pipes INTERFACE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/external/pipes/include>
+                                            $<INSTALL_INTERFACE:include> )
+  add_library(pipes::pipes ALIAS pipes)
+endif()
 
 set(PKG_CONFIG_REQUIRES "improc-infrastructure pipes")
 message(STATUS "Build ${PROJECT_NAME} Version: ${PROJECT_VERSION}")
@@ -97,7 +102,7 @@ else()
   add_library(${PROJECT_NAME} STATIC ${IMPROC_SERVICES_LIB_FILES})
 endif()
 add_library(improc::services ALIAS ${PROJECT_NAME})
-add_dependencies(${PROJECT_NAME} improc::infrastructure pipes)
+add_dependencies(${PROJECT_NAME} improc::infrastructure pipes::pipes)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD           17)
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD_REQUIRED  TRUE)
@@ -111,9 +116,9 @@ target_include_directories  (${PROJECT_NAME}   INTERFACE $<BUILD_INTERFACE:${PRO
 
 # Link dependencies
 target_link_libraries       (${PROJECT_NAME}   PRIVATE   improc::infrastructure)
-target_link_libraries       (${PROJECT_NAME}   PRIVATE   pipes)
+target_link_libraries       (${PROJECT_NAME}   PRIVATE   pipes::pipes)
 target_link_libraries       (${PROJECT_NAME}   INTERFACE improc::infrastructure)
-target_link_libraries       (${PROJECT_NAME}   INTERFACE pipes)
+target_link_libraries       (${PROJECT_NAME}   INTERFACE pipes::pipes)
 
 # Tests configuration
 if(IMPROC_WITH_TESTS OR IMPROC_SERVICES_WITH_TESTS)
@@ -140,9 +145,8 @@ install(
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
   INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
-install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/improc                  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-install(FILES     ${PROJECT_SOURCE_DIR}/external/pipes/LICENSE          DESTINATION share/licenses/improc/pipes)
-install(FILES     ${PROJECT_SOURCE_DIR}/LICENSE                         DESTINATION share/licenses/improc/services)
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/improc  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(FILES     ${PROJECT_SOURCE_DIR}/LICENSE         DESTINATION share/licenses/improc/services)
 
 # pkg-config files
 if(IS_ABSOLUTE ${CMAKE_INSTALL_INCLUDEDIR})
