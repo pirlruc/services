@@ -65,8 +65,9 @@ jobs:
 
     - name: Manual Build
       run: |
-        echo "Run, Build Application using script"
-        ./github/workflows/buildscript_ubuntu.sh
+        echo "Building Application from script"
+        ls .
+        ./buildscript_ubuntu.sh
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
