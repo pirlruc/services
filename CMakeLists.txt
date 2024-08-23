@@ -47,6 +47,12 @@ if(PROJECT_NAME STREQUAL CMAKE_PROJECT_NAME)
   set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"      CACHE PATH "Executable/dll output dir.")
   set(CMAKE_DEBUG_POSTFIX d)
 
+  if(IMPROC_WITH_COVERAGE AND NOT IMPROC_WITH_TESTS AND NOT IMPROC_SERVICES_WITH_TESTS)
+    message(STATUS "Warning: IMPROC_COVERAGE ON but tests of image processing library is not ON")
+    message(STATUS "---------> Setting IMPROC_SERVICES_WITH_TESTS = ON")
+    set(IMPROC_SERVICES_WITH_TESTS ON)
+  endif()
+
   if(DEFINED CMAKE_TOOLCHAIN_FILE)
     find_package(improc-infrastructure CONFIG REQUIRED)
     add_library(improc::infrastructure ALIAS improc::improc-infrastructure)
@@ -136,7 +142,7 @@ target_link_libraries       (${PROJECT_NAME}   INTERFACE improc::infrastructure)
 target_link_libraries       (${PROJECT_NAME}   INTERFACE joboccara::pipes)
 
 # Tests configuration
-if(IMPROC_WITH_TESTS OR IMPROC_WITH_COVERAGE OR IMPROC_SERVICES_WITH_TESTS)
+if(IMPROC_WITH_TESTS OR IMPROC_SERVICES_WITH_TESTS)
   add_subdirectory(${PROJECT_SOURCE_DIR}/test     ${CMAKE_BINARY_DIR}/improc_services_test)
 endif()
 
