@@ -65,9 +65,30 @@ jobs:
 
     - name: Manual Build
       run: |
-        echo "Building Application from script"
-        ls .
-        ./buildscript_ubuntu.sh
+        echo "1. Installing dependencies..."
+        sudo apt-get install ninja-build
+        sudo apt-get install lcov
+        ninja    --version
+        cmake    --version
+        gcc      --version
+        gcc-11   --version
+        clang    --version
+        clang-14 --version
+        lcov     --version
+        vcpkg    --version
+
+        echo "2. Removing previous builds..."
+        rm -rf out
+        rm -rf build
+        mkdir build
+
+        echo "3. Configuring compilation job..."
+        export VCPKG_ROOT=/usr/local/share/vcpkg
+        cmake --preset "clang-release"
+
+        echo "4. Building and installing library..."
+        cmake --build --preset "clang-release" --target all
+        cmake --build --preset "clang-release" --target install
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
