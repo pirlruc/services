@@ -176,9 +176,9 @@ else()
 endif()
 configure_file(
   ${PROJECT_SOURCE_DIR}/cmake/${PROJECT_NAME_FILE}.pc.in
-  ${CMAKE_BINARY_DIR}/${PROJECT_NAME_FILE}.pc 
+  ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pc 
   @ONLY )
-install(FILES ${CMAKE_BINARY_DIR}/${PROJECT_NAME_FILE}.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+install(FILES ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 
 # CMake config files
 set(TARGETS_FILE "${PROJECT_NAME}-targets.cmake")
