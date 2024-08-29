@@ -69,7 +69,7 @@ else()
   FetchContent_Declare(
     pipes
     GIT_REPOSITORY  https://github.com/pirlruc/pipes
-    GIT_TAG         ed42191bc176a82453419ee0c48eec2114244166
+    GIT_TAG         0.0.1
     SOURCE_DIR      ${PROJECT_SOURCE_DIR}/external/pipes
   )
   set(BUILD_TESTING OFF)
@@ -188,7 +188,6 @@ install(FILES ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.pc DESTINATION ${CMAKE_INSTALL
 
 # CMake config files
 set(TARGETS_FILE "${PROJECT_NAME}-targets.cmake")
-set(CONFIG_TARGETS_FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake")
 set(EXPORT_DESTINATION_DIR share/${PROJECT_NAME})
 install(EXPORT ${PROJECT_NAME}_targets
         FILE ${TARGETS_FILE}
@@ -196,6 +195,6 @@ install(EXPORT ${PROJECT_NAME}_targets
         DESTINATION ${EXPORT_DESTINATION_DIR})
 configure_file(
   ${PROJECT_SOURCE_DIR}/cmake/${PROJECT_NAME_FILE}_config.cmake.in
-  ${CONFIG_TARGETS_FILE}
+  ${CMAKE_BINARY_DIR}/${PROJECT_NAME}-config.cmake
   @ONLY )
-install(FILES ${CONFIG_TARGETS_FILE} DESTINATION ${EXPORT_DESTINATION_DIR})
+install(FILES ${CMAKE_BINARY_DIR}/${PROJECT_NAME}-config.cmake DESTINATION ${EXPORT_DESTINATION_DIR})
