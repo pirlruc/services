@@ -101,4 +101,4 @@ jobs:
 
       - name: Test
         shell: bash
-        run: ./${{ matrix.config.binary_dir }}/bin/improc_services_testd
+        run: ./${{ matrix.config.binary_dir }}/bin/improc-services_testd

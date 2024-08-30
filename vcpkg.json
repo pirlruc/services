@@ -1,27 +1,23 @@
 {
-  "name": "services-vcpkg-dependencies",
-  "version": "1.0.0",
-  "port-version": 0,
   "dependencies": [
-    {
-      "name": "spdlog",
-      "version>=": "1.12.0"
-    },
-    {
-      "name": "jsoncpp",
-      "version>=": "1.9.5"
-    }
-],
+      {
+        "name": "pipes",
+        "version>=": "1.0.1"
+      },
+      {
+        "name": "improc-infrastructure",
+        "version>=": "375574e40f0a8a9a4c61752a20cbb0f4f594cebb"
+      }
+  ],
   "features": {
     "tests": {
       "description": "Support test library",
       "dependencies": [
         {
           "name": "gtest",
-          "version>=": "1.14.0"
+          "version>=": "1.15.2"
         }
       ]
     }
-  },
-  "builtin-baseline": "53bef8994c541b6561884a8395ea35715ece75db"
+  }
 }

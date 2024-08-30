@@ -13,12 +13,19 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [ "main" ]
+    branches: 
+    - main
+
   pull_request:
     # The branches below must be a subset of the branches above
-    branches: [ "main" ]
+    branches:
+    - main
+    
   schedule:
     - cron: '41 18 * * 4'
+
+  # Runs this workflow manually from the Actions tab
+  workflow_dispatch:
 
 jobs:
   analyze:
@@ -44,7 +51,7 @@ jobs:
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
-      uses: github/codeql-action/init@v2
+      uses: github/codeql-action/init@v3
       with:
         languages: ${{ matrix.language }}
         # If you wish to specify custom queries, you can do so here or in a config file.
@@ -54,23 +61,34 @@ jobs:
         # Details on CodeQL's query packs refer to : https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
         # queries: security-extended,security-and-quality
 
+    - name: Manual Build
+      run: |
+        echo "1. Installing dependencies..."
+        sudo apt-get install ninja-build
+        sudo apt-get install lcov
+        ninja    --version
+        cmake    --version
+        gcc      --version
+        gcc-11   --version
+        clang    --version
+        clang-14 --version
+        lcov     --version
+        vcpkg    --version
 
-    # Autobuild attempts to build any compiled languages  (C/C++, C#, Go, or Java).
-    # If this step fails, then you should remove it and run the build manually (see below)
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v2
+        echo "2. Removing previous builds..."
+        rm -rf out
+        rm -rf build
+        mkdir build
 
-    # ℹ️ Command-line programs to run using the OS shell.
-    # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
+        echo "3. Configuring compilation job..."
+        export VCPKG_ROOT=/usr/local/share/vcpkg
+        cmake --preset "clang-release"
 
-    #   If the Autobuild fails above, remove it and uncomment the following three lines.
-    #   modify them (or add more) to build your code if your project, please refer to the EXAMPLE below for guidance.
-
-    # - run: |
-    #     echo "Run, Build Application using script"
-    #     ./location_of_script_within_repo/buildscript.sh
+        echo "4. Building and installing library..."
+        cmake --build --preset "clang-release" --target all
+        cmake --build --preset "clang-release" --target install
 
     - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v2
+      uses: github/codeql-action/analyze@v3
       with:
         category: "/language:${{matrix.language}}"
