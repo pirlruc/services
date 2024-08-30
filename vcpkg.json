@@ -2,11 +2,11 @@
   "dependencies": [
       {
         "name": "pipes",
-        "version>=": "0.0.1"
+        "version>=": "1.0.1"
       },
       {
         "name": "improc-infrastructure",
-        "version>=": "008f4cd03033aec74e5063fb1b734cb6fdde9d8e"
+        "version>=": "375574e40f0a8a9a4c61752a20cbb0f4f594cebb"
       }
   ],
   "features": {

@@ -71,7 +71,7 @@ else()
   FetchContent_Declare(
     pipes
     GIT_REPOSITORY  https://github.com/pirlruc/pipes
-    GIT_TAG         0.0.1
+    GIT_TAG         1.0.1
     SOURCE_DIR      ${PROJECT_SOURCE_DIR}/external/pipes
   )
   set(BUILD_TESTING OFF)
