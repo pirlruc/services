@@ -1,8 +1,12 @@
-name: Windows Build
+name: Windows MinGW Build
 
 on:
   # Triggers the workflow on push or pull request events
   push:
+    branches:
+    - main
+    - developer
+  pull_request:
     branches:
     - main
     - developer
@@ -23,6 +27,7 @@ jobs:
             name: windows-latest-clang,
             os: windows-latest,
             preset_name: "clang-debug",
+            triplet: "x64-mingw-dynamic",
             binary_dir: "out/build/clang-debug"
           }
         - {
@@ -50,7 +55,6 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          choco install ninja
           ninja    --version
           cmake    --version
           gcc      --version
@@ -83,7 +87,11 @@ jobs:
         shell: bash
         run: |
           export VCPKG_ROOT=C:\vcpkg
-          cmake --preset ${{ matrix.config.preset_name }}
+          if [ -n "${{ matrix.config.triplet }}" ]; then
+            cmake --preset ${{ matrix.config.preset_name }} -DVCPKG_TARGET_TRIPLET=${{ matrix.config.triplet }}
+          else
+            cmake --preset ${{ matrix.config.preset_name }}
+          fi
           cmake --build --preset ${{ matrix.config.preset_name }} --target all
 
       - if: ${{ steps.branch-name.outputs.branch == 'developer' }}
@@ -100,5 +108,6 @@ jobs:
           key: ${{ matrix.config.os }}-build-${{ matrix.config.preset_name }}-${{ hashFiles('CMakeLists.txt','test/CMakeLists.txt') }}
 
       - name: Test
-        shell: bash
-        run: ./${{ matrix.config.binary_dir }}/bin/improc-services_testd
+        shell: pwsh
+        run: |
+          ./${{ matrix.config.binary_dir }}/bin/improc-services_testd.exe

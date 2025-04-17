@@ -1,4 +1,4 @@
-name: Windows Artifacts
+name: Windows MinGW Artifacts
 
 on:
   # Triggers the workflow on push or pull request events
@@ -22,12 +22,7 @@ jobs:
             name: windows-latest-clang,
             os: windows-latest,
             preset_name: "clang-release",
-            install_dir: "D:/a/services/services/install"
-          }
-        - {
-            name: windows-latest-gcc-no-toolchain,
-            os: windows-latest,
-            preset_name: "gcc-release-no-toolchain",
+            triplet: "x64-mingw-dynamic",
             install_dir: "D:/a/services/services/install"
           }
         - {
@@ -55,7 +50,25 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          choco install ninja
+          choco uninstall llvm
+
+          echo "Starting LLVM-MinGW setup..."
+          $LLVM_MINGW_VERSION="20231128"
+          $ARCHIVE_NAME="llvm-mingw-${LLVM_MINGW_VERSION}-ucrt-x86_64.zip"
+          $DOWNLOAD_URL="https://github.com/mstorsjo/llvm-mingw/releases/download/${LLVM_MINGW_VERSION}/${ARCHIVE_NAME}"
+          $INSTALL_DIR="$HOME/llvm-mingw"
+          
+          echo "Downloading LLVM-MinGW..."
+          curl -L -o "$ARCHIVE_NAME" "$DOWNLOAD_URL"
+          
+          echo "Extracting LLVM-MinGW..."
+          mkdir -p "$INSTALL_DIR"
+          unzip -q "$ARCHIVE_NAME" -d "$INSTALL_DIR"
+          
+          $env:PATH="$INSTALL_DIR/llvm-mingw-${LLVM_MINGW_VERSION}-ucrt-x86_64/bin;$env:PATH"
+          Add-Content -Path $env:GITHUB_PATH -Value "$INSTALL_DIR/llvm-mingw-${LLVM_MINGW_VERSION}-ucrt-x86_64/bin"
+          echo "LLVM-MinGW setup complete."
+
           ninja    --version
           cmake    --version
           gcc      --version
@@ -88,7 +101,11 @@ jobs:
         shell: bash
         run: |
           export VCPKG_ROOT=C:\vcpkg
-          cmake --preset ${{ matrix.config.preset_name }}
+          if [ -n "${{ matrix.config.triplet }}" ]; then
+            cmake --preset ${{ matrix.config.preset_name }} -DVCPKG_TARGET_TRIPLET=${{ matrix.config.triplet }}
+          else
+            cmake --preset ${{ matrix.config.preset_name }}
+          fi
           cmake --build --preset ${{ matrix.config.preset_name }} --target install
 
       - if: ${{ steps.branch-name.outputs.branch == 'developer' }}

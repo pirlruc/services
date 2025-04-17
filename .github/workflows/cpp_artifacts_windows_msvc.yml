@@ -1,15 +1,10 @@
-name: Ubuntu Build
+name: Windows MSVC Artifacts
 
 on:
   # Triggers the workflow on push or pull request events
   push:
     branches:
     - main
-    - developer
-  pull_request:
-    branches:
-    - main
-    - developer
 
   # Runs this workflow manually from the Actions tab
   workflow_dispatch:
@@ -24,28 +19,30 @@ jobs:
       matrix:
         config:
         - {
-            name: ubuntu-latest-gcc,
-            os: ubuntu-latest,
-            preset_name: "gcc-debug",
-            binary_dir: "out/build/gcc-debug"
+            name: windows-latest-gcc,
+            os: windows-latest,
+            preset_name: "gcc-release",
+            triplet: "x64-mingw-dynamic",
+            install_dir: "D:/a/infrastructure/infrastructure/install"
           }
         - {
-            name: ubuntu-latest-clang,
-            os: ubuntu-latest,
-            preset_name: "clang-debug",
-            binary_dir: "out/build/clang-debug"
+            name: windows-latest-clang,
+            os: windows-latest,
+            preset_name: "clang-release",
+            triplet: "x64-windows",
+            install_dir: "D:/a/services/services/install"
           }
         - {
-            name: ubuntu-latest-gcc-no-toolchain,
-            os: ubuntu-latest,
-            preset_name: "gcc-debug-no-toolchain",
-            binary_dir: "out/build/gcc-debug-no-toolchain"
+            name: windows-latest-gcc-no-toolchain,
+            os: windows-latest,
+            preset_name: "gcc-release-no-toolchain",
+            install_dir: "D:/a/services/services/install"
           }
         - {
-            name: ubuntu-latest-clang-no-toolchain,
-            os: ubuntu-latest,
-            preset_name: "clang-debug-no-toolchain",
-            binary_dir: "out/build/clang-debug-no-toolchain"
+            name: windows-latest-clang-no-toolchain,
+            os: windows-latest,
+            preset_name: "clang-release-no-toolchain",
+            install_dir: "D:/a/services/services/install"
           }
 
     steps:
@@ -66,20 +63,10 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          sudo apt-get install ninja-build
-          sudo apt-get install lcov
-          sudo apt-get install clang-17
-          sudo update-alternatives --install /usr/bin/clang   clang   /usr/bin/clang-17   100
-          sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-17 100
-          sudo update-alternatives --set clang   /usr/bin/clang-17
-          sudo update-alternatives --set clang++ /usr/bin/clang++-17          
           ninja    --version
           cmake    --version
           gcc      --version
-          gcc-13   --version
           clang    --version
-          clang-17 --version
-          lcov     --version
           vcpkg    --version
 
       - name: Restore Build Cache
@@ -107,9 +94,13 @@ jobs:
       - name: Configure & Build
         shell: bash
         run: |
-          export VCPKG_ROOT=/usr/local/share/vcpkg
-          cmake --preset ${{ matrix.config.preset_name }}
-          cmake --build --preset ${{ matrix.config.preset_name }} --target all
+          export VCPKG_ROOT=C:\vcpkg
+          if [ -n "${{ matrix.config.triplet }}" ]; then
+            cmake --preset ${{ matrix.config.preset_name }} -DVCPKG_TARGET_TRIPLET=${{ matrix.config.triplet }}
+          else
+            cmake --preset ${{ matrix.config.preset_name }}
+          fi
+          cmake --build --preset ${{ matrix.config.preset_name }} --target install
 
       - if: ${{ steps.branch-name.outputs.branch == 'developer' }}
         name: Save Build Cache
@@ -124,6 +115,8 @@ jobs:
             modules/infrastructure/external/*
           key: ${{ matrix.config.os }}-build-${{ matrix.config.preset_name }}-${{ hashFiles('CMakeLists.txt','test/CMakeLists.txt') }}
 
-      - name: Test
-        shell: bash
-        run: ./${{ matrix.config.binary_dir }}/bin/improc-services_testd
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.config.name }}
+          path: ${{ matrix.config.install_dir }}/*
