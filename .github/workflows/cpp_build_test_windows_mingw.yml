@@ -55,6 +55,25 @@ jobs:
 
       - name: Install Dependencies
         run: |
+          choco uninstall llvm
+          
+          echo "Starting LLVM-MinGW setup..."
+          $LLVM_MINGW_VERSION="20231128"
+          $ARCHIVE_NAME="llvm-mingw-${LLVM_MINGW_VERSION}-ucrt-x86_64.zip"
+          $DOWNLOAD_URL="https://github.com/mstorsjo/llvm-mingw/releases/download/${LLVM_MINGW_VERSION}/${ARCHIVE_NAME}"
+          $INSTALL_DIR="$HOME/llvm-mingw"
+          
+          echo "Downloading LLVM-MinGW..."
+          curl -L -o "$ARCHIVE_NAME" "$DOWNLOAD_URL"
+          
+          echo "Extracting LLVM-MinGW..."
+          mkdir -p "$INSTALL_DIR"
+          unzip -q "$ARCHIVE_NAME" -d "$INSTALL_DIR"
+          
+          $env:PATH="$INSTALL_DIR/llvm-mingw-${LLVM_MINGW_VERSION}-ucrt-x86_64/bin;$env:PATH"
+          Add-Content -Path $env:GITHUB_PATH -Value "$INSTALL_DIR/llvm-mingw-${LLVM_MINGW_VERSION}-ucrt-x86_64/bin"
+          echo "LLVM-MinGW setup complete."
+
           ninja    --version
           cmake    --version
           gcc      --version
