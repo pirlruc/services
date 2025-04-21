@@ -107,7 +107,7 @@ target_link_libraries(${PROJECT_NAME}_test  PRIVATE GTest::gtest GTest::gtest_ma
 
 gtest_discover_tests(
   ${PROJECT_NAME}_test
-  DISCOVERY_MODE POST_BUILD
+  DISCOVERY_MODE PRE_TEST
   WORKING_DIRECTORY                           ${PROJECT_SOURCE_DIR}/test
   PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY    "${PROJECT_SOURCE_DIR}/test"
 )
