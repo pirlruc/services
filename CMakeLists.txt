@@ -91,10 +91,6 @@ message(STATUS "CMake Toolchain File: ${CMAKE_TOOLCHAIN_FILE}")
 message(STATUS "Build Type : ${CMAKE_BUILD_TYPE}")
 message(STATUS "Install Dir: ${CMAKE_INSTALL_PREFIX}")
 
-message(STATUS "Compiler ID: ${CMAKE_CXX_COMPILER_ID}")
-message(STATUS "Simulate ID: ${CMAKE_CXX_SIMULATE_ID}")
-message(STATUS "Frontend Variant: ${CMAKE_CXX_COMPILER_FRONTEND_VARIANT}")
-
 set(
   IMPROC_SERVICES_LIB_FILES
 
