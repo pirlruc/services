@@ -119,19 +119,23 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_SIMULATE_ID STREQUAL "M
   set(IMPROC_SERVICES_LIB_FILES ${IMPROC_SERVICES_LIB_FILES} ${PROJECT_SOURCE_DIR}/src/main.cpp)
 endif()
 
-if (BUILD_SHARED_LIBS)
-  add_library(${PROJECT_NAME} SHARED ${IMPROC_SERVICES_LIB_FILES})
-else()
-  add_library(${PROJECT_NAME} STATIC ${IMPROC_SERVICES_LIB_FILES})
-endif()
+add_library(${PROJECT_NAME} ${IMPROC_SERVICES_LIB_FILES})
 add_library(improc::services ALIAS ${PROJECT_NAME})
 add_dependencies(${PROJECT_NAME} improc::infrastructure joboccara::pipes)
 
-set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD           17)
-set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD_REQUIRED  TRUE)
-set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE        CXX)
-set_target_properties(${PROJECT_NAME} PROPERTIES VERSION                ${PROJECT_VERSION})
-set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX          ${CMAKE_DEBUG_POSTFIX})
+set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD              17)
+set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD_REQUIRED     TRUE)
+set_target_properties(${PROJECT_NAME} PROPERTIES CXX_EXTENSIONS            OFF)
+set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE           CXX)
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION                   ${PROJECT_VERSION})
+set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
+set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX             ${CMAKE_DEBUG_POSTFIX})
+
+if (BUILD_SHARED_LIBS)
+  target_compile_definitions(${PROJECT_NAME} PRIVATE IMPROC_EXPORTS)
+else()
+  target_compile_definitions(${PROJECT_NAME} PRIVATE IMPROC_STATIC)
+endif()
 
 target_include_directories  (${PROJECT_NAME}   PRIVATE   ${PROJECT_SOURCE_DIR}/include)
 target_include_directories  (${PROJECT_NAME}   INTERFACE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>

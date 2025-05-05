@@ -96,6 +96,7 @@ set(
 add_executable(${PROJECT_NAME}_test ${IMPROC_SERVICES_TEST_FILES})
 set_target_properties(${PROJECT_NAME}_test PROPERTIES CXX_STANDARD           17)
 set_target_properties(${PROJECT_NAME}_test PROPERTIES CXX_STANDARD_REQUIRED  TRUE)
+set_target_properties(${PROJECT_NAME}_test PROPERTIES CXX_EXTENSIONS         OFF)
 set_target_properties(${PROJECT_NAME}_test PROPERTIES LINKER_LANGUAGE        CXX)
 set_target_properties(${PROJECT_NAME}_test PROPERTIES FOLDER                 ${PROJECT_SOURCE_DIR}/test)
 set_target_properties(${PROJECT_NAME}_test PROPERTIES DEBUG_POSTFIX          ${CMAKE_DEBUG_POSTFIX})
@@ -108,6 +109,7 @@ target_link_libraries(${PROJECT_NAME}_test  PRIVATE GTest::gtest GTest::gtest_ma
 gtest_discover_tests(
   ${PROJECT_NAME}_test
   DISCOVERY_MODE PRE_TEST
+  DISCOVERY_TIMEOUT 30
   WORKING_DIRECTORY                           ${PROJECT_SOURCE_DIR}/test
   PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY    "${PROJECT_SOURCE_DIR}/test"
 )
