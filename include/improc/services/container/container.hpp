@@ -20,7 +20,7 @@ namespace improc
      * @tparam ContainerType - data type of the items in the container
      */
     template <typename KeyType,typename ContainerType>
-    class IMPROC_API Container
+    class Container
     {
         static_assert(improc::is_hashable_v<KeyType>, "KeyType should be an integral or a string data type.");
         

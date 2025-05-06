@@ -22,7 +22,7 @@ namespace improc
      * @tparam ContextType 
      */
     template <typename KeyType,typename ContextType>
-    class IMPROC_API SequenceService
+    class SequenceService
     {
         private:
             struct Service

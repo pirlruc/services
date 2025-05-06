@@ -24,7 +24,7 @@ namespace improc
                 ,   typename ProductCreator = std::function<std::shared_ptr<BaseProduct>>()
                 ,   template <typename,class> class FactoryErrorPolicy = improc::FactoryPatternError 
                 >
-    class IMPROC_API FactoryPattern : public FactoryErrorPolicy<KeyType,BaseProduct>
+    class FactoryPattern : public FactoryErrorPolicy<KeyType,BaseProduct>
     {
         static_assert(improc::is_hashable_v<KeyType>, "KeyType should be an integral or a string data type.");
         
