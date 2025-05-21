@@ -24,7 +24,7 @@ namespace improc
     };
 }
 
-extern template class IMPROC_EXPORT_TEMPLATE_DECLARATION improc::LoggerSingleton<improc::ServicesLogger>;
+extern template class IMPROC_EXPORT_TEMPLATE_DECLARATION_SERVICES improc::LoggerSingleton<improc::ServicesLogger>;
 
 #if SPDLOG_ACTIVE_LEVEL <= SPDLOG_LEVEL_TRACE
 #    define IMPROC_SERVICES_LOGGER_TRACE(...) IMPROC_LOGGER_TRACE(improc::ServicesLogger::get(), __VA_ARGS__)
