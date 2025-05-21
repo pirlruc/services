@@ -14,7 +14,7 @@
       "kind": "git",
       "repository": "https://github.com/pirlruc/cpp-registry",
       "reference": "feature-vcpkg",
-      "baseline": "8b512e05b2d443dd92061b86b7e600bfbdf83b38",
+      "baseline": "410891be4f3b3d6b97663e3b8c4d779fa1364649",
       "packages": [ "pipes", "improc-infrastructure", "improc-services", "improc-corecv", "improc-drawer" ]
     }
   ]
