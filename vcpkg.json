@@ -6,7 +6,7 @@
       },
       {
         "name": "improc-infrastructure",
-        "version>=": "0b9c4577e038150d3e8ababbecf292a9658be70c"
+        "version>=": "e8fb49831242c1efbdc73a3360340f540d44a406"
       }
   ],
   "features": {
