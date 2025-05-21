@@ -115,11 +115,9 @@ set(
   ${PROJECT_SOURCE_DIR}/include/improc/services/factory/variant_factory_pattern.hpp
   ${PROJECT_SOURCE_DIR}/include/improc/services/factory/variant_factory_pattern.tpp
   ${PROJECT_SOURCE_DIR}/include/improc/services/pipes/base_pipe.hpp
-)
 
-if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_SIMULATE_ID STREQUAL "MSVC" AND (WIN32 OR WINCE))
-  set(IMPROC_SERVICES_LIB_FILES ${IMPROC_SERVICES_LIB_FILES} ${PROJECT_SOURCE_DIR}/src/main.cpp)
-endif()
+  ${PROJECT_SOURCE_DIR}/src/logger_services.cpp
+)
 
 add_library(${PROJECT_NAME} ${IMPROC_SERVICES_LIB_FILES})
 add_library(improc::services ALIAS ${PROJECT_NAME})
