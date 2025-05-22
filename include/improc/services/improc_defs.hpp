@@ -2,27 +2,16 @@
 #define IMPROC_SERVICES_DEFINITIONS_HPP
 
 #if defined(_MSC_VER) && !defined(__MINGW32__) && !defined(__MINGW64__)
-    // Pure MSVC and Clang with MSVC libraries
+    // Pure MSVC + Clang with MSVC libraries
     #define IMPROC_EXPORT_TEMPLATE_DECLARATION_SERVICES
     #define IMPROC_EXPORT_TEMPLATE_DEFINITION_SERVICES IMPROC_API
-#elif (defined(__MINGW32__) || defined(__MINGW64__))  && defined(__clang__)
-    // LLVM-MinGW
-    #define IMPROC_EXPORT_TEMPLATE_DECLARATION_SERVICES IMPROC_API
-    #define IMPROC_EXPORT_TEMPLATE_DEFINITION_SERVICES
-#elif (defined(__MINGW32__) || defined(__MINGW64__))  && !defined(__clang__)
-    // GCC-MinGW
-    #define IMPROC_EXPORT_TEMPLATE_DECLARATION_SERVICES
-    #define IMPROC_EXPORT_TEMPLATE_DEFINITION_SERVICES
 #elif defined(__clang__)
-    // Other Clang (non-Windows, or not MinGW)
+    // Clang (non-Windows) + LLVM-MinGW
     #define IMPROC_EXPORT_TEMPLATE_DECLARATION_SERVICES IMPROC_API
-    #define IMPROC_EXPORT_TEMPLATE_DEFINITION_SERVICES
-#elif defined(__GNUC__) && __GNUC__ >= 4
-    // GCC (non-Windows)
-    #define IMPROC_EXPORT_TEMPLATE_DECLARATION_SERVICES
     #define IMPROC_EXPORT_TEMPLATE_DEFINITION_SERVICES
 #else
     // Fallback for other compilers/platforms
+    // GCC (non-Windows) + GCC-MinGW + other
     #define IMPROC_EXPORT_TEMPLATE_DECLARATION_SERVICES
     #define IMPROC_EXPORT_TEMPLATE_DEFINITION_SERVICES
 #endif
