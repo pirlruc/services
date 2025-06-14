@@ -6,7 +6,7 @@
       },
       {
         "name": "improc-infrastructure",
-        "version>=": "375574e40f0a8a9a4c61752a20cbb0f4f594cebb"
+        "version>=": "2beeca58592926a1cd85bd7d057b4cedb62688e7"
       }
   ],
   "features": {
@@ -15,7 +15,7 @@
       "dependencies": [
         {
           "name": "gtest",
-          "version>=": "1.15.2"
+          "version>=": "1.17.0"
         }
       ]
     }

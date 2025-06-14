@@ -14,7 +14,7 @@ namespace improc
      * @tparam HandleOutputType - Data type of the output from the handle
      */
     template<class RequestType, class HandleOutputType>
-    class IMPROC_API Handler 
+    class Handler 
     {
         protected:
             std::shared_ptr<Handler>            next_handler_;
@@ -24,6 +24,8 @@ namespace improc
 
             virtual std::shared_ptr<Handler>    set_next_handler(std::shared_ptr<Handler> handler) = 0;
             virtual HandleOutputType            Handle(const RequestType& request) = 0;
+            
+            virtual ~Handler() = default;
     };
 
     /**
@@ -33,7 +35,7 @@ namespace improc
      * @tparam HandleOutputType - Data type of the output from the handle
      */
     template<class RequestType, class HandleOutputType>
-    class IMPROC_API BaseHandler : public improc::Handler<RequestType,HandleOutputType>
+    class BaseHandler : public improc::Handler<RequestType,HandleOutputType>
     {
         public:
             BaseHandler();

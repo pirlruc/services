@@ -24,7 +24,7 @@ namespace improc
                 ,   typename VariantProductCreator = std::variant<std::function<std::shared_ptr<BaseProduct>>()>
                 ,   template <typename,class> class FactoryErrorPolicy = improc::FactoryPatternError 
                 >
-    class IMPROC_API VariantFactoryPattern : private improc::FactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>
+    class VariantFactoryPattern : private improc::FactoryPattern<BaseProduct,KeyType,VariantProductCreator,FactoryErrorPolicy>
     {
         static_assert(std::variant_size_v<VariantProductCreator> > 1, "If only one functor is going to be used, please use FactoryPattern.");
         static_assert(improc::is_variant_arg_function_type_v<VariantProductCreator>, "Variant should have functor arguments.");

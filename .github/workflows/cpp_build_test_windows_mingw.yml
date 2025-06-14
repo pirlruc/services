@@ -1,10 +1,15 @@
-name: Windows Artifacts
+name: Windows MinGW Build
 
 on:
   # Triggers the workflow on push or pull request events
   push:
     branches:
     - main
+    - developer
+  pull_request:
+    branches:
+    - main
+    - developer
 
   # Runs this workflow manually from the Actions tab
   workflow_dispatch:
@@ -21,20 +26,15 @@ jobs:
         - {
             name: windows-latest-clang,
             os: windows-latest,
-            preset_name: "clang-release",
-            install_dir: "D:/a/services/services/install"
-          }
-        - {
-            name: windows-latest-gcc-no-toolchain,
-            os: windows-latest,
-            preset_name: "gcc-release-no-toolchain",
-            install_dir: "D:/a/services/services/install"
+            preset_name: "clang-debug",
+            triplet: "x64-mingw-dynamic",
+            binary_dir: "out/build/clang-debug"
           }
         - {
             name: windows-latest-clang-no-toolchain,
             os: windows-latest,
-            preset_name: "clang-release-no-toolchain",
-            install_dir: "D:/a/services/services/install"
+            preset_name: "clang-debug-no-toolchain",
+            binary_dir: "out/build/clang-debug-no-toolchain"
           }
 
     steps:
@@ -55,7 +55,25 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          choco install ninja
+          choco uninstall llvm
+          
+          echo "Starting LLVM-MinGW setup..."
+          $LLVM_MINGW_VERSION="20231128"
+          $ARCHIVE_NAME="llvm-mingw-${LLVM_MINGW_VERSION}-ucrt-x86_64.zip"
+          $DOWNLOAD_URL="https://github.com/mstorsjo/llvm-mingw/releases/download/${LLVM_MINGW_VERSION}/${ARCHIVE_NAME}"
+          $INSTALL_DIR="$HOME/llvm-mingw"
+          
+          echo "Downloading LLVM-MinGW..."
+          curl -L -o "$ARCHIVE_NAME" "$DOWNLOAD_URL"
+          
+          echo "Extracting LLVM-MinGW..."
+          mkdir -p "$INSTALL_DIR"
+          unzip -q "$ARCHIVE_NAME" -d "$INSTALL_DIR"
+          
+          $env:PATH="$INSTALL_DIR/llvm-mingw-${LLVM_MINGW_VERSION}-ucrt-x86_64/bin;$env:PATH"
+          Add-Content -Path $env:GITHUB_PATH -Value "$INSTALL_DIR/llvm-mingw-${LLVM_MINGW_VERSION}-ucrt-x86_64/bin"
+          echo "LLVM-MinGW setup complete."
+
           ninja    --version
           cmake    --version
           gcc      --version
@@ -87,9 +105,13 @@ jobs:
       - name: Configure & Build
         shell: bash
         run: |
-          export VCPKG_ROOT=C:\vcpkg
-          cmake --preset ${{ matrix.config.preset_name }}
-          cmake --build --preset ${{ matrix.config.preset_name }} --target install
+          export VCPKG_ROOT=C:/vcpkg
+          if [ -n "${{ matrix.config.triplet }}" ]; then
+            cmake --preset ${{ matrix.config.preset_name }} -DVCPKG_TARGET_TRIPLET=${{ matrix.config.triplet }}
+          else
+            cmake --preset ${{ matrix.config.preset_name }}
+          fi
+          cmake --build --preset ${{ matrix.config.preset_name }} --target all
 
       - if: ${{ steps.branch-name.outputs.branch == 'developer' }}
         name: Save Build Cache
@@ -104,8 +126,7 @@ jobs:
             modules/infrastructure/external/*
           key: ${{ matrix.config.os }}-build-${{ matrix.config.preset_name }}-${{ hashFiles('CMakeLists.txt','test/CMakeLists.txt') }}
 
-      - name: Upload Build Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.config.name }}
-          path: ${{ matrix.config.install_dir }}/*
+      - name: Test
+        shell: pwsh
+        run: |
+          ./${{ matrix.config.binary_dir }}/bin/improc-services_testd.exe

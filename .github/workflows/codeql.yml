@@ -66,12 +66,17 @@ jobs:
         echo "1. Installing dependencies..."
         sudo apt-get install ninja-build
         sudo apt-get install lcov
+        sudo apt-get install clang-17
+        sudo update-alternatives --install /usr/bin/clang   clang   /usr/bin/clang-17   100
+        sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-17 100
+        sudo update-alternatives --set clang   /usr/bin/clang-17
+        sudo update-alternatives --set clang++ /usr/bin/clang++-17        
         ninja    --version
         cmake    --version
         gcc      --version
-        gcc-11   --version
+        gcc-13   --version
         clang    --version
-        clang-14 --version
+        clang-17 --version
         lcov     --version
         vcpkg    --version
 

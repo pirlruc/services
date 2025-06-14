@@ -10,16 +10,6 @@ if(NOT DEFINED IMPROC_SUPERPROJECT_VERSION)
   set(IMPROC_SUPERPROJECT_VERSION 1.0.0)
 endif()
 
-if(NOT DEFINED IMPROC_COVERAGE_VERSION)
-  if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    set(IMPROC_COVERAGE_VERSION "14")
-  elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    set(IMPROC_COVERAGE_VERSION "11")
-  else()
-    set(IMPROC_COVERAGE_VERSION "14")
-  endif()
-endif()
-
 if(NOT DEFINED IMPROC_SERVICES_WITH_TESTS)
   set(IMPROC_SERVICES_WITH_TESTS OFF)
 endif()
@@ -34,6 +24,16 @@ project(
   LANGUAGES   CXX
 )
 string(REPLACE "-" "_" PROJECT_NAME_FILE ${PROJECT_NAME})
+
+if(NOT DEFINED IMPROC_COVERAGE_VERSION)
+  if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    set(IMPROC_COVERAGE_VERSION "17")
+  elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    set(IMPROC_COVERAGE_VERSION "13")
+  else()
+    set(IMPROC_COVERAGE_VERSION "17")
+  endif()
+endif()
 
 include(FetchContent)
 
@@ -50,7 +50,7 @@ if(PROJECT_NAME STREQUAL CMAKE_PROJECT_NAME)
   set(CMAKE_DEBUG_POSTFIX d)
 
   if(IMPROC_WITH_COVERAGE AND NOT IMPROC_WITH_TESTS AND NOT IMPROC_SERVICES_WITH_TESTS)
-    message(STATUS "Warning: IMPROC_COVERAGE ON but tests of image processing library is not ON")
+    message(STATUS "Warning: IMPROC_WITH_COVERAGE ON but tests of image processing library is not ON")
     message(STATUS "---------> Setting IMPROC_SERVICES_WITH_TESTS = ON")
     set(IMPROC_SERVICES_WITH_TESTS ON)
   endif()
@@ -83,13 +83,15 @@ endif()
 
 set(PKG_CONFIG_REQUIRES "improc-infrastructure pipes")
 message(STATUS "Build ${PROJECT_NAME} Version: ${PROJECT_VERSION}")
+message(STATUS "CMake Toolchain File: ${CMAKE_TOOLCHAIN_FILE}")
+message(STATUS "Compiler ID: ${CMAKE_CXX_COMPILER_ID}")
+message(STATUS "Simulate ID: ${CMAKE_CXX_SIMULATE_ID}")
+message(STATUS "Build Type : ${CMAKE_BUILD_TYPE}")
+message(STATUS "Install Dir: ${CMAKE_INSTALL_PREFIX}")
 message(STATUS "IMPROC_WITH_TESTS            : ${IMPROC_WITH_TESTS}")
 message(STATUS "IMPROC_SERVICES_WITH_TESTS   : ${IMPROC_SERVICES_WITH_TESTS}")
 message(STATUS "IMPROC_WITH_COVERAGE         : ${IMPROC_WITH_COVERAGE}")
 message(STATUS "IMPROC_COVERAGE_VERSION      : ${IMPROC_COVERAGE_VERSION}")
-message(STATUS "CMake Toolchain File: ${CMAKE_TOOLCHAIN_FILE}")
-message(STATUS "Build Type : ${CMAKE_BUILD_TYPE}")
-message(STATUS "Install Dir: ${CMAKE_INSTALL_PREFIX}")
 
 set(
   IMPROC_SERVICES_LIB_FILES
@@ -113,25 +115,54 @@ set(
   ${PROJECT_SOURCE_DIR}/include/improc/services/factory/variant_factory_pattern.hpp
   ${PROJECT_SOURCE_DIR}/include/improc/services/factory/variant_factory_pattern.tpp
   ${PROJECT_SOURCE_DIR}/include/improc/services/pipes/base_pipe.hpp
+
+  ${PROJECT_SOURCE_DIR}/src/logger_services.cpp
 )
 
-if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND (WIN32 OR WINCE))
-  set(IMPROC_SERVICES_LIB_FILES ${IMPROC_SERVICES_LIB_FILES} ${PROJECT_SOURCE_DIR}/src/main.cpp)
-endif()
-
-if (BUILD_SHARED_LIBS)
-  add_library(${PROJECT_NAME} SHARED ${IMPROC_SERVICES_LIB_FILES})
-else()
-  add_library(${PROJECT_NAME} STATIC ${IMPROC_SERVICES_LIB_FILES})
-endif()
+add_library(${PROJECT_NAME} ${IMPROC_SERVICES_LIB_FILES})
 add_library(improc::services ALIAS ${PROJECT_NAME})
 add_dependencies(${PROJECT_NAME} improc::infrastructure joboccara::pipes)
 
-set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD           17)
-set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD_REQUIRED  TRUE)
-set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE        CXX)
-set_target_properties(${PROJECT_NAME} PROPERTIES VERSION                ${PROJECT_VERSION})
-set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX          ${CMAKE_DEBUG_POSTFIX})
+set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD              17)
+set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD_REQUIRED     TRUE)
+set_target_properties(${PROJECT_NAME} PROPERTIES CXX_EXTENSIONS            OFF)
+set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE           CXX)
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION                   ${PROJECT_VERSION})
+set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE TRUE)
+set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX             ${CMAKE_DEBUG_POSTFIX})
+
+if (BUILD_SHARED_LIBS)
+  target_compile_definitions(${PROJECT_NAME} PRIVATE IMPROC_EXPORTS)
+else()
+  target_compile_definitions(${PROJECT_NAME} PRIVATE IMPROC_STATIC)
+endif()
+
+if(NOT MSVC)
+  set(TARGET_CXX_FLAGS -Wall -Wextra -Wpedantic)
+  if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    list(APPEND TARGET_CXX_FLAGS -DDEBUG -g -Og)
+  else()
+    list(APPEND TARGET_CXX_FLAGS -DNDEBUG -O2)
+  endif()
+else()
+  set(TARGET_CXX_FLAGS /Wall /W4)
+  if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    list(APPEND TARGET_CXX_FLAGS /DDEBUG /Zi /Od)
+  else()
+    list(APPEND TARGET_CXX_FLAGS /DNDEBUG /O2)
+  endif()
+endif()
+
+if(IMPROC_WITH_COVERAGE)
+  if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    list(APPEND TARGET_CXX_FLAGS --coverage)
+  elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    list(APPEND TARGET_CXX_FLAGS -fprofile-instr-generate -fcoverage-mapping)
+  endif()
+endif()
+
+target_compile_options(${PROJECT_NAME} PRIVATE ${TARGET_CXX_FLAGS})
+target_link_options   (${PROJECT_NAME} PRIVATE ${TARGET_CXX_FLAGS})
 
 target_include_directories  (${PROJECT_NAME}   PRIVATE   ${PROJECT_SOURCE_DIR}/include)
 target_include_directories  (${PROJECT_NAME}   INTERFACE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>

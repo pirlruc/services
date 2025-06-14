@@ -17,7 +17,7 @@ namespace improc
      * @tparam ContainerType 
      */
     template <typename KeyType,typename ContainerType>
-    class IMPROC_API Context : public Container<KeyType,ContainerType>
+    class Context : public Container<KeyType,ContainerType>
     {
         public:
             Context();

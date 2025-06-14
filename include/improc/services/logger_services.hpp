@@ -12,7 +12,7 @@ namespace improc
      */
     class IMPROC_API ServicesLogger final: public LoggerSingleton<ServicesLogger>
     {
-        friend std::shared_ptr<ServicesLogger> LoggerSingleton::get(const std::string& logger_name);
+        friend class LoggerSingleton<ServicesLogger>;
         private:
             explicit ServicesLogger(std::shared_ptr<spdlog::logger>&&      logger) : LoggerSingleton(std::move(logger)) {}
 
@@ -23,6 +23,8 @@ namespace improc
             void operator=(const ServicesLogger&& that) = delete;
     };
 }
+
+extern template class IMPROC_EXPORT_TEMPLATE_DECLARATION improc::LoggerSingleton<improc::ServicesLogger>;
 
 #if SPDLOG_ACTIVE_LEVEL <= SPDLOG_LEVEL_TRACE
 #    define IMPROC_SERVICES_LOGGER_TRACE(...) IMPROC_LOGGER_TRACE(improc::ServicesLogger::get(), __VA_ARGS__)

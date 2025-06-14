@@ -13,7 +13,7 @@ namespace improc
      * @tparam BaseProduct - output type of the factory pattern 
      */
     template <typename KeyType, class BaseProduct>
-    struct IMPROC_API FactoryPatternError
+    struct FactoryPatternError
     {
         static_assert(improc::is_hashable_v<KeyType>, "KeyType should be an integral or a string data type.");
 
