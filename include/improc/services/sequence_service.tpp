@@ -27,7 +27,7 @@ improc::SequenceService<KeyType,ContextType>& improc::SequenceService<KeyType,Co
         IMPROC_SERVICES_LOGGER_ERROR("ERROR_01: " + error_message);
         throw improc::json_error(std::move(error_message));
     }
-    Json::Value service_elements = std::move(sequence_service_json[kServicesKey]);
+    Json::Value service_elements = sequence_service_json[kServicesKey];
 
     IMPROC_SERVICES_LOGGER_DEBUG("{} services in factory.",factory.Size());
     for (Json::Value::const_iterator srvce_elem_iter = service_elements.begin(); srvce_elem_iter != service_elements.end(); ++srvce_elem_iter)
