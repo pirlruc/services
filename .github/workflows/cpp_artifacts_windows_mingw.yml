@@ -100,7 +100,7 @@ jobs:
       - name: Configure & Build
         shell: bash
         run: |
-          export VCPKG_ROOT=C:\vcpkg
+          export VCPKG_ROOT=C:/vcpkg
           if [ -n "${{ matrix.config.triplet }}" ]; then
             cmake --preset ${{ matrix.config.preset_name }} -DVCPKG_TARGET_TRIPLET=${{ matrix.config.triplet }}
           else

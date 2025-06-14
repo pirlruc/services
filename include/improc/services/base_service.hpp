@@ -35,6 +35,8 @@ namespace improc
 
             virtual BaseService&    Load            (const Json::Value& service_json);
             virtual void            Run             (Context<KeyType,ContextType>& context) const = 0;
+
+            virtual ~BaseService() = default;
     };
 
     typedef BaseService<std::string,std::any>   StringKeyHeterogeneousBaseService;

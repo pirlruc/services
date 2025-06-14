@@ -17,6 +17,9 @@ class SubtractTestWithOneInputLoad : public improc::StringKeyHeterogeneousBaseSe
 
     public:
         SubtractTestWithOneInputLoad() : improc::StringKeyHeterogeneousBaseService() {}
+        
+        using improc::StringKeyHeterogeneousBaseService::Load;
+        
         SubtractTestWithOneInputLoad& Load   (const Json::Value& service_json, int number_to_subtract)
         {
             this->improc::StringKeyHeterogeneousBaseService::Load(service_json);
@@ -29,7 +32,10 @@ class SubtractTestWithOneInputLoad : public improc::StringKeyHeterogeneousBaseSe
             return (*this);
         }
 
-        void    Run    (improc::StringKeyHeterogeneousContext&  context) const override {}
+        void    Run    (improc::StringKeyHeterogeneousContext&  context) const override 
+        { 
+            std::cout << context.Size() << std::endl;
+        }
 };
 
 template <class ServiceType>

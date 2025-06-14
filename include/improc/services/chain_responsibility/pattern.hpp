@@ -24,6 +24,8 @@ namespace improc
 
             virtual std::shared_ptr<Handler>    set_next_handler(std::shared_ptr<Handler> handler) = 0;
             virtual HandleOutputType            Handle(const RequestType& request) = 0;
+            
+            virtual ~Handler() = default;
     };
 
     /**

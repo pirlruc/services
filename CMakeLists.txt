@@ -137,6 +137,24 @@ else()
   target_compile_definitions(${PROJECT_NAME} PRIVATE IMPROC_STATIC)
 endif()
 
+set(TARGET_CXX_FLAGS -Wall -Wextra -Wpedantic)
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+  list(APPEND TARGET_CXX_FLAGS -DDEBUG -g -Og)
+else()
+  list(APPEND TARGET_CXX_FLAGS -DNDEBUG -O2)
+endif()
+
+if(IMPROC_WITH_COVERAGE)
+  if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    list(APPEND TARGET_CXX_FLAGS --coverage)
+  elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    list(APPEND TARGET_CXX_FLAGS -fprofile-instr-generate -fcoverage-mapping)
+  endif()
+endif()
+
+target_compile_options(${PROJECT_NAME} PRIVATE ${TARGET_CXX_FLAGS})
+target_link_options   (${PROJECT_NAME} PRIVATE ${TARGET_CXX_FLAGS})
+
 target_include_directories  (${PROJECT_NAME}   PRIVATE   ${PROJECT_SOURCE_DIR}/include)
 target_include_directories  (${PROJECT_NAME}   INTERFACE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
                                                $<INSTALL_INTERFACE:include> )
