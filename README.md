@@ -1,3 +1,5 @@
+> **Deprecated.** Pipes, sequences, factories, and service containers moved to [nornir](https://github.com/NjordLabs/nornir-cpp).
+
 # improc_services
 
 ## main
